@@ -1451,6 +1451,7 @@
   }
 
   function resumeFromMenu() {
+    if (gameOver) return;
     if (wasPlayingBeforeMenu) {
       paused = false;
       timerText.classList.remove('paused');
@@ -1491,12 +1492,17 @@
 
   // Unlock audio on first user interaction (required by mobile browsers)
   function unlockAudio() {
-    getCtx();
+    const ctx = getCtx();
+    if (ctx.state === 'suspended') ctx.resume();
     document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('touchend', unlockAudio);
     document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('keydown', unlockAudio);
   }
-  document.addEventListener('touchstart', unlockAudio, { once: true });
-  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio);
+  document.addEventListener('touchend', unlockAudio);
+  document.addEventListener('click', unlockAudio);
+  document.addEventListener('keydown', unlockAudio);
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
@@ -2122,6 +2128,7 @@
   const mobilePauseBtn = document.getElementById('mobile-pause-btn');
 
   function togglePause() {
+    if (gameOver) return;
     if (paused) {
       paused = false;
       timerText.classList.remove('paused');
@@ -2309,9 +2316,16 @@
     }
   }
 
+  let gameOver = false;
+
   function showOverlay(text, btnText) {
     if (text === 'Game Over!') {
       stopTimer();
+      paused = true;
+      gameOver = true;
+      timerText.classList.add('paused');
+      mobilePauseBtn.innerHTML = '&#9654;';
+      mobilePauseBtn.classList.add('playing');
     }
   }
 
@@ -2321,6 +2335,7 @@
     paused = !!startPaused;
     pausedElapsed = 0;
     timerStarted = false;
+    gameOver = false;
     beatBest = false;
     bestEl.style.color = '';
     bestBox.style.background = '';
