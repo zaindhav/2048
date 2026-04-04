@@ -6,6 +6,7 @@
 <title>2048</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  .hidden { display: none !important; }
 
   :root {
     --bg: #000;
@@ -100,12 +101,16 @@
   .right-sidebar .bottom-btn {
     align-self: stretch;
     display: flex;
+    gap: 1.2vw;
     margin-top: auto;
   }
 
   .right-sidebar .bottom-btn .settings-btn {
-    width: 100%;
+    flex: 1;
   }
+
+  #lb-btn { color: #f0d878; }
+  :root.light #lb-btn { color: #90c8a0; }
 
   .scores {
     display: flex;
@@ -399,6 +404,200 @@
     color: #e03030;
   }
 
+  /* Leaderboard Panel */
+  .lb-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 460px;
+    background: var(--settings-bg);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 32px 28px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .lb-panel.open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: all;
+  }
+
+  .lb-panel .settings-title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  .lb-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    display: none;
+    backdrop-filter: blur(4px);
+  }
+
+  .lb-backdrop.open {
+    display: block;
+  }
+
+  .lb-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .lb-tab {
+    flex: 1;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--label-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .lb-tab.active {
+    background: #f0d878;
+    color: #000;
+    border-color: #f0d878;
+  }
+
+  .lb-entry {
+    display: flex;
+    align-items: center;
+    padding: 14px 12px;
+    margin-bottom: 6px;
+    background: var(--btn-bg);
+    border-radius: 12px;
+    border: 2px solid var(--border);
+  }
+
+  .lb-entry.gold { border-color: #f0d878; }
+  .lb-entry.silver { border-color: #c0c0c0; }
+  .lb-entry.bronze { border-color: #cd7f32; }
+
+  .lb-rank {
+    font-weight: 800;
+    font-size: 20px;
+    width: 36px;
+    text-align: center;
+  }
+
+  .lb-entry.gold .lb-rank { color: #f0d878; }
+  .lb-entry.silver .lb-rank { color: #c0c0c0; }
+  .lb-entry.bronze .lb-rank { color: #cd7f32; }
+  .lb-entry:not(.gold):not(.silver):not(.bronze) .lb-rank { color: var(--label-color); }
+
+  .lb-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text);
+    flex: 1;
+    margin-left: 8px;
+  }
+
+  .lb-score {
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--text);
+    margin-right: 12px;
+  }
+
+  .lb-time {
+    color: var(--label-color);
+    font-size: 13px;
+    min-width: 44px;
+    text-align: right;
+  }
+
+  .lb-empty {
+    text-align: center;
+    color: var(--label-color);
+    font-size: 16px;
+    padding: 30px 0;
+  }
+
+  .lb-your-score {
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .lb-your-score .lb-your-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-color);
+    margin-bottom: 6px;
+  }
+
+  .lb-your-score .lb-your-val {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .lb-your-score .lb-your-time {
+    font-size: 14px;
+    color: var(--label-color);
+    margin-top: 4px;
+  }
+
+  .lb-name-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--btn-bg);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .lb-name-input:focus {
+    border-color: #f0d878;
+  }
+
+  .lb-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #f0d878;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 20px;
+  }
+
+  .lb-submit-btn:hover {
+    background: #e8d060;
+  }
+
+  .lb-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
   /* Board wrapper */
   .board-wrapper {
     display: flex;
@@ -612,8 +811,30 @@
       </div>
     </div>
     <div class="bottom-btn">
+      <button class="settings-btn" id="lb-btn">&#9818;</button>
       <button class="settings-btn" id="settings-btn">&#9881;</button>
     </div>
+  </div>
+
+  <!-- Leaderboard Panel -->
+  <div class="lb-backdrop" id="lb-backdrop"></div>
+  <div class="lb-panel" id="lb-panel">
+    <button class="settings-close" id="lb-close">&times;</button>
+    <div class="settings-title">Leaderboard</div>
+    <div class="lb-your-score hidden" id="lb-your-score">
+      <div class="lb-your-label">Your Score</div>
+      <div class="lb-your-val" id="lb-your-val">0</div>
+      <div class="lb-your-time" id="lb-your-time">0:00</div>
+    </div>
+    <input class="lb-name-input hidden" id="lb-name-input" type="text" placeholder="Enter your name..." maxlength="16">
+    <button class="lb-submit-btn hidden" id="lb-submit-btn">Submit Score</button>
+    <div class="lb-divider hidden" id="lb-divider"></div>
+    <div class="lb-tabs" id="lb-tabs">
+      <button class="lb-tab active" data-lb="3">3x3</button>
+      <button class="lb-tab" data-lb="4">4x4</button>
+      <button class="lb-tab" data-lb="5">5x5</button>
+    </div>
+    <div id="lb-entries"></div>
   </div>
 </div>
 
@@ -1542,6 +1763,13 @@
       return;
     }
 
+    if (e.key === 'l' || e.key === 'L') {
+      e.preventDefault();
+      if (lbPanel.classList.contains('open')) closeLB();
+      else openLB();
+      return;
+    }
+
     if (e.key === 's' || e.key === 'S') {
       e.preventDefault();
       if (settingsPanel.classList.contains('open')) closeSettings();
@@ -1590,6 +1818,168 @@
     });
   });
 
+  // Leaderboard
+  const lbEntries = document.getElementById('lb-entries');
+  const lbPanel = document.getElementById('lb-panel');
+  const lbBackdrop = document.getElementById('lb-backdrop');
+  const lbBtn = document.getElementById('lb-btn');
+  const lbClose = document.getElementById('lb-close');
+  const lbTabsEl = document.getElementById('lb-tabs');
+  let lbViewSize = 3;
+
+  function openLB() {
+    lbPanel.classList.add('open');
+    lbBackdrop.classList.add('open');
+    renderLB();
+  }
+  function closeLB() {
+    lbPanel.classList.remove('open');
+    lbBackdrop.classList.remove('open');
+  }
+  lbBtn.addEventListener('click', () => { sfx.click(); openLB(); });
+  lbClose.addEventListener('click', closeLB);
+  lbBackdrop.addEventListener('click', closeLB);
+
+  // Global leaderboard via JSONblob
+  const blobIds = {
+    3: '019d5974-0a1f-7992-a594-aa2dfbcb947f',
+    4: '019d5974-1fa7-798f-b5ec-66094e2cb923',
+    5: '019d5974-3eeb-7e34-af0a-ee0a08dc5e82'
+  };
+  const blobUrl = (size) => 'https://jsonblob.com/api/jsonBlob/' + blobIds[size];
+
+  let lbCache = { 3: [], 4: [], 5: [] };
+
+  async function fetchLB(size) {
+    try {
+      if (lbViewSize === size) lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
+      const res = await fetch(blobUrl(size) + '?t=' + Date.now());
+      if (res.ok) {
+        lbCache[size] = await res.json();
+        localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
+      }
+    } catch(e) {
+      // Offline — load from local backup
+      try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e2) {}
+    }
+    if (lbViewSize === size) renderLB();
+  }
+
+  async function addLBEntry(size, sc, time, name) {
+    // Always fetch latest first
+    try {
+      const res = await fetch(blobUrl(size) + '?t=' + Date.now());
+      if (res.ok) lbCache[size] = await res.json();
+    } catch(e) {}
+    lbCache[size].push({ name: name || 'Player', score: sc, time });
+    lbCache[size].sort((a, b) => b.score - a.score);
+    if (lbCache[size].length > 10) lbCache[size].length = 10;
+    // Save remotely
+    try {
+      await fetch(blobUrl(size), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lbCache[size])
+      });
+    } catch(e) {}
+    // Always save local backup
+    localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
+  }
+
+  function renderLB() {
+    const entries = lbCache[lbViewSize] || [];
+    if (entries.length === 0) {
+      lbEntries.innerHTML = '<div class="lb-empty">No scores yet</div>';
+      return;
+    }
+    const medals = ['gold', 'silver', 'bronze'];
+    lbEntries.innerHTML = entries.map((e, i) =>
+      '<div class="lb-entry ' + (medals[i] || '') + '">' +
+        '<span class="lb-rank">' + (i < 3 ? '&#9818;' : (i + 1)) + '</span>' +
+        '<span class="lb-name">' + (e.name || 'Player') + '</span>' +
+        '<span class="lb-score">' + e.score + '</span>' +
+        '<span class="lb-time">' + e.time + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  lbPanel.addEventListener('click', e => {
+    const tab = e.target.closest('.lb-tab');
+    if (!tab) return;
+    lbViewSize = parseInt(tab.dataset.lb);
+    lbPanel.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    fetchLB(lbViewSize);
+  });
+
+  function openLBOrig() { openLB(); fetchLB(lbViewSize); }
+  lbBtn.removeEventListener('click', openLBOrig);
+  lbBtn.addEventListener('click', () => { sfx.click(); hideLBSubmit(); openLB(); fetchLB(lbViewSize); });
+
+  // Leaderboard elements
+  const lbYourScore = document.getElementById('lb-your-score');
+  const lbYourVal = document.getElementById('lb-your-val');
+  const lbYourTime = document.getElementById('lb-your-time');
+  const lbNameInput = document.getElementById('lb-name-input');
+  const lbSubmitBtn = document.getElementById('lb-submit-btn');
+  const lbDivider = document.getElementById('lb-divider');
+
+  let pendingScore = null;
+
+  function showLBSubmit(sc, elapsed, size) {
+    pendingScore = { sc, elapsed, size };
+    lbYourScore.classList.remove('hidden');
+    lbYourVal.textContent = sc;
+    lbYourTime.textContent = elapsed;
+    lbNameInput.classList.remove('hidden');
+    lbSubmitBtn.classList.remove('hidden');
+    lbDivider.classList.remove('hidden');
+    const savedName = localStorage.getItem('lb2048_name') || '';
+    lbNameInput.value = savedName;
+    lbViewSize = size;
+    lbPanel.querySelectorAll('.lb-tab').forEach(t =>
+      t.classList.toggle('active', parseInt(t.dataset.lb) === size)
+    );
+    fetchLB(size);
+    openLB();
+    setTimeout(() => { if (!savedName) lbNameInput.focus(); }, 350);
+  }
+
+  function hideLBSubmit() {
+    lbYourScore.classList.add('hidden');
+    lbNameInput.classList.add('hidden');
+    lbSubmitBtn.classList.add('hidden');
+    lbDivider.classList.add('hidden');
+    pendingScore = null;
+  }
+
+  lbSubmitBtn.addEventListener('click', async () => {
+    if (!pendingScore) return;
+    const name = lbNameInput.value.trim() || 'Player';
+    localStorage.setItem('lb2048_name', name);
+    lbSubmitBtn.textContent = 'Submitting...';
+    await addLBEntry(pendingScore.size, pendingScore.sc, pendingScore.elapsed, name);
+    lbSubmitBtn.textContent = 'Submitted!';
+    hideLBSubmit();
+    renderLB();
+    setTimeout(() => { lbSubmitBtn.textContent = 'Submit Score'; }, 1500);
+  });
+
+  lbNameInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); lbSubmitBtn.click(); }
+  });
+
+  // Save score to leaderboard on game over
+  const origShowOverlay = showOverlay;
+  showOverlay = function(text, btnText) {
+    origShowOverlay(text, btnText);
+    if (text === 'Game Over!') {
+      const elapsed = timerStart ? formatTime(Date.now() - timerStart) : '0:00';
+      setTimeout(() => showLBSubmit(score, elapsed, SIZE), 600);
+    }
+  };
+
+  fetchLB(3); fetchLB(4); fetchLB(5);
   init();
 })();
 </script>
