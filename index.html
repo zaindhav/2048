@@ -477,6 +477,69 @@
     color: var(--text);
   }
 
+  /* Avatar */
+  .avatar-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .avatar-option {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    background: var(--btn-bg);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .avatar-option:hover {
+    transform: scale(1.15);
+  }
+
+  .avatar-option.selected {
+    border-color: #f0d878;
+    background: #f0d878;
+    transform: scale(1.15);
+  }
+
+  .avatar-option.letter-avatar {
+    font-weight: 800;
+    font-size: 20px;
+    color: #fff;
+  }
+
+  .avatar-label {
+    font-size: 14px;
+    color: var(--label-color);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* Leaderboard avatar */
+  .lb-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-right: 8px;
+  }
+
+  .lb-avatar.lb-letter {
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+  }
+
   .tut-step { animation: tutFade 0.3s ease; }
   @keyframes tutFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -1252,7 +1315,23 @@
     <h1>2048</h1>
     <div class="tut-sub">Welcome! What should we call you?</div>
     <input class="lb-name-input" id="tut-name" type="text" placeholder="Enter your name..." maxlength="16" style="margin-top:24px; font-size:20px; padding:16px;">
-    <p class="tut-desc">Your name will appear on the global leaderboard.</p>
+    <div class="avatar-label">Choose your avatar</div>
+    <div class="avatar-picker" id="avatar-picker">
+      <div class="avatar-option" data-avatar="😎">😎</div>
+      <div class="avatar-option" data-avatar="🔥">🔥</div>
+      <div class="avatar-option" data-avatar="⭐">⭐</div>
+      <div class="avatar-option" data-avatar="🎮">🎮</div>
+      <div class="avatar-option" data-avatar="🏆">🏆</div>
+      <div class="avatar-option" data-avatar="🐱">🐱</div>
+      <div class="avatar-option" data-avatar="🐶">🐶</div>
+      <div class="avatar-option" data-avatar="🦊">🦊</div>
+      <div class="avatar-option" data-avatar="🐸">🐸</div>
+      <div class="avatar-option" data-avatar="🤖">🤖</div>
+      <div class="avatar-option" data-avatar="👾">👾</div>
+      <div class="avatar-option" data-avatar="💎">💎</div>
+      <div class="avatar-option letter-avatar selected" data-avatar="" id="letter-avatar" style="background:#f59563;">?</div>
+    </div>
+    <p class="tut-desc">Your name and avatar appear on the global leaderboard. Leaderboard resets weekly!</p>
   </div>
 
   <!-- Step 2: How it works -->
@@ -1358,23 +1437,43 @@
 
   let pausedElapsed = 0;
 
+  let wasPlayingBeforeMenu = false;
+
+  function pauseForMenu() {
+    if (!paused && timerStarted) {
+      wasPlayingBeforeMenu = true;
+      if (timerStart) pausedElapsed = Date.now() - timerStart;
+      stopTimer();
+    } else {
+      wasPlayingBeforeMenu = false;
+    }
+    paused = true;
+  }
+
+  function resumeFromMenu() {
+    if (wasPlayingBeforeMenu) {
+      paused = false;
+      timerText.classList.remove('paused');
+      mobilePauseBtn.innerHTML = '&#9208;';
+      mobilePauseBtn.classList.remove('playing');
+      if (pausedElapsed) {
+        timerStart = Date.now() - pausedElapsed;
+        timerInterval = setInterval(() => {
+          timerText.textContent = formatTime(Date.now() - timerStart);
+        }, 200);
+      }
+    }
+  }
+
   function openSettings() {
     settingsPanel.classList.add('open');
     settingsBackdrop.classList.add('open');
-    if (timerInterval && timerStart) {
-      pausedElapsed = Date.now() - timerStart;
-      stopTimer();
-    }
+    pauseForMenu();
   }
   function closeSettings() {
     settingsPanel.classList.remove('open');
     settingsBackdrop.classList.remove('open');
-    if (pausedElapsed && !timerInterval) {
-      timerStart = Date.now() - pausedElapsed;
-      timerInterval = setInterval(() => {
-        timerText.textContent = formatTime(Date.now() - timerStart);
-      }, 200);
-    }
+    resumeFromMenu();
   }
   settingsBtn.addEventListener('click', () => { sfx.click(); openSettings(); });
   settingsClose.addEventListener('click', closeSettings);
@@ -1386,8 +1485,18 @@
 
   function getCtx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     return audioCtx;
   }
+
+  // Unlock audio on first user interaction (required by mobile browsers)
+  function unlockAudio() {
+    getCtx();
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  }
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+  document.addEventListener('click', unlockAudio, { once: true });
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
@@ -2337,11 +2446,13 @@
   function openLB() {
     lbPanel.classList.add('open');
     lbBackdrop.classList.add('open');
+    pauseForMenu();
     renderLB();
   }
   function closeLB() {
     lbPanel.classList.remove('open');
     lbBackdrop.classList.remove('open');
+    resumeFromMenu();
   }
   lbClose.addEventListener('click', closeLB);
   lbBackdrop.addEventListener('click', closeLB);
@@ -2356,30 +2467,40 @@
     try {
       const res = await fetch(workerUrl(size) + '&t=' + Date.now());
       if (res.ok) {
-        lbCache[size] = await res.json();
+        const data = await res.json();
+        lbCache[size] = data.scores || data;
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
       }
     } catch(e) {
-      // Only use local backup if fetch fails
       try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e2) {}
     }
     if (lbViewSize === size) renderLB();
   }
 
   async function addLBEntry(size, sc, time, name) {
-    // POST single score — worker merges server-side
+    const avatar = localStorage.getItem('lb2048_avatar') || '';
     try {
       const res = await fetch(workerUrl(size), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name || 'Player', score: sc, time })
+        body: JSON.stringify({ name: name || 'Player', score: sc, time, avatar })
       });
       if (res.ok) {
-        lbCache[size] = await res.json();
+        const data = await res.json();
+        lbCache[size] = data.scores || data;
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
         if (lbViewSize === size) renderLB();
       }
     } catch(e) {}
+  }
+
+  function makeAvatar(entry) {
+    const name = entry.name || 'Player';
+    if (entry.avatar) {
+      return '<span class="lb-avatar">' + entry.avatar + '</span>';
+    }
+    const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+    return '<span class="lb-avatar lb-letter" style="background:' + col + '">' + name[0].toUpperCase() + '</span>';
   }
 
   function renderLB() {
@@ -2392,6 +2513,7 @@
     lbEntries.innerHTML = entries.map((e, i) =>
       '<div class="lb-entry ' + (medals[i] || '') + '">' +
         '<span class="lb-rank">' + (i < 3 ? '&#9818;' : (i + 1)) + '</span>' +
+        makeAvatar(e) +
         '<span class="lb-name">' + (e.name || 'Player') + '</span>' +
         '<span class="lb-score">' + e.score + '</span>' +
         '<span class="lb-time">' + e.time + '</span>' +
@@ -2486,6 +2608,13 @@
   };
 
   // Clear stale local caches on load
+  // One-time reset for new version — remove after first release
+  if (!localStorage.getItem('2048_v2_reset')) {
+    localStorage.removeItem('2048_tutorial_done');
+    localStorage.removeItem('lb2048_name');
+    localStorage.removeItem('lb2048_avatar');
+    localStorage.setItem('2048_v2_reset', '1');
+  }
   localStorage.removeItem('lb2048_backup_3');
   localStorage.removeItem('lb2048_backup_4');
   localStorage.removeItem('lb2048_backup_5');
@@ -2525,16 +2654,54 @@
   });
 
   const tutNameInput = document.getElementById('tut-name');
+  const avatarPicker = document.getElementById('avatar-picker');
+  const letterAvatar = document.getElementById('letter-avatar');
   const savedName = localStorage.getItem('lb2048_name') || '';
+  const savedAvatar = localStorage.getItem('lb2048_avatar') || '';
   if (savedName) tutNameInput.value = savedName;
 
+  // Avatar color from name
+  const avatarColors = ['#f59563','#f67c5f','#f65e3b','#edcf72','#80c8f0','#b888e0','#80e0a8','#f088a0'];
+  function nameColor(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+    return avatarColors[Math.abs(h) % avatarColors.length];
+  }
+
+  // Update letter avatar when name changes
+  tutNameInput.addEventListener('input', () => {
+    const n = tutNameInput.value.trim();
+    letterAvatar.textContent = n ? n[0].toUpperCase() : '?';
+    letterAvatar.style.background = n ? nameColor(n) : '#f59563';
+  });
+
+  // Pre-select saved avatar
+  if (savedAvatar) {
+    avatarPicker.querySelectorAll('.avatar-option').forEach(o => {
+      o.classList.toggle('selected', o.dataset.avatar === savedAvatar);
+    });
+  }
+
+  // Avatar selection
+  avatarPicker.addEventListener('click', e => {
+    const opt = e.target.closest('.avatar-option');
+    if (!opt) return;
+    avatarPicker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    sfx.click();
+  });
+
   tutNext.addEventListener('click', () => {
-    // Save name when leaving step 0
+    // Save name and avatar when leaving step 0
     if (tutStep === 0) {
       const name = tutNameInput.value.trim();
       if (!name) { tutNameInput.focus(); tutNameInput.style.borderColor = '#e03030'; return; }
       tutNameInput.style.borderColor = '';
       localStorage.setItem('lb2048_name', name);
+      const selectedAvatar = avatarPicker.querySelector('.selected');
+      let av = selectedAvatar ? selectedAvatar.dataset.avatar : '';
+      if (selectedAvatar === letterAvatar) av = '';
+      localStorage.setItem('lb2048_avatar', av);
     }
     if (tutStep < totalSteps - 1) {
       tutStep++;
