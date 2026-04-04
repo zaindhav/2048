@@ -1860,21 +1860,19 @@
   }
 
   async function addLBEntry(size, sc, time, name) {
-    // Fetch latest, add score, push back — single flow
+    // POST single score — worker merges server-side
     try {
-      const res = await fetch(workerUrl(size) + '&t=' + Date.now());
-      if (res.ok) lbCache[size] = await res.json();
+      const res = await fetch(workerUrl(size), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name || 'Player', score: sc, time })
+      });
+      if (res.ok) {
+        lbCache[size] = await res.json();
+        localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
+        if (lbViewSize === size) renderLB();
+      }
     } catch(e) {}
-    lbCache[size].push({ name: name || 'Player', score: sc, time });
-    lbCache[size].sort((a, b) => b.score - a.score);
-    if (lbCache[size].length > 10) lbCache[size].length = 10;
-    localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
-    // Upload in background — don't await
-    fetch(workerUrl(size), {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lbCache[size])
-    }).catch(() => {});
   }
 
   function renderLB() {
@@ -1950,17 +1948,16 @@
     if (!pendingScore) return;
     const name = lbNameInput.value.trim() || 'Player';
     localStorage.setItem('lb2048_name', name);
-    // Add to local cache immediately and show it
     const p = pendingScore;
+    // Add to local cache for instant display
     lbCache[p.size].push({ name, score: p.sc, time: p.elapsed });
     lbCache[p.size].sort((a, b) => b.score - a.score);
     if (lbCache[p.size].length > 10) lbCache[p.size].length = 10;
-    localStorage.setItem('lb2048_backup_' + p.size, JSON.stringify(lbCache[p.size]));
     hideLBSubmit();
     renderLB();
     lbSubmitBtn.textContent = 'Submitted!';
     setTimeout(() => { lbSubmitBtn.textContent = 'Submit Score'; }, 1500);
-    // Upload in background
+    // Server merges and returns the real list
     addLBEntry(p.size, p.sc, p.elapsed, name);
   });
 
