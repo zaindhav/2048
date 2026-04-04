@@ -1845,18 +1845,18 @@
   let lbCache = { 3: [], 4: [], 5: [] };
 
   async function fetchLB(size) {
-    // Show local backup instantly while loading
-    try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e) {}
-    if (lbViewSize === size) renderLB();
-    // Then fetch fresh data in background
+    if (lbViewSize === size) lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
     try {
       const res = await fetch(workerUrl(size) + '&t=' + Date.now());
       if (res.ok) {
         lbCache[size] = await res.json();
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
-        if (lbViewSize === size) renderLB();
       }
-    } catch(e) {}
+    } catch(e) {
+      // Only use local backup if fetch fails
+      try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e2) {}
+    }
+    if (lbViewSize === size) renderLB();
   }
 
   async function addLBEntry(size, sc, time, name) {
@@ -1975,6 +1975,11 @@
     }
   };
 
+  // Clear stale local caches on load
+  localStorage.removeItem('lb2048_backup_3');
+  localStorage.removeItem('lb2048_backup_4');
+  localStorage.removeItem('lb2048_backup_5');
+  lbCache = { 3: [], 4: [], 5: [] };
   fetchLB(lbViewSize);
   init();
 })();
