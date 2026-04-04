@@ -2636,6 +2636,25 @@
   lbCache = { 3: [], 4: [], 5: [] };
   fetchLB(lbViewSize);
 
+  // Secret admin stats — Ctrl+Shift+A
+  document.addEventListener('keydown', async (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+      e.preventDefault();
+      const names = new Set();
+      for (const s of [3, 4, 5]) {
+        try {
+          const res = await fetch(workerUrl(s) + '&t=' + Date.now());
+          if (res.ok) {
+            const data = await res.json();
+            const scores = data.scores || data;
+            scores.forEach(e => { if (e.name) names.add(e.name); });
+          }
+        } catch(e) {}
+      }
+      alert('Unique players: ' + names.size + '\n\nNames: ' + [...names].join(', '));
+    }
+  });
+
   // Tutorial — show only on first visit
   const tutEl = document.getElementById('tutorial');
   const tutBackdrop = document.getElementById('tut-backdrop');
