@@ -155,7 +155,7 @@
     background: var(--btn-bg);
     color: var(--size-btn-text);
     border: 4px solid var(--border);
-    border-radius: 0.8vw;
+    border-radius: 1.5vw;
     padding: 4vh 0;
     font-size: 7vh;
     font-weight: 700;
@@ -404,6 +404,226 @@
     color: #e03030;
   }
 
+  /* Tutorial */
+  .tutorial-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 200;
+    backdrop-filter: blur(6px);
+  }
+
+  .tutorial {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90vw;
+    background: var(--settings-bg);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    z-index: 201;
+    text-align: center;
+  }
+
+  .tutorial h1 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #edc22e, #f2b179);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .tutorial .tut-sub {
+    font-size: 16px;
+    color: var(--label-color);
+    margin-bottom: 28px;
+  }
+
+  .tutorial .tut-section {
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+
+  .tutorial .tut-section h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .tutorial .tut-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 14px;
+    color: var(--setting-text);
+  }
+
+  .tutorial .tut-key {
+    background: var(--cell-bg);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .tut-step { animation: tutFade 0.3s ease; }
+  @keyframes tutFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tutorial h2.tut-heading {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .tut-desc {
+    font-size: 15px;
+    color: var(--setting-text);
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* Demo tiles */
+  .tut-demo, .tut-chain, .tut-score-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 24px 0 8px;
+    flex-wrap: wrap;
+  }
+
+  .tut-tile {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+  }
+  .tut-tile.tut-big { width: 90px; height: 90px; font-size: 32px; }
+  .tut-tile.t2 { background: #eee4da; color: #776e65; }
+  .tut-tile.t4 { background: #ede0c8; color: #776e65; }
+  .tut-tile.t8 { background: #f2b179; color: #f9f6f2; }
+  .tut-tile.t16 { background: #f59563; color: #f9f6f2; }
+  .tut-tile.t32 { background: #f67c5f; color: #f9f6f2; }
+  .tut-tile.t2048 { background: #80e0a8; color: #f9f6f2; }
+
+  .tut-plus, .tut-equals, .tut-chain-arrow, .tut-dots {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--label-color);
+  }
+
+  .tut-score-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .tut-goal-tile {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0 8px;
+  }
+
+  /* Arrows */
+  .tut-arrows {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 6px;
+    justify-content: center;
+    margin: 24px 0 8px;
+  }
+
+  .tut-arrow-key {
+    width: 52px; height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  /* Controls grid */
+  .tut-controls-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0 8px;
+  }
+
+  .tut-ctrl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 15px;
+    color: var(--setting-text);
+  }
+
+  /* Navigation */
+  .tut-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+  }
+
+  .tut-nav-btn {
+    background: var(--btn-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 100px;
+  }
+
+  .tut-nav-btn:hover { background: var(--btn-hover); }
+
+  .tut-next-btn {
+    background: #f0d878;
+    color: #000;
+    border-color: #f0d878;
+  }
+
+  .tut-next-btn:hover { background: #e8d060; }
+
+  .tut-dots-nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tut-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--cell-bg);
+    transition: all 0.2s ease;
+  }
+
+  .tut-dot.active {
+    background: #f0d878;
+    transform: scale(1.3);
+  }
+
   /* Leaderboard Panel */
   .lb-panel {
     position: fixed;
@@ -596,6 +816,187 @@
     height: 1px;
     background: var(--border);
     margin: 16px 0;
+  }
+
+  /* Mobile pause button - hidden on desktop */
+  .mobile-bar {
+    display: none;
+  }
+
+  /* Mobile & Tablet Layout */
+  @media (max-width: 900px) {
+    .container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto 1fr auto;
+      padding: 1.5vh 3vw 0;
+      gap: 1vh;
+    }
+
+    .left-sidebar {
+      flex-direction: row;
+      justify-content: center;
+      gap: 3vw;
+      padding: 0;
+      height: auto;
+      order: 1;
+    }
+
+    .left-sidebar .size-btn {
+      height: auto;
+      width: auto;
+      padding: 2vw 6vw;
+      font-size: 5vw;
+      border-radius: 3vw;
+    }
+
+    .board-wrapper {
+      order: 2;
+    }
+
+    .timer-area {
+      height: 8vw;
+    }
+
+    .timer-text {
+      font-size: 6vw;
+    }
+
+    .game-board {
+      height: calc(100vw - 6vw);
+      max-height: calc(100vw - 6vw);
+      border-radius: 5vw;
+    }
+
+    .right-sidebar {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 3vw;
+      padding: 1vh 0;
+      height: auto;
+      order: 3;
+    }
+
+    .scores {
+      flex-direction: row;
+      gap: 3vw;
+    }
+
+    .score-box {
+      height: auto;
+      padding: 2vw 5vw;
+      border-radius: 3vw;
+    }
+
+    .score-box .label {
+      font-size: 2.5vw;
+    }
+
+    .score-box .value {
+      font-size: 6vw;
+    }
+
+    .right-sidebar .bottom-btn {
+      margin-top: 0;
+      gap: 2vw;
+    }
+
+    .right-sidebar .bottom-btn .settings-btn {
+      font-size: 6vw;
+      padding: 2vw 3vw;
+      border-radius: 3vw;
+    }
+
+    /* Mobile bottom bar */
+    .mobile-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5vh 3vw 2vh;
+      gap: 3vw;
+      order: 4;
+    }
+
+    .mobile-pause-btn {
+      background: var(--btn-bg);
+      border: 4px solid var(--border);
+      border-radius: 3vw;
+      padding: 2.5vw 10vw;
+      font-size: 7vw;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #e03030;
+    }
+
+    .mobile-pause-btn.playing {
+      color: #30b030;
+    }
+
+    /* Tutorial mobile */
+    .tutorial {
+      width: 90vw;
+      padding: 28px 24px;
+    }
+
+    .tutorial h1 {
+      font-size: 36px;
+    }
+
+    .tutorial h2.tut-heading {
+      font-size: 24px;
+    }
+
+    .tut-tile {
+      width: 40px; height: 40px;
+      font-size: 16px;
+    }
+
+    .tut-tile.tut-big {
+      width: 70px; height: 70px;
+      font-size: 26px;
+    }
+
+    .tut-arrow-key {
+      width: 44px; height: 44px;
+      font-size: 18px;
+    }
+
+    /* Panels mobile */
+    .settings-panel {
+      width: 85vw;
+    }
+
+    .lb-panel {
+      width: 90vw;
+    }
+  }
+
+  /* Small phones */
+  @media (max-width: 480px) {
+    .left-sidebar .size-btn {
+      padding: 2.5vw 5vw;
+      font-size: 5.5vw;
+    }
+
+    .score-box {
+      padding: 2vw 4vw;
+    }
+
+    .score-box .value {
+      font-size: 7vw;
+    }
+
+    .game-board {
+      border-radius: 4vw;
+    }
+
+    .tutorial {
+      padding: 24px 18px;
+    }
+
+    .tutorial h1 {
+      font-size: 30px;
+    }
   }
 
   /* Board wrapper */
@@ -816,6 +1217,11 @@
     </div>
   </div>
 
+  <!-- Mobile bottom bar -->
+  <div class="mobile-bar">
+    <button class="mobile-pause-btn" id="mobile-pause-btn">&#9208;</button>
+  </div>
+
   <!-- Leaderboard Panel -->
   <div class="lb-backdrop" id="lb-backdrop"></div>
   <div class="lb-panel" id="lb-panel">
@@ -835,6 +1241,101 @@
       <button class="lb-tab" data-lb="5">5x5</button>
     </div>
     <div id="lb-entries"></div>
+  </div>
+</div>
+
+<!-- Tutorial -->
+<div class="tutorial-backdrop" id="tut-backdrop"></div>
+<div class="tutorial" id="tutorial">
+  <!-- Step 1: Profile -->
+  <div class="tut-step" data-step="0">
+    <h1>2048</h1>
+    <div class="tut-sub">Welcome! What should we call you?</div>
+    <input class="lb-name-input" id="tut-name" type="text" placeholder="Enter your name..." maxlength="16" style="margin-top:24px; font-size:20px; padding:16px;">
+    <p class="tut-desc">Your name will appear on the global leaderboard.</p>
+  </div>
+
+  <!-- Step 2: How it works -->
+  <div class="tut-step hidden" data-step="1">
+    <h2 class="tut-heading">How It Works</h2>
+    <div class="tut-sub">Combine matching tiles to make bigger numbers</div>
+    <div class="tut-demo">
+      <div class="tut-tile t2">2</div>
+      <div class="tut-plus">+</div>
+      <div class="tut-tile t2">2</div>
+      <div class="tut-equals">=</div>
+      <div class="tut-tile t4">4</div>
+    </div>
+    <p class="tut-desc">When two tiles with the same number touch, they merge into one!</p>
+  </div>
+
+  <!-- Step 3: Movement -->
+  <div class="tut-step hidden" data-step="2">
+    <h2 class="tut-heading">Movement</h2>
+    <div class="tut-sub">Use arrow keys or swipe to slide all tiles</div>
+    <div class="tut-arrows">
+      <div></div>
+      <div class="tut-key tut-arrow-key">&uarr;</div>
+      <div></div>
+      <div class="tut-key tut-arrow-key">&larr;</div>
+      <div class="tut-key tut-arrow-key">&darr;</div>
+      <div class="tut-key tut-arrow-key">&rarr;</div>
+    </div>
+    <p class="tut-desc">All tiles slide in the same direction. A new tile appears after every move.</p>
+  </div>
+
+  <!-- Step 4: Merging chain -->
+  <div class="tut-step hidden" data-step="3">
+    <h2 class="tut-heading">Merging</h2>
+    <div class="tut-sub">Keep merging to reach higher tiles</div>
+    <div class="tut-chain">
+      <div class="tut-tile t2">2</div>
+      <div class="tut-chain-arrow">&rarr;</div>
+      <div class="tut-tile t4">4</div>
+      <div class="tut-chain-arrow">&rarr;</div>
+      <div class="tut-tile t8">8</div>
+      <div class="tut-chain-arrow">&rarr;</div>
+      <div class="tut-tile t16">16</div>
+      <div class="tut-chain-arrow">&rarr;</div>
+      <div class="tut-tile t32">32</div>
+      <div class="tut-chain-arrow">&rarr;</div>
+      <span class="tut-dots">...</span>
+    </div>
+    <p class="tut-desc">Each merge doubles the value. Plan ahead!</p>
+  </div>
+
+  <!-- Step 5: Score -->
+  <div class="tut-step hidden" data-step="4">
+    <h2 class="tut-heading">Score</h2>
+    <div class="tut-sub">Your score is the total of all tiles on the board</div>
+    <div class="tut-score-demo">
+      <div class="tut-tile t4">4</div>
+      <div class="tut-plus">+</div>
+      <div class="tut-tile t8">8</div>
+      <div class="tut-plus">+</div>
+      <div class="tut-tile t2">2</div>
+      <div class="tut-equals">=</div>
+      <span class="tut-score-num">14</span>
+    </div>
+    <p class="tut-desc">The score ticker changes colour as your score grows. Beat your best and compete on the leaderboard!</p>
+  </div>
+
+  <!-- Step 6: Controls -->
+  <div class="tut-step hidden" data-step="5">
+    <h2 class="tut-heading">Controls</h2>
+    <div class="tut-controls-grid">
+      <div class="tut-ctrl"><span class="tut-key">Space</span><span>Pause</span></div>
+      <div class="tut-ctrl"><span class="tut-key">Enter</span><span>Restart</span></div>
+      <div class="tut-ctrl"><span class="tut-key">S</span><span>Settings</span></div>
+      <div class="tut-ctrl"><span class="tut-key">L</span><span>Leaderboard</span></div>
+    </div>
+    <p class="tut-desc">Choose between 3x3, 4x4, and 5x5 grids using the buttons on the left.</p>
+  </div>
+
+  <div class="tut-nav">
+    <button class="tut-nav-btn" id="tut-prev">Back</button>
+    <div class="tut-dots-nav" id="tut-dots"></div>
+    <button class="tut-nav-btn tut-next-btn" id="tut-next">Next</button>
   </div>
 </div>
 
@@ -1509,6 +2010,34 @@
 
   let moving = false;
   let paused = false;
+  const mobilePauseBtn = document.getElementById('mobile-pause-btn');
+
+  function togglePause() {
+    if (paused) {
+      paused = false;
+      timerText.classList.remove('paused');
+      mobilePauseBtn.innerHTML = '&#9208;';
+      mobilePauseBtn.classList.remove('playing');
+      if (pausedElapsed) {
+        timerStart = Date.now() - pausedElapsed;
+        timerInterval = setInterval(() => {
+          timerText.textContent = formatTime(Date.now() - timerStart);
+        }, 200);
+      }
+    } else {
+      paused = true;
+      timerText.classList.add('paused');
+      mobilePauseBtn.innerHTML = '&#9654;';
+      mobilePauseBtn.classList.add('playing');
+      if (timerStart) {
+        pausedElapsed = Date.now() - timerStart;
+      }
+      stopTimer();
+    }
+    sfx.click();
+  }
+
+  mobilePauseBtn.addEventListener('click', togglePause);
 
 
   function processLine(line) {
@@ -1519,7 +2048,7 @@
 
     let i = 0;
     while (i < tiles.length) {
-      if (i + 1 < tiles.length && tiles[i].val === tiles[i + 1].val) {
+      if (i + 1 < tiles.length && tiles[i].val === tiles[i + 1].val && tiles[i].val < 2048) {
         const target = tiles[i];
         const absorbed = tiles[i + 1];
         target.val *= 2;
@@ -1689,6 +2218,8 @@
     stopTimer();
     timerText.textContent = '0:00';
     timerText.classList.remove('paused');
+    mobilePauseBtn.innerHTML = '&#9208;';
+    mobilePauseBtn.classList.remove('playing');
     buildGrid();
     tileLayer.innerHTML = '';
     // Play animation but calculate sizes after it finishes
@@ -1727,33 +2258,9 @@
   }
 
   document.addEventListener('keydown', e => {
-    const sizeMap = { '1': 3, '2': 4, '3': 5 };
-    if (sizeMap[e.key]) {
-      e.preventDefault();
-      switchSize(sizeMap[e.key]);
-      return;
-    }
-
     if (e.key === ' ') {
       e.preventDefault();
-      if (paused) {
-        paused = false;
-        timerText.classList.remove('paused');
-        if (pausedElapsed) {
-          timerStart = Date.now() - pausedElapsed;
-          timerInterval = setInterval(() => {
-            timerText.textContent = formatTime(Date.now() - timerStart);
-          }, 200);
-        }
-      } else {
-        paused = true;
-        timerText.classList.add('paused');
-        if (timerStart) {
-          pausedElapsed = Date.now() - timerStart;
-        }
-        stopTimer();
-      }
-      sfx.click();
+      togglePause();
       return;
     }
 
@@ -1916,24 +2423,27 @@
   let pendingScore = null;
 
   function showLBSubmit(sc, elapsed, size) {
-    pendingScore = { sc, elapsed, size };
+    const name = localStorage.getItem('lb2048_name') || 'Player';
     lbYourScore.classList.remove('hidden');
     lbYourVal.textContent = sc;
     lbYourTime.textContent = elapsed;
-    lbNameInput.classList.remove('hidden');
-    lbSubmitBtn.classList.remove('hidden');
+    lbNameInput.classList.add('hidden');
+    lbSubmitBtn.classList.add('hidden');
     lbDivider.classList.remove('hidden');
-    const savedName = localStorage.getItem('lb2048_name') || '';
-    lbNameInput.value = savedName;
     lbViewSize = size;
     lbPanel.querySelectorAll('.lb-tab').forEach(t =>
       t.classList.toggle('active', parseInt(t.dataset.lb) === size)
     );
-    // Show cached scores instantly, fetch fresh in background
+    // Auto-submit and show
+    addLBEntry(size, sc, elapsed, name).then(() => {
+      renderLB();
+    });
+    // Show cached instantly while submitting
+    lbCache[size].push({ name, score: sc, time: elapsed });
+    lbCache[size].sort((a, b) => b.score - a.score);
+    if (lbCache[size].length > 10) lbCache[size].length = 10;
     renderLB();
     openLB();
-    fetchLB(size);
-    setTimeout(() => { if (!savedName) lbNameInput.focus(); }, 350);
   }
 
   function hideLBSubmit() {
@@ -1981,7 +2491,73 @@
   localStorage.removeItem('lb2048_backup_5');
   lbCache = { 3: [], 4: [], 5: [] };
   fetchLB(lbViewSize);
-  init();
+
+  // Tutorial — show only on first visit
+  const tutEl = document.getElementById('tutorial');
+  const tutBackdrop = document.getElementById('tut-backdrop');
+  const tutPrev = document.getElementById('tut-prev');
+  const tutNext = document.getElementById('tut-next');
+  const tutDotsNav = document.getElementById('tut-dots');
+  const tutSteps = tutEl.querySelectorAll('.tut-step');
+  const totalSteps = tutSteps.length;
+  let tutStep = 0;
+
+  // Build dots
+  for (let i = 0; i < totalSteps; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'tut-dot' + (i === 0 ? ' active' : '');
+    tutDotsNav.appendChild(dot);
+  }
+
+  function showTutStep() {
+    tutSteps.forEach((s, i) => {
+      s.classList.toggle('hidden', i !== tutStep);
+    });
+    tutDotsNav.querySelectorAll('.tut-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === tutStep);
+    });
+    tutPrev.style.visibility = tutStep === 0 ? 'hidden' : 'visible';
+    tutNext.textContent = tutStep === totalSteps - 1 ? 'Play!' : 'Next';
+  }
+
+  tutPrev.addEventListener('click', () => {
+    if (tutStep > 0) { tutStep--; sfx.click(); showTutStep(); }
+  });
+
+  const tutNameInput = document.getElementById('tut-name');
+  const savedName = localStorage.getItem('lb2048_name') || '';
+  if (savedName) tutNameInput.value = savedName;
+
+  tutNext.addEventListener('click', () => {
+    // Save name when leaving step 0
+    if (tutStep === 0) {
+      const name = tutNameInput.value.trim();
+      if (!name) { tutNameInput.focus(); tutNameInput.style.borderColor = '#e03030'; return; }
+      tutNameInput.style.borderColor = '';
+      localStorage.setItem('lb2048_name', name);
+    }
+    if (tutStep < totalSteps - 1) {
+      tutStep++;
+      sfx.click();
+      showTutStep();
+    } else {
+      localStorage.setItem('2048_tutorial_done', '1');
+      tutEl.style.display = 'none';
+      tutBackdrop.style.display = 'none';
+      sfx.click();
+      init();
+    }
+  });
+
+  if (!localStorage.getItem('2048_tutorial_done')) {
+    tutEl.style.display = '';
+    tutBackdrop.style.display = '';
+    showTutStep();
+  } else {
+    tutEl.style.display = 'none';
+    tutBackdrop.style.display = 'none';
+    init();
+  }
 })();
 </script>
 </body>
