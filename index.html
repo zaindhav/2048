@@ -1841,19 +1841,14 @@
   lbBackdrop.addEventListener('click', closeLB);
 
   // Global leaderboard via JSONblob
-  const blobIds = {
-    3: '019d5974-0a1f-7992-a594-aa2dfbcb947f',
-    4: '019d5974-1fa7-798f-b5ec-66094e2cb923',
-    5: '019d5974-3eeb-7e34-af0a-ee0a08dc5e82'
-  };
-  const blobUrl = (size) => 'https://jsonblob.com/api/jsonBlob/' + blobIds[size];
+  const workerUrl = (size) => 'https://winter-mud-541c.zain-dhav.workers.dev/?size=' + size;
 
   let lbCache = { 3: [], 4: [], 5: [] };
 
   async function fetchLB(size) {
     try {
       if (lbViewSize === size) lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
-      const res = await fetch(blobUrl(size) + '?t=' + Date.now());
+      const res = await fetch(workerUrl(size) + '?t=' + Date.now());
       if (res.ok) {
         lbCache[size] = await res.json();
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
@@ -1868,7 +1863,7 @@
   async function addLBEntry(size, sc, time, name) {
     // Always fetch latest first
     try {
-      const res = await fetch(blobUrl(size) + '?t=' + Date.now());
+      const res = await fetch(workerUrl(size) + '?t=' + Date.now());
       if (res.ok) lbCache[size] = await res.json();
     } catch(e) {}
     lbCache[size].push({ name: name || 'Player', score: sc, time });
@@ -1876,7 +1871,7 @@
     if (lbCache[size].length > 10) lbCache[size].length = 10;
     // Save remotely
     try {
-      await fetch(blobUrl(size), {
+      await fetch(workerUrl(size), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(lbCache[size])
