@@ -1836,7 +1836,6 @@
     lbPanel.classList.remove('open');
     lbBackdrop.classList.remove('open');
   }
-  lbBtn.addEventListener('click', () => { sfx.click(); openLB(); });
   lbClose.addEventListener('click', closeLB);
   lbBackdrop.addEventListener('click', closeLB);
 
@@ -1846,39 +1845,36 @@
   let lbCache = { 3: [], 4: [], 5: [] };
 
   async function fetchLB(size) {
+    // Show local backup instantly while loading
+    try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e) {}
+    if (lbViewSize === size) renderLB();
+    // Then fetch fresh data in background
     try {
-      if (lbViewSize === size) lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
-      const res = await fetch(workerUrl(size) + '?t=' + Date.now());
+      const res = await fetch(workerUrl(size) + '&t=' + Date.now());
       if (res.ok) {
         lbCache[size] = await res.json();
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
+        if (lbViewSize === size) renderLB();
       }
-    } catch(e) {
-      // Offline — load from local backup
-      try { lbCache[size] = JSON.parse(localStorage.getItem('lb2048_backup_' + size) || '[]'); } catch(e2) {}
-    }
-    if (lbViewSize === size) renderLB();
+    } catch(e) {}
   }
 
   async function addLBEntry(size, sc, time, name) {
-    // Always fetch latest first
+    // Fetch latest, add score, push back — single flow
     try {
-      const res = await fetch(workerUrl(size) + '?t=' + Date.now());
+      const res = await fetch(workerUrl(size) + '&t=' + Date.now());
       if (res.ok) lbCache[size] = await res.json();
     } catch(e) {}
     lbCache[size].push({ name: name || 'Player', score: sc, time });
     lbCache[size].sort((a, b) => b.score - a.score);
     if (lbCache[size].length > 10) lbCache[size].length = 10;
-    // Save remotely
-    try {
-      await fetch(workerUrl(size), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(lbCache[size])
-      });
-    } catch(e) {}
-    // Always save local backup
     localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
+    // Upload in background — don't await
+    fetch(workerUrl(size), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lbCache[size])
+    }).catch(() => {});
   }
 
   function renderLB() {
@@ -1974,7 +1970,7 @@
     }
   };
 
-  fetchLB(3); fetchLB(4); fetchLB(5);
+  fetchLB(lbViewSize);
   init();
 })();
 </script>
