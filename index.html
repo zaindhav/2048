@@ -1931,8 +1931,10 @@
     lbPanel.querySelectorAll('.lb-tab').forEach(t =>
       t.classList.toggle('active', parseInt(t.dataset.lb) === size)
     );
-    fetchLB(size);
+    // Show cached scores instantly, fetch fresh in background
+    renderLB();
     openLB();
+    fetchLB(size);
     setTimeout(() => { if (!savedName) lbNameInput.focus(); }, 350);
   }
 
@@ -1944,16 +1946,22 @@
     pendingScore = null;
   }
 
-  lbSubmitBtn.addEventListener('click', async () => {
+  lbSubmitBtn.addEventListener('click', () => {
     if (!pendingScore) return;
     const name = lbNameInput.value.trim() || 'Player';
     localStorage.setItem('lb2048_name', name);
-    lbSubmitBtn.textContent = 'Submitting...';
-    await addLBEntry(pendingScore.size, pendingScore.sc, pendingScore.elapsed, name);
-    lbSubmitBtn.textContent = 'Submitted!';
+    // Add to local cache immediately and show it
+    const p = pendingScore;
+    lbCache[p.size].push({ name, score: p.sc, time: p.elapsed });
+    lbCache[p.size].sort((a, b) => b.score - a.score);
+    if (lbCache[p.size].length > 10) lbCache[p.size].length = 10;
+    localStorage.setItem('lb2048_backup_' + p.size, JSON.stringify(lbCache[p.size]));
     hideLBSubmit();
     renderLB();
+    lbSubmitBtn.textContent = 'Submitted!';
     setTimeout(() => { lbSubmitBtn.textContent = 'Submit Score'; }, 1500);
+    // Upload in background
+    addLBEntry(p.size, p.sc, p.elapsed, name);
   });
 
   lbNameInput.addEventListener('keydown', e => {
