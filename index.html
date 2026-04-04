@@ -515,6 +515,24 @@
     color: #fff;
   }
 
+  .avatar-upload-btn {
+    background: var(--cell-bg);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--label-color);
+    cursor: pointer;
+  }
+
+  .avatar-preview {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .lb-avatar.lb-photo {
+    background-size: cover;
+    background-position: center;
+  }
+
   .avatar-label {
     font-size: 14px;
     color: var(--label-color);
@@ -881,6 +899,191 @@
     margin: 16px 0;
   }
 
+  /* Profile Panel */
+  .profile-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 420px;
+    max-width: 90vw;
+    background: var(--settings-bg);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 32px 28px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .profile-panel.open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: all;
+  }
+
+  .profile-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    display: none;
+    backdrop-filter: blur(4px);
+  }
+
+  .profile-backdrop.open { display: block; }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .profile-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    flex-shrink: 0;
+    border: 3px solid var(--border);
+  }
+
+  .profile-avatar.photo {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .profile-avatar.letter {
+    font-weight: 800;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .profile-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .profile-streak-badge {
+    font-size: 14px;
+    color: var(--label-color);
+    margin-top: 2px;
+  }
+
+  .profile-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .profile-stat {
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .profile-stat .stat-val {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .profile-stat .stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-color);
+    margin-top: 4px;
+  }
+
+  .profile-streak {
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .profile-streak .streak-fire {
+    font-size: 32px;
+  }
+
+  .profile-streak .streak-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .profile-streak .streak-label {
+    font-size: 13px;
+    color: var(--label-color);
+    margin-top: 4px;
+  }
+
+  .profile-podiums {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .podium-badge {
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--label-color);
+  }
+
+  .podium-badge .podium-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .podium-badge.gold .podium-num { color: #f0d878; }
+  .podium-badge.silver .podium-num { color: #c0c0c0; }
+  .podium-badge.bronze .podium-num { color: #cd7f32; }
+
+  /* Clickable leaderboard entries */
+  .lb-entry { cursor: pointer; }
+  .lb-entry:hover { opacity: 0.85; }
+
+  /* Player profile popup (when clicking someone on LB) */
+  .player-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 380px;
+    max-width: 90vw;
+    background: var(--settings-bg);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 28px 28px;
+    z-index: 110;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .player-panel.open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: all;
+  }
+
   /* Mobile pause button - hidden on desktop */
   .mobile-bar {
     display: none;
@@ -1029,7 +1232,7 @@
       width: 85vw;
     }
 
-    .lb-panel {
+    .lb-panel, .profile-panel {
       width: 90vw;
     }
   }
@@ -1275,6 +1478,7 @@
       </div>
     </div>
     <div class="bottom-btn">
+      <button class="settings-btn" id="profile-btn" style="color:#80e0a8;">&#9786;</button>
       <button class="settings-btn" id="lb-btn">&#9818;</button>
       <button class="settings-btn" id="settings-btn">&#9881;</button>
     </div>
@@ -1283,6 +1487,89 @@
   <!-- Mobile bottom bar -->
   <div class="mobile-bar">
     <button class="mobile-pause-btn" id="mobile-pause-btn">&#9208;</button>
+  </div>
+
+  <!-- Profile Panel -->
+  <div class="profile-backdrop" id="profile-backdrop"></div>
+  <div class="profile-panel" id="profile-panel">
+    <button class="settings-close" id="profile-close">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div>
+        <div class="profile-name" id="profile-name">Player</div>
+        <div class="profile-streak-badge" id="profile-streak-badge">No streak yet</div>
+      </div>
+    </div>
+    <div class="profile-streak" id="profile-streak-card">
+      <div class="streak-fire">&#128293;</div>
+      <div class="streak-num" id="profile-streak-num">0</div>
+      <div class="streak-label">Day Streak</div>
+    </div>
+    <div class="profile-podiums" id="profile-podiums"></div>
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-games">0</div>
+        <div class="stat-label">Games Played</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-wins">0</div>
+        <div class="stat-label">Leaderboard Wins</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-best3">0</div>
+        <div class="stat-label">Best 3x3</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-best4">0</div>
+        <div class="stat-label">Best 4x4</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-best5">0</div>
+        <div class="stat-label">Best 5x5</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="stat-highest">0</div>
+        <div class="stat-label">Highest Tile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Profile Popup -->
+  <div class="player-panel" id="player-panel">
+    <button class="settings-close" id="player-close">&times;</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="player-avatar">?</div>
+      <div>
+        <div class="profile-name" id="player-name">Player</div>
+        <div class="profile-streak-badge" id="player-streak-badge"></div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="stat-val" id="player-games">0</div>
+        <div class="stat-label">Games Played</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="player-streak">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="player-best3">0</div>
+        <div class="stat-label">Best 3x3</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="player-best4">0</div>
+        <div class="stat-label">Best 4x4</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="player-best5">0</div>
+        <div class="stat-label">Best 5x5</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-val" id="player-highest">0</div>
+        <div class="stat-label">Highest Tile</div>
+      </div>
+    </div>
   </div>
 
   <!-- Leaderboard Panel -->
@@ -1330,6 +1617,11 @@
       <div class="avatar-option" data-avatar="👾">👾</div>
       <div class="avatar-option" data-avatar="💎">💎</div>
       <div class="avatar-option letter-avatar selected" data-avatar="" id="letter-avatar" style="background:#f59563;">?</div>
+      <label class="avatar-option avatar-upload-btn" id="avatar-upload-label" title="Upload photo">
+        <span>+</span>
+        <input type="file" accept="image/*" id="avatar-upload" style="display:none;">
+      </label>
+      <div class="avatar-option avatar-preview hidden" id="avatar-preview-opt" data-avatar=""></div>
     </div>
     <p class="tut-desc">Your name and avatar appear on the global leaderboard. Leaderboard resets weekly!</p>
   </div>
@@ -1407,8 +1699,9 @@
       <div class="tut-ctrl"><span class="tut-key">Enter</span><span>Restart</span></div>
       <div class="tut-ctrl"><span class="tut-key">S</span><span>Settings</span></div>
       <div class="tut-ctrl"><span class="tut-key">L</span><span>Leaderboard</span></div>
+      <div class="tut-ctrl"><span class="tut-key">P</span><span>Profile</span></div>
     </div>
-    <p class="tut-desc">Choose between 3x3, 4x4, and 5x5 grids using the buttons on the left.</p>
+    <p class="tut-desc">Track your stats, streak, and best scores in your profile. Play daily to build your streak!</p>
   </div>
 
   <div class="tut-nav">
@@ -2394,6 +2687,13 @@
       return;
     }
 
+    if (e.key === 'p' || e.key === 'P') {
+      e.preventDefault();
+      if (profilePanel.classList.contains('open')) closeProfile();
+      else openProfile();
+      return;
+    }
+
     if (e.key === 'l' || e.key === 'L') {
       e.preventDefault();
       if (lbPanel.classList.contains('open')) closeLB();
@@ -2484,6 +2784,7 @@
       if (res.ok) {
         const data = await res.json();
         lbCache[size] = data.scores || data;
+        if (data.lastWeekPodium) lastWeekPodiums[size] = data.lastWeekPodium;
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
       }
     } catch(e) {
@@ -2492,17 +2793,29 @@
     if (lbViewSize === size) renderLB();
   }
 
+  let lastWeekPodiums = { 3: [], 4: [], 5: [] };
+
   async function addLBEntry(size, sc, time, name) {
     const avatar = localStorage.getItem('lb2048_avatar') || '';
+    const s = loadStats();
+    const stats = {
+      gamesPlayed: s.gamesPlayed || 0,
+      streak: s.streak || 0,
+      best3: s.best3 || 0,
+      best4: s.best4 || 0,
+      best5: s.best5 || 0,
+      highestTile: s.highestTile || 0
+    };
     try {
       const res = await fetch(workerUrl(size), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name || 'Player', score: sc, time, avatar })
+        body: JSON.stringify({ name: name || 'Player', score: sc, time, avatar, stats })
       });
       if (res.ok) {
         const data = await res.json();
         lbCache[size] = data.scores || data;
+        if (data.lastWeekPodium) lastWeekPodiums[size] = data.lastWeekPodium;
         localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
         if (lbViewSize === size) renderLB();
       }
@@ -2511,6 +2824,9 @@
 
   function makeAvatar(entry) {
     const name = entry.name || 'Player';
+    if (entry.avatar && entry.avatar.startsWith('data:')) {
+      return '<span class="lb-avatar lb-photo" style="background-image:url(' + entry.avatar + ')"></span>';
+    }
     if (entry.avatar) {
       return '<span class="lb-avatar">' + entry.avatar + '</span>';
     }
@@ -2617,6 +2933,7 @@
   showOverlay = function(text, btnText) {
     origShowOverlay(text, btnText);
     if (text === 'Game Over!') {
+      recordGame(SIZE, score);
       const elapsed = timerStart ? formatTime(Date.now() - timerStart) : '0:00';
       setTimeout(() => showLBSubmit(score, elapsed, SIZE), 600);
     }
@@ -2635,6 +2952,204 @@
   localStorage.removeItem('lb2048_backup_5');
   lbCache = { 3: [], 4: [], 5: [] };
   fetchLB(lbViewSize);
+
+  // Profile / Account
+  const profilePanel = document.getElementById('profile-panel');
+  const profileBackdrop = document.getElementById('profile-backdrop');
+  const profileBtn = document.getElementById('profile-btn');
+  const profileClose = document.getElementById('profile-close');
+  const profileAvatarEl = document.getElementById('profile-avatar');
+  const profileNameEl = document.getElementById('profile-name');
+  const profileStreakBadge = document.getElementById('profile-streak-badge');
+  const profileStreakNum = document.getElementById('profile-streak-num');
+  const statGames = document.getElementById('stat-games');
+  const statWins = document.getElementById('stat-wins');
+  const statBest3 = document.getElementById('stat-best3');
+  const statBest4 = document.getElementById('stat-best4');
+  const statBest5 = document.getElementById('stat-best5');
+  const statHighest = document.getElementById('stat-highest');
+
+  function loadStats() {
+    try { return JSON.parse(localStorage.getItem('2048_stats') || '{}'); } catch(e) { return {}; }
+  }
+  function saveStats(s) { localStorage.setItem('2048_stats', JSON.stringify(s)); }
+
+  function recordGame(size, sc) {
+    const s = loadStats();
+    s.gamesPlayed = (s.gamesPlayed || 0) + 1;
+    s['best' + size] = Math.max(s['best' + size] || 0, sc);
+
+    // Highest tile
+    let maxTile = 0;
+    if (grid) {
+      for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+          if (grid[r][c] && grid[r][c].val > maxTile) maxTile = grid[r][c].val;
+    }
+    s.highestTile = Math.max(s.highestTile || 0, maxTile);
+
+    // Streak — played today?
+    const today = new Date().toDateString();
+    const lastPlay = s.lastPlayDate || '';
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastPlay === today) {
+      // Already played today, no change
+    } else if (lastPlay === yesterday) {
+      s.streak = (s.streak || 0) + 1;
+    } else {
+      s.streak = 1;
+    }
+    s.lastPlayDate = today;
+
+    saveStats(s);
+  }
+
+  function updateProfilePanel() {
+    const s = loadStats();
+    const name = localStorage.getItem('lb2048_name') || 'Player';
+    const avatar = localStorage.getItem('lb2048_avatar') || '';
+
+    profileNameEl.textContent = name;
+
+    // Avatar
+    if (avatar.startsWith('data:')) {
+      profileAvatarEl.className = 'profile-avatar photo';
+      profileAvatarEl.style.backgroundImage = 'url(' + avatar + ')';
+      profileAvatarEl.textContent = '';
+    } else if (avatar) {
+      profileAvatarEl.className = 'profile-avatar';
+      profileAvatarEl.style.backgroundImage = '';
+      profileAvatarEl.textContent = avatar;
+    } else {
+      const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+      profileAvatarEl.className = 'profile-avatar letter';
+      profileAvatarEl.style.backgroundImage = '';
+      profileAvatarEl.style.background = col;
+      profileAvatarEl.textContent = name[0].toUpperCase();
+    }
+
+    // Stats
+    statGames.textContent = s.gamesPlayed || 0;
+    statBest3.textContent = s.best3 || 0;
+    statBest4.textContent = s.best4 || 0;
+    statBest5.textContent = s.best5 || 0;
+    statHighest.textContent = s.highestTile || 0;
+
+    // Streak
+    const streak = s.streak || 0;
+    const today = new Date().toDateString();
+    const active = s.lastPlayDate === today || s.lastPlayDate === new Date(Date.now() - 86400000).toDateString();
+    profileStreakNum.textContent = active ? streak : 0;
+    profileStreakBadge.textContent = active && streak > 0 ? streak + ' day streak!' : 'No streak yet';
+
+    // Podium finishes from last week
+    const myName = name;
+    let golds = s.golds || 0;
+    let silvers = s.silvers || 0;
+    let bronzes = s.bronzes || 0;
+
+    // Check last week podiums and record if not already counted
+    const lastCounted = s.lastPodiumWeek || '';
+    for (const sz of [3, 4, 5]) {
+      const podium = lastWeekPodiums[sz] || [];
+      if (podium.length > 0 && podium[0].name) {
+        const weekId = podium._week || 'unknown';
+        for (const p of podium) {
+          if (p.name === myName) {
+            if (lastCounted !== weekId) {
+              if (p.place === 1) golds++;
+              if (p.place === 2) silvers++;
+              if (p.place === 3) bronzes++;
+            }
+          }
+        }
+      }
+    }
+    s.golds = golds;
+    s.silvers = silvers;
+    s.bronzes = bronzes;
+    saveStats(s);
+
+    statWins.textContent = golds;
+
+    // Podium badges
+    const podiumsEl = document.getElementById('profile-podiums');
+    podiumsEl.innerHTML =
+      '<div class="podium-badge gold"><div class="podium-num">' + golds + '</div>1st</div>' +
+      '<div class="podium-badge silver"><div class="podium-num">' + silvers + '</div>2nd</div>' +
+      '<div class="podium-badge bronze"><div class="podium-num">' + bronzes + '</div>3rd</div>';
+  }
+
+  function openProfile() {
+    updateProfilePanel();
+    profilePanel.classList.add('open');
+    profileBackdrop.classList.add('open');
+    pauseForMenu();
+  }
+  function closeProfile() {
+    profilePanel.classList.remove('open');
+    profileBackdrop.classList.remove('open');
+    resumeFromMenu();
+  }
+
+  // Player profile popup (from leaderboard)
+  const playerPanel = document.getElementById('player-panel');
+  const playerClose = document.getElementById('player-close');
+
+  function showPlayerProfile(entry) {
+    const pAvatar = document.getElementById('player-avatar');
+    const pName = document.getElementById('player-name');
+    const pStreakBadge = document.getElementById('player-streak-badge');
+    const st = entry.stats || {};
+
+    pName.textContent = entry.name || 'Player';
+
+    if (entry.avatar && entry.avatar.startsWith('data:')) {
+      pAvatar.className = 'profile-avatar photo';
+      pAvatar.style.backgroundImage = 'url(' + entry.avatar + ')';
+      pAvatar.style.background = '';
+      pAvatar.textContent = '';
+    } else if (entry.avatar) {
+      pAvatar.className = 'profile-avatar';
+      pAvatar.style.backgroundImage = '';
+      pAvatar.textContent = entry.avatar;
+    } else {
+      const n = entry.name || 'P';
+      const col = avatarColors[Math.abs([...n].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+      pAvatar.className = 'profile-avatar letter';
+      pAvatar.style.backgroundImage = '';
+      pAvatar.style.background = col;
+      pAvatar.textContent = n[0].toUpperCase();
+    }
+
+    document.getElementById('player-games').textContent = st.gamesPlayed || 0;
+    document.getElementById('player-streak').textContent = st.streak || 0;
+    document.getElementById('player-best3').textContent = st.best3 || 0;
+    document.getElementById('player-best4').textContent = st.best4 || 0;
+    document.getElementById('player-best5').textContent = st.best5 || 0;
+    document.getElementById('player-highest').textContent = st.highestTile || 0;
+    pStreakBadge.textContent = (st.streak || 0) > 0 ? st.streak + ' day streak!' : '';
+
+    playerPanel.classList.add('open');
+    sfx.click();
+  }
+
+  playerClose.addEventListener('click', () => {
+    playerPanel.classList.remove('open');
+  });
+
+  // Make leaderboard entries clickable
+  lbEntries.addEventListener('click', (e) => {
+    const entry = e.target.closest('.lb-entry');
+    if (!entry) return;
+    const idx = [...lbEntries.children].indexOf(entry);
+    const data = (lbCache[lbViewSize] || [])[idx];
+    if (data) showPlayerProfile(data);
+  });
+
+  profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
+  profileClose.addEventListener('click', closeProfile);
+  profileBackdrop.addEventListener('click', closeProfile);
 
   // Secret admin stats — Ctrl+Shift+A
   document.addEventListener('keydown', async (e) => {
@@ -2716,10 +3231,51 @@
     });
   }
 
+  // Photo upload
+  const avatarUpload = document.getElementById('avatar-upload');
+  const avatarPreviewOpt = document.getElementById('avatar-preview-opt');
+
+  avatarUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        // Resize to 64x64 for small data URL
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 64;
+        const ctx2 = canvas.getContext('2d');
+        const s = Math.min(img.width, img.height);
+        const sx = (img.width - s) / 2, sy = (img.height - s) / 2;
+        ctx2.drawImage(img, sx, sy, s, s, 0, 0, 64, 64);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+        avatarPreviewOpt.style.backgroundImage = 'url(' + dataUrl + ')';
+        avatarPreviewOpt.dataset.avatar = dataUrl;
+        avatarPreviewOpt.classList.remove('hidden');
+        avatarPicker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+        avatarPreviewOpt.classList.add('selected');
+        sfx.click();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Load saved photo avatar
+  const savedAv = localStorage.getItem('lb2048_avatar') || '';
+  if (savedAv.startsWith('data:')) {
+    avatarPreviewOpt.style.backgroundImage = 'url(' + savedAv + ')';
+    avatarPreviewOpt.dataset.avatar = savedAv;
+    avatarPreviewOpt.classList.remove('hidden');
+    avatarPicker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+    avatarPreviewOpt.classList.add('selected');
+  }
+
   // Avatar selection
   avatarPicker.addEventListener('click', e => {
     const opt = e.target.closest('.avatar-option');
-    if (!opt) return;
+    if (!opt || opt.id === 'avatar-upload-label') return;
     avatarPicker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     sfx.click();
@@ -2733,8 +3289,10 @@
       tutNameInput.style.borderColor = '';
       localStorage.setItem('lb2048_name', name);
       const selectedAvatar = avatarPicker.querySelector('.selected');
-      let av = selectedAvatar ? selectedAvatar.dataset.avatar : '';
-      if (selectedAvatar === letterAvatar) av = '';
+      let av = '';
+      if (selectedAvatar && selectedAvatar !== letterAvatar) {
+        av = selectedAvatar.dataset.avatar || '';
+      }
       localStorage.setItem('lb2048_avatar', av);
     }
     if (tutStep < totalSteps - 1) {
