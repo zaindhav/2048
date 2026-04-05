@@ -112,10 +112,11 @@
   }
 
   #lb-btn { color: #f0d878; -webkit-text-stroke: 1px; }
-  :root.light #lb-btn { color: #b888e0; }
+  :root.light #lb-btn { color: #a070d8; }
 
-  #profile-btn { color: #80e0a8; }
-  :root.light #profile-btn { color: #f59563; }
+  #profile-btn { color: #80e0a8; display: flex; align-items: center; justify-content: center; }
+  .face-svg { display: block; width: 0.8em; height: 0.8em; }
+  :root.light #profile-btn { color: #f08040; }
 
   .scores {
     display: flex;
@@ -1009,7 +1010,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--label-color);
+    color: var(--text);
     margin-top: 4px;
   }
 
@@ -1024,6 +1025,54 @@
 
   .profile-streak .streak-fire {
     font-size: 32px;
+    position: relative;
+    display: inline-block;
+    animation: fireBounce 1.5s ease-in-out infinite;
+  }
+
+  .profile-streak .streak-fire svg {
+    filter: drop-shadow(0 0 4px #e07070);
+  }
+
+  @keyframes fireBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Sparks */
+  .streak-fire::before,
+  .streak-fire::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #e07070;
+    opacity: 0;
+  }
+
+  .streak-fire::before {
+    top: 2px;
+    left: -4px;
+    animation: sparkLeft 1.8s ease-out infinite;
+  }
+
+  .streak-fire::after {
+    top: 0;
+    right: -4px;
+    animation: sparkRight 2s ease-out infinite 0.3s;
+  }
+
+  @keyframes sparkLeft {
+    0% { opacity: 0; transform: translate(0, 0) scale(1); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-12px, -18px) scale(0); }
+  }
+
+  @keyframes sparkRight {
+    0% { opacity: 0; transform: translate(0, 0) scale(1); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translate(10px, -20px) scale(0); }
   }
 
   .profile-streak .streak-num {
@@ -1061,7 +1110,7 @@
     color: var(--text);
   }
 
-  .podium-badge.gold .podium-num { color: #f0d878; }
+  .podium-badge.gold .podium-num { color: #c8a830; }
   .podium-badge.silver .podium-num { color: #c0c0c0; }
   .podium-badge.bronze .podium-num { color: #cd7f32; }
 
@@ -1574,7 +1623,14 @@
       </div>
     </div>
     <div class="bottom-btn">
-      <button class="settings-btn icon-btn" id="profile-btn">&#9786;</button>
+      <button class="settings-btn icon-btn" id="profile-btn">
+        <svg class="face-svg" viewBox="0 0 40 40" width="1em" height="1em">
+          <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <circle cx="13" cy="15" r="2.5" fill="currentColor" class="face-eye-l"/>
+          <circle cx="27" cy="15" r="2.5" fill="currentColor" class="face-eye-r"/>
+          <path class="face-mouth" d="M13 27 Q20 32 27 27" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
       <button class="settings-btn icon-btn" id="lb-btn">&#9812;</button>
       <button class="settings-btn icon-btn" id="settings-btn">&#9881;</button>
     </div>
@@ -3143,6 +3199,7 @@
     statBest4.textContent = s.best4 || 0;
     statBest5.textContent = s.best5 || 0;
     statHighest.textContent = s.highestTile || 0;
+    statHighest.style.color = tileColor(s.highestTile || 0);
 
     // Streak
     const streak = s.streak || 0;
@@ -3250,12 +3307,13 @@
     document.getElementById('player-best3').textContent = bests.best3 || st.best3 || 0;
     document.getElementById('player-best4').textContent = bests.best4 || st.best4 || 0;
     document.getElementById('player-best5').textContent = bests.best5 || st.best5 || 0;
-    document.getElementById('player-highest').textContent = st.highestTile || 0;
+    const phEl = document.getElementById('player-highest');
+    phEl.textContent = st.highestTile || 0;
+    phEl.style.color = tileColor(st.highestTile || 0);
     pStreakBadge.textContent = (st.streak || 0) > 0 ? st.streak + ' day streak!' : '';
 
-    // Close leaderboard first, then show player profile
+    // Close leaderboard but keep backdrop blurred
     lbPanel.classList.remove('open');
-    lbBackdrop.classList.remove('open');
     playerPanel.classList.add('open');
     sfx.click();
 
@@ -3289,6 +3347,42 @@
   });
 
   profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
+
+  // Animate smiley face — smoothly morph mouth curve
+  const faceMouth = profileBtn.querySelector('.face-mouth');
+  // Mouth defined by Q control point Y: higher = smile, lower = frown
+  // Format: [controlY, endpointY] for path M12,ey Q20,cy 28,ey
+  // Q control Y: 32 = slight smile, 27 = flat, 22 = slight frown
+  const expressions = [
+    { qy: 32 },  // smile
+    { qy: 27 },  // neutral
+    { qy: 22 },  // frown
+    { qy: 27 },  // neutral
+    { qy: 34 },  // bigger smile
+    { qy: 27 },  // neutral
+  ];
+  let exprIdx = 0;
+  let currentQy = 32;
+
+  function lerpMouth() {
+    const target = expressions[exprIdx];
+    const steps = 30;
+    let step = 0;
+    const startQy = currentQy;
+    const anim = setInterval(() => {
+      step++;
+      const t = step / steps;
+      const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      currentQy = startQy + (target.qy - startQy) * ease;
+      faceMouth.setAttribute('d', 'M13 27 Q20 ' + currentQy.toFixed(1) + ' 27 27');
+      if (step >= steps) clearInterval(anim);
+    }, 20);
+  }
+
+  setInterval(() => {
+    exprIdx = (exprIdx + 1) % expressions.length;
+    lerpMouth();
+  }, 2500);
   profileClose.addEventListener('click', closeProfile);
   profileBackdrop.addEventListener('click', closeProfile);
 
@@ -3351,6 +3445,13 @@
   if (savedName) tutNameInput.value = savedName;
 
   // Avatar color from name
+  const tileColorMap = {
+    2: '#776e65', 4: '#776e65', 8: '#f2b179', 16: '#f59563',
+    32: '#f67c5f', 64: '#f65e3b', 128: '#edcf72', 256: '#f088a0',
+    512: '#b888e0', 1024: '#80c8f0', 2048: '#80e0a8'
+  };
+  function tileColor(val) { return tileColorMap[val] || ''; }
+
   const avatarColors = ['#f59563','#f67c5f','#f65e3b','#edcf72','#80c8f0','#b888e0','#80e0a8','#f088a0'];
   function nameColor(name) {
     let h = 0;
