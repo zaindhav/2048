@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>2048</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   .hidden { display: none !important; }
@@ -76,7 +77,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr min-content 1fr;
-    padding: 8vh 1vw 1vw 1vw;
+    padding: 5vh 1vw 1vw 1vw;
     gap: 1vw;
   }
 
@@ -240,6 +241,7 @@
   .icon-glow {
     display: inline-block;
   }
+
 
   :root.neon .icon-glow {
     filter: drop-shadow(0 0 6px currentColor);
@@ -1574,7 +1576,8 @@
   :root.neon .settings-panel *,
   :root.neon .lb-panel *,
   :root.neon .profile-panel *,
-  :root.neon .player-panel * {
+  :root.neon .player-panel *,
+  :root.neon .chat-panel * {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   }
 
@@ -1589,10 +1592,281 @@
   :root.neon .profile-panel .profile-stat,
   :root.neon .profile-panel .profile-streak,
   :root.neon .profile-panel .podium-badge,
-  :root.neon .player-panel .profile-stat {
+  :root.neon .player-panel .profile-stat,
+  :root.neon .chat-panel .chat-tab,
+  :root.neon .chat-panel .chat-bubble,
+  :root.neon .chat-panel .chat-input,
+  :root.neon .chat-panel .chat-send-btn,
+  :root.neon .chat-panel .online-player {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   }
 
+
+  /* Chat button under board */
+  .chat-btn-under {
+    background: var(--btn-bg);
+    color: var(--text);
+    border: 4px solid var(--border);
+    border-radius: 1.5vw;
+    padding: 1.5vh 15vw;
+    font-size: 3vh;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 2vh;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vw;
+  }
+
+  .chat-icon {
+    font-size: 12vh;
+    margin: -5vh 0 -3vh 0;
+  }
+
+  :root.neon .chat-icon {
+    filter: drop-shadow(0 0 8px #80c8f0);
+  }
+
+  .chat-btn-under:hover {
+    background: var(--btn-hover);
+  }
+
+  /* Chat Panel */
+  .chat-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 480px;
+    max-width: 92vw;
+    height: 70vh;
+    max-height: 600px;
+    background: var(--settings-bg);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    padding: 0;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .chat-panel.open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: all;
+  }
+
+  .chat-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    display: none;
+    backdrop-filter: blur(4px);
+  }
+
+  .chat-backdrop.open { display: block; }
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .chat-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .chat-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .chat-tab {
+    flex: 1;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--label-color);
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .chat-tab.active {
+    background: #80c8f0;
+    color: #000;
+    border-color: #80c8f0;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chat-msg {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .chat-msg.mine {
+    flex-direction: row-reverse;
+  }
+
+  .chat-msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .chat-msg-avatar.photo {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .chat-msg-avatar.letter {
+    font-weight: 800;
+    font-size: 12px;
+    color: #fff;
+  }
+
+  .chat-bubble {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text);
+    background: var(--btn-bg);
+    border: 1px solid var(--border);
+  }
+
+  .chat-msg.mine .chat-bubble {
+    background: #80c8f0;
+    color: #000;
+    border-color: #80c8f0;
+  }
+
+  .chat-bubble-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--label-color);
+    margin-bottom: 2px;
+  }
+
+  .chat-msg.mine .chat-bubble-name {
+    color: rgba(0,0,0,0.5);
+  }
+
+  .chat-input-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--btn-bg);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+
+  .chat-input:focus {
+    border-color: #80c8f0;
+  }
+
+  .chat-send-btn {
+    background: #80c8f0;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .chat-send-btn:hover {
+    background: #60b8e0;
+  }
+
+  /* Online players list */
+  .online-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+  }
+
+  .online-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .online-player:hover {
+    opacity: 0.85;
+  }
+
+  .online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #30b030;
+    flex-shrink: 0;
+  }
+
+  .online-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .chat-empty {
+    text-align: center;
+    color: var(--label-color);
+    padding: 30px 0;
+    font-size: 14px;
+  }
 
   /* Card hover shadow */
   .score-box:hover,
@@ -1694,6 +1968,7 @@
       <div class="grid-bg" id="grid-bg"></div>
       <div class="tile-layer" id="tile-layer"></div>
     </div>
+    <button class="chat-btn-under" id="chat-btn"><span class="icon-glow chat-icon" style="color:#80c8f0;">&#9993;</span></button>
   </div>
 
   <div class="right-sidebar">
@@ -1806,6 +2081,27 @@
         <div class="stat-val" id="player-highest">0</div>
         <div class="stat-label">Highest Tile</div>
       </div>
+    </div>
+  </div>
+
+  <!-- Chat Panel -->
+  <div class="chat-backdrop" id="chat-backdrop"></div>
+  <div class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+      <h3>Chat</h3>
+      <button class="settings-close" id="chat-close">&times;</button>
+    </div>
+    <div class="chat-tabs">
+      <button class="chat-tab active" id="chat-tab-global">Global</button>
+      <button class="chat-tab" id="chat-tab-players">Players</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-empty">No messages yet. Say hi!</div>
+    </div>
+    <div class="online-list hidden" id="online-list"></div>
+    <div class="chat-input-bar">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Type a message..." maxlength="200">
+      <button class="chat-send-btn" id="chat-send">Send</button>
     </div>
   </div>
 
@@ -1937,8 +2233,10 @@
       <div class="tut-ctrl"><span class="tut-key">S</span><span>Settings</span></div>
       <div class="tut-ctrl"><span class="tut-key">L</span><span>Leaderboard</span></div>
       <div class="tut-ctrl"><span class="tut-key">P</span><span>Profile</span></div>
+      <div class="tut-ctrl"><span class="tut-key">X</span><span>Switch Theme</span></div>
+      <div class="tut-ctrl"><span class="tut-key">C</span><span>Chat</span></div>
     </div>
-    <p class="tut-desc">Track your stats, streak, and best scores in your profile. Play daily to build your streak!</p>
+    <p class="tut-desc">Chat with other players, cycle themes, and track your stats and streak in your profile!</p>
   </div>
 
   <div class="tut-nav">
@@ -2924,6 +3222,16 @@
       return;
     }
 
+    if (e.key === 'x' || e.key === 'X') {
+      e.preventDefault();
+      const themes = ['dark', 'neon', 'light'];
+      const current = document.documentElement.classList.contains('light') ? 'light' :
+                      document.documentElement.classList.contains('neon') ? 'neon' : 'dark';
+      const next = themes[(themes.indexOf(current) + 1) % themes.length];
+      setTheme(next);
+      return;
+    }
+
     if (e.key === 'p' || e.key === 'P') {
       e.preventDefault();
       if (profilePanel.classList.contains('open')) closeProfile();
@@ -2942,6 +3250,13 @@
       e.preventDefault();
       if (settingsPanel.classList.contains('open')) closeSettings();
       else openSettings();
+      return;
+    }
+
+    if (e.key === 'c' || e.key === 'C') {
+      e.preventDefault();
+      if (chatPanel.classList.contains('open')) closeChat();
+      else openChat();
       return;
     }
 
@@ -3467,6 +3782,213 @@
   profileClose.addEventListener('click', closeProfile);
   profileBackdrop.addEventListener('click', closeProfile);
 
+  // ===== CHAT =====
+  const SUPABASE_URL = 'https://wmahqqubptictszwcdzi.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtYWhxcXVicHRpY3RzendjZHppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MTk1MzgsImV4cCI6MjA5MDk5NTUzOH0.JGrR8RRCQA5vJV76Wrl-E7gMaBAlfKvTm6PKQx3O3C0';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const chatPanel = document.getElementById('chat-panel');
+  const chatBackdrop = document.getElementById('chat-backdrop');
+  const chatBtn = document.getElementById('chat-btn');
+  const chatClose = document.getElementById('chat-close');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const chatSend = document.getElementById('chat-send');
+  const chatTabGlobal = document.getElementById('chat-tab-global');
+  const chatTabPlayers = document.getElementById('chat-tab-players');
+  const onlineListEl = document.getElementById('online-list');
+
+  let chatMode = 'global';
+  let dmTarget = null;
+
+  function openChat() {
+    chatPanel.classList.add('open');
+    chatBackdrop.classList.add('open');
+    pauseForMenu();
+    updateOnlineStatus();
+    if (chatMode === 'global') loadGlobalMessages();
+  }
+
+  function closeChat() {
+    chatPanel.classList.remove('open');
+    chatBackdrop.classList.remove('open');
+    resumeFromMenu();
+  }
+
+  chatBtn.addEventListener('click', () => { sfx.click(); openChat(); });
+  chatClose.addEventListener('click', closeChat);
+  chatBackdrop.addEventListener('click', closeChat);
+
+  // Chat tabs
+  chatTabGlobal.addEventListener('click', () => {
+    chatMode = 'global';
+    dmTarget = null;
+    chatTabGlobal.classList.add('active');
+    chatTabPlayers.classList.remove('active');
+    chatMessages.classList.remove('hidden');
+    onlineListEl.classList.add('hidden');
+    chatInput.placeholder = 'Type a message...';
+    loadGlobalMessages();
+  });
+
+  chatTabPlayers.addEventListener('click', () => {
+    chatMode = 'players';
+    chatTabPlayers.classList.add('active');
+    chatTabGlobal.classList.remove('active');
+    chatMessages.classList.add('hidden');
+    onlineListEl.classList.remove('hidden');
+    loadOnlinePlayers();
+  });
+
+  function getMyChatName() {
+    return localStorage.getItem('lb2048_name') || 'Player';
+  }
+
+  function getMyChatAvatar() {
+    return localStorage.getItem('lb2048_avatar') || '';
+  }
+
+  function makeChatAvatar(name, avatar) {
+    if (avatar && avatar.startsWith('data:')) {
+      return '<div class="chat-msg-avatar photo" style="background-image:url(' + avatar + ')"></div>';
+    }
+    if (avatar) {
+      return '<div class="chat-msg-avatar">' + avatar + '</div>';
+    }
+    const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+    return '<div class="chat-msg-avatar letter" style="background:' + col + '">' + name[0].toUpperCase() + '</div>';
+  }
+
+  function renderMessages(msgs) {
+    const myName = getMyChatName();
+    if (msgs.length === 0) {
+      chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Say hi!</div>';
+      return;
+    }
+    chatMessages.innerHTML = msgs.map(m => {
+      const mine = m.sender === myName;
+      return '<div class="chat-msg ' + (mine ? 'mine' : '') + '">' +
+        makeChatAvatar(m.sender, m.avatar) +
+        '<div class="chat-bubble">' +
+          '<div class="chat-bubble-name">' + (m.sender || 'Player') + '</div>' +
+          m.message +
+        '</div>' +
+      '</div>';
+    }).join('');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function loadGlobalMessages() {
+    const { data } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('receiver', 'global')
+      .order('created_at', { ascending: true })
+      .limit(50);
+    if (data) renderMessages(data);
+  }
+
+  async function loadDMMessages(otherName) {
+    const myName = getMyChatName();
+    const { data } = await supabase
+      .from('messages')
+      .select('*')
+      .or('and(sender.eq.' + myName + ',receiver.eq.' + otherName + '),and(sender.eq.' + otherName + ',receiver.eq.' + myName + ')')
+      .order('created_at', { ascending: true })
+      .limit(50);
+    if (data) renderMessages(data);
+  }
+
+  async function sendMessage() {
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+    const myName = getMyChatName();
+    const avatar = getMyChatAvatar();
+    const receiver = dmTarget || 'global';
+    chatInput.value = '';
+    await supabase.from('messages').insert({
+      sender: myName,
+      receiver: receiver,
+      message: msg,
+      avatar: avatar.startsWith('data:') ? '' : avatar
+    });
+  }
+
+  chatSend.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+  });
+
+  // Online status
+  async function updateOnlineStatus() {
+    const myName = getMyChatName();
+    const avatar = getMyChatAvatar();
+    await supabase.from('online_players').upsert({
+      name: myName,
+      avatar: avatar.startsWith('data:') ? '' : avatar,
+      last_seen: new Date().toISOString()
+    });
+  }
+
+  async function loadOnlinePlayers() {
+    const fiveMinAgo = new Date(Date.now() - 5 * 60000).toISOString();
+    const { data } = await supabase
+      .from('online_players')
+      .select('*')
+      .gte('last_seen', fiveMinAgo)
+      .order('last_seen', { ascending: false });
+
+    const myName = getMyChatName();
+    if (!data || data.length === 0) {
+      onlineListEl.innerHTML = '<div class="chat-empty">No players online</div>';
+      return;
+    }
+    onlineListEl.innerHTML = data.filter(p => p.name !== myName).map(p =>
+      '<div class="online-player" data-name="' + p.name + '">' +
+        '<div class="online-dot"></div>' +
+        makeChatAvatar(p.name, p.avatar) +
+        '<span class="online-name">' + p.name + '</span>' +
+      '</div>'
+    ).join('') || '<div class="chat-empty">No other players online</div>';
+  }
+
+  // Click player to DM
+  onlineListEl.addEventListener('click', e => {
+    const player = e.target.closest('.online-player');
+    if (!player) return;
+    const name = player.dataset.name;
+    dmTarget = name;
+    chatMode = 'dm';
+    chatTabGlobal.classList.remove('active');
+    chatTabPlayers.classList.remove('active');
+    chatMessages.classList.remove('hidden');
+    onlineListEl.classList.add('hidden');
+    chatInput.placeholder = 'Message ' + name + '...';
+    document.querySelector('.chat-header h3').textContent = 'Chat — ' + name;
+    loadDMMessages(name);
+  });
+
+  // Real-time subscription
+  supabase
+    .channel('public:messages')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+      const msg = payload.new;
+      const myName = getMyChatName();
+      // Update if we're viewing the relevant conversation
+      if (chatMode === 'global' && msg.receiver === 'global') {
+        loadGlobalMessages();
+      } else if (chatMode === 'dm' && dmTarget) {
+        if ((msg.sender === myName && msg.receiver === dmTarget) ||
+            (msg.sender === dmTarget && msg.receiver === myName)) {
+          loadDMMessages(dmTarget);
+        }
+      }
+    })
+    .subscribe();
+
+  // Update online status periodically
+  setInterval(updateOnlineStatus, 60000);
+
   // Secret admin stats — Ctrl+Shift+A
   document.addEventListener('keydown', async (e) => {
     if (e.ctrlKey && e.shiftKey && e.key === 'A') {
@@ -3631,15 +4153,18 @@
     }
   });
 
+  // Always start the game immediately
+  tutEl.style.display = 'none';
+  tutBackdrop.style.display = 'none';
+  init();
+
+  // Show tutorial overlay only for first-time users (doesn't block game start)
   if (!localStorage.getItem('2048_tutorial_done')) {
-    tutEl.style.display = '';
-    tutBackdrop.style.display = '';
-    showTutStep();
-    init(); // Start game behind tutorial so board is ready
-  } else {
-    tutEl.style.display = 'none';
-    tutBackdrop.style.display = 'none';
-    init();
+    setTimeout(() => {
+      tutEl.style.display = '';
+      tutBackdrop.style.display = '';
+      showTutStep();
+    }, 100);
   }
 })();
 </script>
