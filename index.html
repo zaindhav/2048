@@ -1094,53 +1094,29 @@
     display: none;
   }
 
-  /* Mobile & Tablet Layout */
-  @media (max-width: 900px) {
-    body {
-      overflow: auto;
-    }
-
+  /* ===== PORTRAIT MOBILE ===== */
+  @media (max-width: 900px) and (orientation: portrait) {
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       height: 100dvh;
-      padding: 1.5dvh 4vw 1dvh;
+      padding: 1.5dvh 3vw 1dvh;
       gap: 0;
       overflow: hidden;
     }
 
-    /* Row 1: Size buttons */
-    .left-sidebar {
-      flex-direction: row;
-      justify-content: center;
-      gap: 2vw;
-      padding: 0;
-      height: auto;
-      width: 100%;
-      margin-bottom: 1dvh;
-    }
-
-    .left-sidebar .size-btn {
-      height: auto;
-      width: auto;
-      flex: 1;
-      padding: 1.2dvh 0;
-      font-size: 2.2dvh;
-      border-radius: 1.5dvh;
-      border-width: 2px;
-    }
-
-    /* Row 2: Scores + icon buttons */
+    /* Row 1: Scores + icon buttons */
     .right-sidebar {
+      order: 1;
       flex-direction: row;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       gap: 2vw;
       padding: 0;
       height: auto;
       width: 100%;
-      margin-bottom: 0.8dvh;
+      margin-bottom: 1dvh;
     }
 
     .scores {
@@ -1155,15 +1131,16 @@
       padding: 0.8dvh 0;
       border-radius: 1.5dvh;
       border-width: 2px;
+      display: block;
     }
 
     .score-box .label {
-      font-size: 1.3dvh;
+      font-size: 1.2dvh;
       margin-bottom: 0.2dvh;
     }
 
     .score-box .value {
-      font-size: 2.8dvh;
+      font-size: 2.5dvh;
     }
 
     .right-sidebar .bottom-btn {
@@ -1174,54 +1151,80 @@
 
     .right-sidebar .bottom-btn .settings-btn {
       font-size: 2.5dvh;
-      padding: 0.8dvh 1.5vw;
+      padding: 0.8dvh 2vw;
       border-radius: 1.5dvh;
       border-width: 2px;
     }
 
-    /* Row 3: Timer + Board */
+    /* Row 2: Timer */
     .board-wrapper {
-      flex: 1;
+      order: 2;
       width: 100%;
-      min-height: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex: 1;
+      min-height: 0;
     }
 
     .timer-area {
       height: 4dvh;
+      flex-shrink: 0;
     }
 
     .timer-text {
       font-size: 3dvh;
     }
 
+    /* Board: square, fits available space */
     .game-board {
-      width: 100%;
-      max-width: min(92vw, calc(100dvh - 24dvh));
-      height: auto;
-      max-height: calc(100dvh - 24dvh);
-      aspect-ratio: 1;
+      width: min(92vw, calc(100dvh - 28dvh));
+      height: min(92vw, calc(100dvh - 28dvh));
+      max-width: min(92vw, calc(100dvh - 28dvh));
+      max-height: min(92vw, calc(100dvh - 28dvh));
       border-radius: 3vw;
-      flex-shrink: 1;
+      flex-shrink: 0;
+    }
+
+    /* Row 3: Size buttons below board */
+    .left-sidebar {
+      order: 3;
+      flex-direction: row;
+      justify-content: center;
+      gap: 2vw;
+      padding: 0;
+      height: auto;
+      width: 100%;
+      margin: 1dvh 0;
+    }
+
+    .left-sidebar .size-btn {
+      height: auto;
+      width: auto;
+      flex: 1;
+      padding: 1dvh 0;
+      font-size: 2dvh;
+      border-radius: 1.5dvh;
+      border-width: 2px;
     }
 
     /* Row 4: Pause button */
     .mobile-bar {
+      order: 4;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0.8dvh 0;
+      padding: 0;
       width: 100%;
+      margin-bottom: 0.5dvh;
     }
 
     .mobile-pause-btn {
       background: var(--btn-bg);
       border: 2px solid var(--border);
       border-radius: 1.5dvh;
-      padding: 0.8dvh 15vw;
-      font-size: 3dvh;
+      padding: 0.6dvh 15vw;
+      font-size: 2.5dvh;
       cursor: pointer;
       transition: all 0.2s ease;
       color: #e03030;
@@ -1231,56 +1234,64 @@
       color: #30b030;
     }
 
-    /* Tutorial mobile */
-    .tutorial {
-      width: 90vw;
-      padding: 24px 20px;
-      max-height: 80dvh;
-      overflow-y: auto;
-    }
-
-    .tutorial h1 { font-size: 28px; }
+    /* Panels */
+    .tutorial { width: 90vw; padding: 20px 18px; max-height: 80dvh; overflow-y: auto; }
+    .tutorial h1 { font-size: 26px; }
     .tutorial h2.tut-heading { font-size: 20px; }
-    .tut-tile { width: 34px; height: 34px; font-size: 14px; }
-    .tut-tile.tut-big { width: 56px; height: 56px; font-size: 22px; }
-    .tut-arrow-key { width: 38px; height: 38px; font-size: 16px; }
-    .tut-nav-btn { padding: 8px 18px; font-size: 14px; }
-    .lb-name-input { font-size: 16px !important; padding: 12px !important; }
-
-    /* Panels mobile */
+    .tut-tile { width: 32px; height: 32px; font-size: 13px; }
+    .tut-tile.tut-big { width: 52px; height: 52px; font-size: 20px; }
+    .tut-arrow-key { width: 36px; height: 36px; font-size: 15px; }
+    .tut-nav-btn { padding: 8px 16px; font-size: 13px; }
+    .lb-name-input { font-size: 16px !important; padding: 10px !important; }
     .settings-panel { width: 85vw; max-height: 85dvh; overflow-y: auto; }
     .lb-panel, .profile-panel, .player-panel { width: 90vw; max-height: 80dvh; overflow-y: auto; }
   }
 
-  /* Landscape on phones/tablets */
+  /* ===== LANDSCAPE MOBILE ===== */
   @media (max-width: 900px) and (orientation: landscape) {
     .container {
+      display: flex;
       flex-direction: row;
+      align-items: stretch;
+      height: 100dvh;
       padding: 1dvh 2vw;
-      gap: 1.5vw;
+      gap: 1vw;
+      overflow: hidden;
     }
 
-    /* Left column: size buttons stacked */
+    /* Left column: size buttons */
     .left-sidebar {
       flex-direction: column;
+      justify-content: center;
+      gap: 1dvh;
+      padding: 0;
+      height: auto;
       width: auto;
-      gap: 0.8dvh;
-      margin-bottom: 0;
+      order: 1;
     }
 
     .left-sidebar .size-btn {
-      padding: 1dvh 2vw;
-      font-size: 2dvh;
+      height: auto;
+      width: auto;
+      padding: 1.5dvh 2vw;
+      font-size: 2.2dvh;
+      border-radius: 1dvh;
+      border-width: 2px;
     }
 
-    /* Center column: timer + board */
+    /* Center: timer + board */
     .board-wrapper {
+      order: 2;
       flex: 1;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .timer-area {
       height: 4dvh;
+      flex-shrink: 0;
     }
 
     .timer-text {
@@ -1288,38 +1299,44 @@
     }
 
     .game-board {
-      max-width: calc(100dvh - 14dvh);
-      max-height: calc(100dvh - 10dvh);
-      width: auto;
-      height: auto;
+      width: calc(100dvh - 12dvh);
+      height: calc(100dvh - 12dvh);
+      max-width: calc(100dvh - 12dvh);
+      max-height: calc(100dvh - 12dvh);
+      border-radius: 1.5dvh;
+      flex-shrink: 0;
     }
 
-    /* Right column: scores + buttons stacked */
+    /* Right column: scores + buttons */
     .right-sidebar {
+      order: 3;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1dvh;
+      padding: 0;
+      height: auto;
       width: auto;
-      gap: 0.8dvh;
-      margin-bottom: 0;
     }
 
     .scores {
       flex-direction: column;
-      gap: 0.8dvh;
+      gap: 1dvh;
     }
 
     .score-box {
-      padding: 0.6dvh 2vw;
+      height: auto;
+      padding: 0.8dvh 2vw;
+      border-radius: 1dvh;
+      border-width: 2px;
+      display: block;
     }
 
-    .score-box .label {
-      font-size: 1.2dvh;
-    }
-
-    .score-box .value {
-      font-size: 2.5dvh;
-    }
+    .score-box .label { font-size: 1.2dvh; }
+    .score-box .value { font-size: 2.5dvh; }
 
     .right-sidebar .bottom-btn {
+      margin-top: 0;
       flex-direction: column;
       gap: 0.8dvh;
     }
@@ -1327,17 +1344,16 @@
     .right-sidebar .bottom-btn .settings-btn {
       font-size: 2.5dvh;
       padding: 0.6dvh 1.5vw;
+      border-radius: 1dvh;
+      border-width: 2px;
     }
 
-    /* Hide mobile bar in landscape — no room */
-    .mobile-bar {
-      display: none;
-    }
+    /* Hide pause bar in landscape */
+    .mobile-bar { display: none; }
 
-    /* Panels landscape */
+    /* Panels */
     .tutorial, .settings-panel, .lb-panel, .profile-panel, .player-panel {
-      max-height: 90dvh;
-      overflow-y: auto;
+      max-height: 90dvh; overflow-y: auto;
     }
   }
 
@@ -1845,7 +1861,7 @@
     settingsBackdrop.classList.remove('open');
     resumeFromMenu();
   }
-  settingsBtn.addEventListener('click', () => { sfx.click(); openSettings(); });
+  settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); sfx.click(); openSettings(); });
   settingsClose.addEventListener('click', closeSettings);
   settingsBackdrop.addEventListener('click', closeSettings);
 
@@ -3176,13 +3192,25 @@
   const playerPanel = document.getElementById('player-panel');
   const playerClose = document.getElementById('player-close');
 
+  function getPlayerBests(name) {
+    // Pull actual best scores from all leaderboards for this player
+    const bests = { best3: 0, best4: 0, best5: 0 };
+    for (const sz of [3, 4, 5]) {
+      const entries = lbCache[sz] || [];
+      const found = entries.find(e => e.name === name);
+      if (found) bests['best' + sz] = found.score;
+    }
+    return bests;
+  }
+
   function showPlayerProfile(entry) {
     const pAvatar = document.getElementById('player-avatar');
     const pName = document.getElementById('player-name');
     const pStreakBadge = document.getElementById('player-streak-badge');
     const st = entry.stats || {};
+    const name = entry.name || 'Player';
 
-    pName.textContent = entry.name || 'Player';
+    pName.textContent = name;
 
     if (entry.avatar && entry.avatar.startsWith('data:')) {
       pAvatar.className = 'profile-avatar photo';
@@ -3194,24 +3222,38 @@
       pAvatar.style.backgroundImage = '';
       pAvatar.textContent = entry.avatar;
     } else {
-      const n = entry.name || 'P';
-      const col = avatarColors[Math.abs([...n].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+      const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
       pAvatar.className = 'profile-avatar letter';
       pAvatar.style.backgroundImage = '';
       pAvatar.style.background = col;
-      pAvatar.textContent = n[0].toUpperCase();
+      pAvatar.textContent = name[0].toUpperCase();
     }
+
+    // Use actual leaderboard scores for best scores
+    const bests = getPlayerBests(name);
 
     document.getElementById('player-games').textContent = st.gamesPlayed || 0;
     document.getElementById('player-streak').textContent = st.streak || 0;
-    document.getElementById('player-best3').textContent = st.best3 || 0;
-    document.getElementById('player-best4').textContent = st.best4 || 0;
-    document.getElementById('player-best5').textContent = st.best5 || 0;
+    document.getElementById('player-best3').textContent = bests.best3 || st.best3 || 0;
+    document.getElementById('player-best4').textContent = bests.best4 || st.best4 || 0;
+    document.getElementById('player-best5').textContent = bests.best5 || st.best5 || 0;
     document.getElementById('player-highest').textContent = st.highestTile || 0;
     pStreakBadge.textContent = (st.streak || 0) > 0 ? st.streak + ' day streak!' : '';
 
     playerPanel.classList.add('open');
     sfx.click();
+
+    // Fetch other leaderboards in background to get accurate best scores
+    for (const sz of [3, 4, 5]) {
+      if (!lbCache[sz] || lbCache[sz].length === 0) {
+        fetchLB(sz).then(() => {
+          const freshBests = getPlayerBests(name);
+          document.getElementById('player-best3').textContent = freshBests.best3 || st.best3 || 0;
+          document.getElementById('player-best4').textContent = freshBests.best4 || st.best4 || 0;
+          document.getElementById('player-best5').textContent = freshBests.best5 || st.best5 || 0;
+        });
+      }
+    }
   }
 
   playerClose.addEventListener('click', () => {
