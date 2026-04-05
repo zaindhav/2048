@@ -1182,8 +1182,8 @@
     display: none;
   }
 
-  /* ===== MOBILE (portrait + landscape) ===== */
-  @media (max-width: 900px) {
+  /* ===== MOBILE PORTRAIT ===== */
+  @media (max-width: 900px) and (orientation: portrait) {
     html, body {
       overflow: hidden;
       position: fixed;
@@ -1192,11 +1192,11 @@
     }
 
     .container {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
       height: 100dvh;
-      padding: 1dvh 2vw 0.5dvh;
-      gap: 0;
+      padding: 1dvh 3vw 1.5dvh;
+      gap: 0.8dvh;
       overflow: hidden;
     }
 
@@ -1206,96 +1206,91 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      gap: 1.5vw;
+      gap: 2vw;
       padding: 0;
       height: auto;
       width: 100%;
-      margin-bottom: 0.5dvh;
-      flex-shrink: 0;
     }
 
     .scores {
       flex-direction: row;
-      gap: 1.5vw;
+      gap: 2vw;
       flex: 1;
     }
 
     .score-box {
       height: auto;
       flex: 1;
-      padding: 0.6dvh 0;
-      border-radius: 1.2dvh;
+      padding: 1dvh 0;
+      border-radius: 2vw;
       border-width: 2px;
       display: block;
     }
 
     .score-box .label {
-      font-size: 1.1dvh;
-      margin-bottom: 0.1dvh;
+      font-size: 1.4dvh;
+      margin-bottom: 0.2dvh;
     }
 
     .score-box .value {
-      font-size: 2.2dvh;
+      font-size: 3dvh;
     }
 
     .right-sidebar .bottom-btn {
       margin-top: 0;
-      gap: 1vw;
+      gap: 2vw;
       flex-shrink: 0;
     }
 
     .right-sidebar .bottom-btn .settings-btn {
-      font-size: 2.2dvh;
-      padding: 0.6dvh 1.5vw;
-      border-radius: 1.2dvh;
+      font-size: 3dvh;
+      padding: 1dvh 2.5vw;
+      border-radius: 2vw;
       border-width: 2px;
     }
 
-    /* Row 2: Timer + Board */
+    /* Row 2: Timer */
     .board-wrapper {
       order: 2;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      flex: 1;
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .timer-area {
-      height: 3.5dvh;
+      height: 4dvh;
       flex-shrink: 0;
     }
 
     .timer-text {
-      font-size: 2.8dvh;
+      font-size: 3.5dvh;
     }
 
-    /* Board: always square, fits available space */
+    /* Board: always square */
     .game-board {
-      --board-size: min(94vw, calc(100dvh - 20dvh));
-      width: var(--board-size);
-      height: var(--board-size);
-      max-width: var(--board-size);
-      max-height: var(--board-size);
-      border-radius: 2.5vw;
-      flex-shrink: 0;
-      aspect-ratio: 1;
+      --board-size: min(94vw, calc(100dvh - 25dvh));
+      width: var(--board-size) !important;
+      height: var(--board-size) !important;
+      max-width: var(--board-size) !important;
+      max-height: var(--board-size) !important;
+      border-radius: 3vw;
     }
 
     /* Chat button under board */
     .chat-btn-under {
-      padding: 0.3dvh 10vw;
+      padding: 0 8vw;
       font-size: 2dvh;
-      margin-top: 0.3dvh;
+      margin-top: 0.5dvh;
       border-width: 2px;
-      border-radius: 1.2dvh;
+      border-radius: 2vw;
     }
 
     .chat-icon {
-      font-size: 4dvh;
-      margin: -1.5dvh 0 -1dvh 0;
+      font-size: 5dvh;
+      margin: -2dvh 0 -1.5dvh 0;
     }
 
     /* Row 3: Size buttons */
@@ -1303,28 +1298,24 @@
       order: 3;
       flex-direction: row;
       justify-content: center;
-      gap: 1.5vw;
+      gap: 2vw;
       padding: 0;
       height: auto;
       width: 100%;
-      margin: 0.5dvh 0;
-      flex-shrink: 0;
     }
 
     .left-sidebar .size-btn {
       height: auto;
       width: auto;
       flex: 1;
-      padding: 0.8dvh 0;
-      font-size: 1.8dvh;
-      border-radius: 1.2dvh;
+      padding: 1.2dvh 0;
+      font-size: 2.2dvh;
+      border-radius: 2vw;
       border-width: 2px;
     }
 
-    /* Hide desktop pause bar, use double-tap instead */
-    .mobile-bar {
-      display: none;
-    }
+    /* Hide desktop pause bar */
+    .mobile-bar { display: none; }
 
     /* Panels */
     .tutorial { width: 90vw; padding: 18px 16px; max-height: 80dvh; overflow-y: auto; }
@@ -1417,7 +1408,7 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
-  /* Game Board */
+  /* Game Board — always square */
   .game-board {
     position: relative;
     background: var(--board-bg);
@@ -1425,9 +1416,11 @@
     padding: 10px;
     border: none;
     box-shadow: var(--board-shadow, 0 0 60px rgba(237, 194, 46, 0.06), 0 8px 32px rgba(0, 0, 0, 0.5));
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
     height: calc(80vh - 6vh);
     max-height: calc(80vh - 6vh);
+    width: calc(80vh - 6vh);
+    max-width: calc(80vh - 6vh);
   }
 
   .grid-bg {
