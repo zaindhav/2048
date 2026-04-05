@@ -3817,6 +3817,7 @@
     chatMessages.classList.remove('hidden');
     onlineListEl.classList.add('hidden');
     chatInput.placeholder = 'Type a message...';
+    chatMessages.innerHTML = '<div class="chat-empty">Loading...</div>';
     loadGlobalMessages();
   });
 
@@ -3881,13 +3882,26 @@
 
   async function loadDMMessages(otherName) {
     const myName = getMyChatName();
-    const { data } = await supabase
+    // Fetch messages sent by me to them
+    const { data: sent } = await supabase
       .from('messages')
       .select('*')
-      .or('and(sender.eq.' + myName + ',receiver.eq.' + otherName + '),and(sender.eq.' + otherName + ',receiver.eq.' + myName + ')')
+      .eq('sender', myName)
+      .eq('receiver', otherName)
       .order('created_at', { ascending: true })
       .limit(50);
-    if (data) renderMessages(data);
+    // Fetch messages sent by them to me
+    const { data: received } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('sender', otherName)
+      .eq('receiver', myName)
+      .order('created_at', { ascending: true })
+      .limit(50);
+    // Merge and sort
+    const all = [...(sent || []), ...(received || [])];
+    all.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    renderMessages(all.slice(-50));
   }
 
   const badWords = ['fuck','shit','bitch','ass','damn','dick','cock','pussy','bastard','crap','cunt','slut','whore','nigger','nigga','fag','faggot','retard','stfu','wtf','lmao','piss','bollocks','wanker','twat'];
@@ -3976,6 +3990,8 @@
     chatMessages.classList.remove('hidden');
     onlineListEl.classList.add('hidden');
     chatInput.placeholder = 'Message ' + name + '...';
+    // Clear messages first to avoid showing global chat
+    chatMessages.innerHTML = '<div class="chat-empty">Loading...</div>';
     loadDMMessages(name);
   }
 
