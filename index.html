@@ -1183,213 +1183,6 @@
   }
 
   /* ===== MOBILE PORTRAIT ===== */
-  @media (max-width: 900px) and (orientation: portrait) {
-    html, body {
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-    }
-
-    .container {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      height: 100dvh;
-      padding: 1dvh 3vw 1dvh;
-      gap: 0.5dvh;
-      overflow: hidden;
-    }
-
-    /* Row 1: Scores + icon buttons */
-    .right-sidebar {
-      order: 1;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      gap: 2vw;
-      padding: 0;
-      height: auto;
-      width: 100%;
-    }
-
-    .scores {
-      flex-direction: row;
-      gap: 2vw;
-      flex: 1;
-    }
-
-    .score-box {
-      height: auto;
-      flex: 1;
-      padding: 1dvh 0;
-      border-radius: 2vw;
-      border-width: 2px;
-      display: block;
-    }
-
-    .score-box .label {
-      font-size: 1.4dvh;
-      margin-bottom: 0.2dvh;
-    }
-
-    .score-box .value {
-      font-size: 3dvh;
-    }
-
-    .right-sidebar .bottom-btn {
-      margin-top: 0;
-      gap: 2vw;
-      flex-shrink: 0;
-    }
-
-    .right-sidebar .bottom-btn .settings-btn {
-      font-size: 3dvh;
-      padding: 1dvh 2.5vw;
-      border-radius: 2vw;
-      border-width: 2px;
-    }
-
-    /* Row 2: Timer */
-    .board-wrapper {
-      order: 2;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 0;
-      overflow: visible;
-    }
-
-    .timer-area {
-      height: 4dvh;
-      flex-shrink: 0;
-    }
-
-    .timer-text {
-      font-size: 3.5dvh;
-    }
-
-    /* Board: always square */
-    .game-board {
-      --board-size: min(94vw, calc(100dvh - 26dvh));
-      width: var(--board-size) !important;
-      height: var(--board-size) !important;
-      max-width: var(--board-size) !important;
-      max-height: var(--board-size) !important;
-      border-radius: 3vw;
-    }
-
-    /* Chat button under board — thin, wide */
-    .chat-btn-under {
-      padding: 0 20vw;
-      font-size: 2dvh;
-      margin-top: 0.3dvh;
-      border-width: 2px;
-      border-radius: 2vw;
-      flex-shrink: 0;
-    }
-
-    .chat-icon {
-      font-size: 3.5dvh;
-      margin: -0.5dvh 0;
-    }
-
-    /* Row 3: Size buttons */
-    .left-sidebar {
-      order: 3;
-      flex-direction: row;
-      justify-content: center;
-      gap: 2vw;
-      padding: 0;
-      height: auto;
-      width: 100%;
-      flex-shrink: 0;
-      padding-bottom: env(safe-area-inset-bottom, 0);
-    }
-
-    .left-sidebar .size-btn {
-      height: auto;
-      width: auto;
-      flex: 1;
-      padding: 1dvh 0;
-      font-size: 2dvh;
-      border-radius: 2vw;
-      border-width: 2px;
-    }
-
-    /* Hide desktop pause bar */
-    .mobile-bar { display: none; }
-
-    /* Panels */
-    .tutorial { width: 90vw; padding: 18px 16px; max-height: 80dvh; overflow-y: auto; }
-    .tutorial h1 { font-size: 24px; }
-    .tutorial h2.tut-heading { font-size: 18px; }
-    .tut-tile { width: 30px; height: 30px; font-size: 12px; }
-    .tut-tile.tut-big { width: 48px; height: 48px; font-size: 18px; }
-    .tut-arrow-key { width: 34px; height: 34px; font-size: 14px; }
-    .tut-nav-btn { padding: 8px 14px; font-size: 12px; }
-    .lb-name-input { font-size: 16px !important; padding: 10px !important; }
-    .settings-panel { width: 85vw; max-height: 85dvh; overflow-y: auto; }
-    .lb-panel, .profile-panel, .player-panel, .chat-panel { width: 92vw; max-height: 80dvh; overflow-y: auto; }
-  }
-
-  /* ===== LANDSCAPE MOBILE ===== */
-  @media (max-width: 900px) and (orientation: landscape) {
-    .container {
-      flex-direction: row;
-      padding: 1dvh 1.5vw;
-      gap: 1vw;
-    }
-
-    .left-sidebar {
-      flex-direction: column;
-      width: auto;
-      gap: 0.6dvh;
-      margin: 0;
-      order: 1;
-    }
-
-    .left-sidebar .size-btn {
-      padding: 1dvh 1.5vw;
-      font-size: 2dvh;
-    }
-
-    .board-wrapper { order: 2; flex: 1; min-width: 0; }
-
-    .game-board {
-      --board-size: min(50vw, calc(100dvh - 10dvh));
-      width: var(--board-size);
-      height: var(--board-size);
-      max-width: var(--board-size);
-      max-height: var(--board-size);
-    }
-
-    .chat-btn-under { display: none; }
-
-    .right-sidebar {
-      order: 3;
-      flex-direction: column;
-      width: auto;
-      gap: 0.6dvh;
-      margin: 0;
-    }
-
-    .scores { flex-direction: column; gap: 0.6dvh; }
-    .score-box { padding: 0.5dvh 1.5vw; }
-    .score-box .label { font-size: 1dvh; }
-    .score-box .value { font-size: 2dvh; }
-
-    .right-sidebar .bottom-btn {
-      flex-direction: column;
-      gap: 0.5dvh;
-    }
-
-    .right-sidebar .bottom-btn .settings-btn {
-      font-size: 2dvh;
-      padding: 0.5dvh 1vw;
-    }
-  }
-
   /* Board wrapper */
   .board-wrapper {
     display: flex;
@@ -1841,6 +1634,221 @@
   .btn:hover,
   .settings-btn:hover {
     box-shadow: var(--card-hover-shadow);
+  }
+
+  /* ===== MOBILE PORTRAIT — MUST BE LAST ===== */
+  @media (max-width: 900px) and (orientation: portrait) {
+    html, body {
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .container {
+      display: flex !important;
+      flex-direction: column !important;
+      grid-template-columns: none !important;
+      height: 100dvh !important;
+      padding: 1dvh 3vw 1dvh !important;
+      gap: 0.5dvh !important;
+      overflow: hidden !important;
+    }
+
+    .right-sidebar {
+      order: 1 !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      gap: 2vw !important;
+      padding: 0 !important;
+      height: auto !important;
+      width: 100% !important;
+      flex-shrink: 0 !important;
+    }
+
+    .scores {
+      flex-direction: row !important;
+      gap: 2vw !important;
+      flex: 1 !important;
+    }
+
+    .score-box {
+      height: auto !important;
+      flex: 1 !important;
+      padding: 1dvh 0 !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+      display: block !important;
+    }
+
+    .score-box .label { font-size: 1.4dvh !important; margin-bottom: 0.2dvh !important; }
+    .score-box .value { font-size: 3dvh !important; }
+
+    .right-sidebar .bottom-btn {
+      margin-top: 0 !important;
+      gap: 2vw !important;
+      flex-shrink: 0 !important;
+    }
+
+    .right-sidebar .bottom-btn .settings-btn {
+      font-size: 3dvh !important;
+      padding: 1dvh 2.5vw !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+    }
+
+    .board-wrapper {
+      order: 2 !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      flex: 1 !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      height: auto !important;
+      padding: 0 !important;
+    }
+
+    .timer-area { height: 4dvh !important; flex-shrink: 0 !important; }
+    .timer-text { font-size: 3.5dvh !important; }
+
+    .game-board {
+      --bs: min(94vw, calc(100dvh - 26dvh));
+      width: var(--bs) !important;
+      height: var(--bs) !important;
+      max-width: var(--bs) !important;
+      max-height: var(--bs) !important;
+      border-radius: 3vw !important;
+      aspect-ratio: 1 / 1 !important;
+    }
+
+    .chat-btn-under {
+      padding: 0 20vw !important;
+      font-size: 2dvh !important;
+      margin-top: 0.3dvh !important;
+      border-width: 2px !important;
+      border-radius: 2vw !important;
+      flex-shrink: 0 !important;
+    }
+
+    .chat-icon { font-size: 3.5dvh !important; margin: -0.5dvh 0 !important; }
+
+    .left-sidebar {
+      order: 3 !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      gap: 2vw !important;
+      padding: 0 !important;
+      height: auto !important;
+      width: 100% !important;
+      flex-shrink: 0 !important;
+      padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    }
+
+    .left-sidebar .size-btn {
+      height: auto !important;
+      width: auto !important;
+      flex: 1 !important;
+      padding: 1dvh 0 !important;
+      font-size: 2dvh !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+    }
+
+    .mobile-bar { display: none !important; }
+
+    .tutorial { width: 90vw !important; padding: 18px 16px !important; max-height: 80dvh !important; overflow-y: auto !important; }
+    .tutorial h1 { font-size: 24px !important; }
+    .tutorial h2.tut-heading { font-size: 18px !important; }
+    .settings-panel { width: 85vw !important; max-height: 85dvh !important; overflow-y: auto !important; }
+    .lb-panel, .profile-panel, .player-panel, .chat-panel { width: 92vw !important; max-height: 80dvh !important; overflow-y: auto !important; }
+  }
+
+  /* ===== LANDSCAPE MOBILE — MUST BE LAST ===== */
+  @media (max-width: 900px) and (orientation: landscape) {
+    html, body {
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .container {
+      display: flex !important;
+      flex-direction: row !important;
+      grid-template-columns: none !important;
+      height: 100dvh !important;
+      padding: 1dvh 1.5vw !important;
+      gap: 1vw !important;
+      overflow: hidden !important;
+    }
+
+    .left-sidebar {
+      flex-direction: column !important;
+      width: auto !important;
+      gap: 0.6dvh !important;
+      padding: 0 !important;
+      height: auto !important;
+      order: 1 !important;
+    }
+
+    .left-sidebar .size-btn {
+      padding: 1dvh 1.5vw !important;
+      font-size: 2dvh !important;
+      height: auto !important;
+      width: auto !important;
+    }
+
+    .board-wrapper {
+      order: 2 !important;
+      flex: 1 !important;
+      min-width: 0 !important;
+      height: auto !important;
+      padding: 0 !important;
+    }
+
+    .timer-area { height: 4dvh !important; }
+    .timer-text { font-size: 3dvh !important; }
+
+    .game-board {
+      --bs: min(50vw, calc(100dvh - 10dvh));
+      width: var(--bs) !important;
+      height: var(--bs) !important;
+      max-width: var(--bs) !important;
+      max-height: var(--bs) !important;
+    }
+
+    .chat-btn-under { display: none !important; }
+
+    .right-sidebar {
+      order: 3 !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      width: auto !important;
+      gap: 0.6dvh !important;
+      padding: 0 !important;
+      height: auto !important;
+    }
+
+    .scores { flex-direction: column !important; gap: 0.6dvh !important; }
+    .score-box { padding: 0.5dvh 1.5vw !important; height: auto !important; }
+    .score-box .label { font-size: 1dvh !important; }
+    .score-box .value { font-size: 2dvh !important; }
+
+    .right-sidebar .bottom-btn {
+      flex-direction: column !important;
+      gap: 0.5dvh !important;
+      margin-top: 0 !important;
+    }
+
+    .right-sidebar .bottom-btn .settings-btn {
+      font-size: 2dvh !important;
+      padding: 0.5dvh 1vw !important;
+    }
+
+    .mobile-bar { display: none !important; }
   }
 
 </style>
