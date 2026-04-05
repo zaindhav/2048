@@ -76,7 +76,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr min-content 1fr;
-    padding: 3vh 1vw 1vw 1vw;
+    padding: 8vh 1vw 1vw 1vw;
     gap: 1vw;
   }
 
@@ -163,7 +163,7 @@
     border: 4px solid var(--border);
     border-radius: 1.5vw;
     padding: 4vh 0;
-    font-size: 7vh;
+    font-size: 9vh;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -174,10 +174,15 @@
     box-shadow: var(--btn-shadow);
   }
 
-  .left-sidebar .size-btn[data-size="3"] { color: #edcf72; }
-  :root.light .left-sidebar .size-btn[data-size="3"] { color: #40c878; }
-  .left-sidebar .size-btn[data-size="4"] { color: #f59563; }
-  .left-sidebar .size-btn[data-size="5"] { color: #f67c5f; }
+  .left-sidebar .size-btn[data-size="3"] { color: #fff0a0; }
+  .left-sidebar .size-btn[data-size="4"] { color: #ffbb90; }
+  .left-sidebar .size-btn[data-size="5"] { color: #ffaa95; }
+  :root.neon .left-sidebar .size-btn[data-size="3"] { text-shadow: 0 0 10px #fff0a0; }
+  :root.neon .left-sidebar .size-btn[data-size="4"] { text-shadow: 0 0 10px #ffbb90; }
+  :root.neon .left-sidebar .size-btn[data-size="5"] { text-shadow: 0 0 10px #ffaa95; }
+  :root.light .left-sidebar .size-btn[data-size="3"] { color: #40c878; text-shadow: none; }
+  :root.light .left-sidebar .size-btn[data-size="4"] { color: #f59563; text-shadow: none; }
+  :root.light .left-sidebar .size-btn[data-size="5"] { color: #f67c5f; text-shadow: none; }
 
   .size-btn:hover {
     background: var(--btn-hover);
@@ -231,6 +236,30 @@
   .icon-btn {
     font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
   }
+
+  .icon-glow {
+    display: inline-block;
+  }
+
+  :root.neon .icon-glow {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  :root.neon #profile-btn .face-svg {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  /* Neon mode glow — scores */
+  :root.neon .score-box .value {
+    text-shadow: 0 0 8px currentColor;
+  }
+
+
+  /* Neon mode glow — board */
+  :root.neon .game-board {
+    box-shadow: 0 0 60px rgba(237, 194, 46, 0.06), 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(237, 194, 46, 0.15);
+  }
+
 
   .settings-btn:hover {
     background: var(--btn-hover);
@@ -403,7 +432,7 @@
   }
 
   .timer-text {
-    font-size: 7vh;
+    font-size: 10vh;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--label-color);
@@ -795,6 +824,10 @@
   .lb-entry.gold { border-color: #d4a020; }
   .lb-entry.silver { border-color: #a0a0a0; }
   .lb-entry.bronze { border-color: #b06820; }
+  :root.neon .lb-entry.gold { box-shadow: 0 0 14px rgba(212, 160, 32, 0.4); }
+  :root.neon .lb-entry.silver { box-shadow: 0 0 14px rgba(160, 160, 160, 0.3); }
+  :root.neon .lb-entry.bronze { box-shadow: 0 0 14px rgba(176, 104, 32, 0.35); }
+  :root.neon .lb-entry:not(.gold):not(.silver):not(.bronze) { box-shadow: 0 0 10px rgba(255, 255, 255, 0.08); }
 
   .lb-rank {
     font-weight: 800;
@@ -1030,7 +1063,7 @@
     animation: fireBounce 1.5s ease-in-out infinite;
   }
 
-  .profile-streak .streak-fire svg {
+  :root.neon .profile-streak .streak-fire svg {
     filter: drop-shadow(0 0 4px #e07070);
   }
 
@@ -1470,7 +1503,6 @@
     justify-content: center;
     align-items: center;
     border-radius: 18px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     font-weight: 800;
     transition: top 0.12s ease, left 0.12s ease;
     z-index: 1;
@@ -1509,6 +1541,58 @@
   .tile-1024 { background: #80c8f0; color: var(--tile-high-text, #f9f6f2); }
   .tile-2048 { background: #80e0a8; color: var(--tile-high-text, #f9f6f2); }
   .tile-super { background: #3c3a32; color: #f9f6f2; }
+
+  /* Neon mode — outline tiles with glow */
+  :root.neon .tile {
+    background: var(--cell-bg) !important;
+    border: 3px solid currentColor;
+    text-shadow: 0 0 12px currentColor;
+    box-shadow: 0 0 12px currentColor, inset 0 0 12px rgba(255, 255, 255, 0.05);
+  }
+  :root.neon .tile-2    { color: #eee4da; }
+  :root.neon .tile-4    { color: #ede0c8; }
+  :root.neon .tile-8    { color: #f2b179; }
+  :root.neon .tile-16   { color: #f59563; }
+  :root.neon .tile-32   { color: #f67c5f; }
+  :root.neon .tile-64   { color: #f65e3b; }
+  :root.neon .tile-128  { color: #edcf72; }
+  :root.neon .tile-256  { color: #f088a0; }
+  :root.neon .tile-512  { color: #b888e0; }
+  :root.neon .tile-1024 { color: #80c8f0; }
+  :root.neon .tile-2048 { color: #80e0a8; }
+  :root.neon .tile-super { color: #f9f6f2; }
+
+  /* Timer color */
+  .timer-text { color: #fff; }
+  :root.light .timer-text { color: var(--label-color); }
+  .timer-text.paused { color: #e03030; }
+  /* Neon mode — timer glow */
+  :root.neon .timer-text { text-shadow: 0 0 8px currentColor; }
+  :root.neon .timer-text.paused { text-shadow: 0 0 8px currentColor; }
+
+  /* Neon mode — ALL panel text + elements glow */
+  :root.neon .settings-panel *,
+  :root.neon .lb-panel *,
+  :root.neon .profile-panel *,
+  :root.neon .player-panel * {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
+  :root.neon .settings-panel .setting-group,
+  :root.neon .settings-panel .size-btn,
+  :root.neon .settings-panel .setting-slider,
+  :root.neon .settings-panel .reset-btn,
+  :root.neon .lb-panel .lb-tab,
+  :root.neon .lb-panel .lb-your-score,
+  :root.neon .lb-panel .lb-submit-btn,
+  :root.neon .lb-panel .lb-name-input,
+  :root.neon .profile-panel .profile-stat,
+  :root.neon .profile-panel .profile-streak,
+  :root.neon .profile-panel .podium-badge,
+  :root.neon .player-panel .profile-stat {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  }
+
 
   /* Card hover shadow */
   .score-box:hover,
@@ -1562,6 +1646,7 @@
       </div>
       <div class="size-bar">
         <button class="size-btn active" id="theme-dark">Dark</button>
+        <button class="size-btn" id="theme-neon">Neon</button>
         <button class="size-btn" id="theme-light">Light</button>
       </div>
     </div>
@@ -1631,8 +1716,8 @@
           <path class="face-mouth" d="M13 27 Q20 32 27 27" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
-      <button class="settings-btn icon-btn" id="lb-btn">&#9812;</button>
-      <button class="settings-btn icon-btn" id="settings-btn">&#9881;</button>
+      <button class="settings-btn icon-btn" id="lb-btn"><span class="icon-glow">&#9812;</span></button>
+      <button class="settings-btn icon-btn" id="settings-btn"><span class="icon-glow">&#9881;</span></button>
     </div>
   </div>
 
@@ -2299,25 +2384,25 @@
 
   // Theme toggle
   const themeDarkBtn = document.getElementById('theme-dark');
+  const themeNeonBtn = document.getElementById('theme-neon');
   const themeLightBtn = document.getElementById('theme-light');
+  const themeButtons = [themeDarkBtn, themeNeonBtn, themeLightBtn];
 
-  themeDarkBtn.addEventListener('click', () => {
-    document.documentElement.classList.remove('light');
-    themeDarkBtn.classList.add('active');
-    themeLightBtn.classList.remove('active');
-
+  function setTheme(theme) {
+    document.documentElement.classList.remove('light', 'neon');
+    if (theme === 'light') document.documentElement.classList.add('light');
+    if (theme === 'neon') document.documentElement.classList.add('neon');
+    themeButtons.forEach(b => b.classList.remove('active'));
+    if (theme === 'dark') themeDarkBtn.classList.add('active');
+    if (theme === 'neon') themeNeonBtn.classList.add('active');
+    if (theme === 'light') themeLightBtn.classList.add('active');
     updateScoreColor();
     updateBestStyle();
-  });
+  }
 
-  themeLightBtn.addEventListener('click', () => {
-    document.documentElement.classList.add('light');
-    themeLightBtn.classList.add('active');
-    themeDarkBtn.classList.remove('active');
-
-    updateScoreColor();
-    updateBestStyle();
-  });
+  themeDarkBtn.addEventListener('click', () => setTheme('dark'));
+  themeNeonBtn.addEventListener('click', () => setTheme('neon'));
+  themeLightBtn.addEventListener('click', () => setTheme('light'));
 
   const scoreEl = document.getElementById('score');
   const bestEl = document.getElementById('best');
@@ -2467,25 +2552,25 @@
 
   const scoreThresholds = {
     3: [
-      { min: 1000, color: '#80c8f0', glow: '0 0 16px #80c8f0, 0 0 32px #80c8f0', pastel: '#80c8f0' },
-      { min: 500,  color: '#f088a0', glow: '0 0 14px #f088a0, 0 0 28px #f088a0', pastel: '#f088a0' },
-      { min: 200,  color: '#f67c5f', glow: 'none', pastel: '#f67c5f' },
-      { min: 100,  color: '#f59563', glow: 'none', pastel: '#f59563' },
-      { min: 50,   color: '#edcf72', glow: 'none', pastel: '#edcf72' },
+      { min: 1000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 500,  color: '#f088a0', pastel: '#f088a0' },
+      { min: 200,  color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 100,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 50,   color: '#fff0a0', pastel: '#edcf72' },
     ],
     4: [
-      { min: 3000, color: '#80c8f0', glow: '0 0 16px #80c8f0, 0 0 32px #80c8f0', pastel: '#80c8f0' },
-      { min: 1000, color: '#f088a0', glow: '0 0 14px #f088a0, 0 0 28px #f088a0', pastel: '#f088a0' },
-      { min: 500,  color: '#f67c5f', glow: 'none', pastel: '#f67c5f' },
-      { min: 200,  color: '#f59563', glow: 'none', pastel: '#f59563' },
-      { min: 100,  color: '#edcf72', glow: 'none', pastel: '#edcf72' },
+      { min: 3000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 1000, color: '#f088a0', pastel: '#f088a0' },
+      { min: 500,  color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 200,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 100,  color: '#fff0a0', pastel: '#edcf72' },
     ],
     5: [
-      { min: 5000, color: '#80c8f0', glow: '0 0 16px #80c8f0, 0 0 32px #80c8f0', pastel: '#80c8f0' },
-      { min: 3000, color: '#f088a0', glow: '0 0 14px #f088a0, 0 0 28px #f088a0', pastel: '#f088a0' },
-      { min: 1500, color: '#f67c5f', glow: 'none', pastel: '#f67c5f' },
-      { min: 500,  color: '#f59563', glow: 'none', pastel: '#f59563' },
-      { min: 300,  color: '#edcf72', glow: 'none', pastel: '#edcf72' },
+      { min: 5000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 3000, color: '#f088a0', pastel: '#f088a0' },
+      { min: 1500, color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 500,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 300,  color: '#fff0a0', pastel: '#edcf72' },
     ],
   };
 
@@ -2493,19 +2578,21 @@
   const bestBox = bestEl.closest('.score-box');
   let beatBest = false;
 
+
   function updateScoreColor() {
     const isLight = document.documentElement.classList.contains('light');
+    const isNeon = document.documentElement.classList.contains('neon');
     const thresholds = scoreThresholds[SIZE] || scoreThresholds[4];
     for (const t of thresholds) {
       if (score >= t.min) {
         if (isLight) {
           scoreBox.style.background = t.pastel;
           scoreEl.style.color = '#fff';
-          scoreEl.style.textShadow = 'none';
+          scoreEl.style.textShadow = '';
           scoreEl.style.webkitTextStroke = '';
-        } else {
+              } else {
           scoreEl.style.color = t.color;
-          scoreEl.style.textShadow = t.glow;
+          scoreEl.style.textShadow = isNeon ? '0 0 12px ' + t.color : '';
           scoreEl.style.webkitTextStroke = '';
           scoreBox.style.background = '';
         }
@@ -2513,7 +2600,7 @@
       }
     }
     scoreEl.style.color = '';
-    scoreEl.style.textShadow = 'none';
+    scoreEl.style.textShadow = '';
     scoreEl.style.webkitTextStroke = '';
     scoreBox.style.background = '';
   }
@@ -2678,6 +2765,7 @@
     }
     sfx.slide();
     if (allMerged.length > 0) setTimeout(() => sfx.merge(), slideSpeed);
+
     moving = true;
 
     for (let r = 0; r < SIZE; r++) {
@@ -2791,23 +2879,16 @@
     mobilePauseBtn.classList.remove('playing');
     buildGrid();
     tileLayer.innerHTML = '';
-    // Play animation but calculate sizes after it finishes
-    gameBoard.classList.remove('board-switch');
-    void gameBoard.offsetWidth;
-    gameBoard.classList.add('board-switch');
-    gameBoard.addEventListener('animationend', function onEnd() {
-      gameBoard.removeEventListener('animationend', onEnd);
-      afterLayout(() => { calcSizes(); repositionAllTiles(); });
-    });
+    grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+    score = 0;
+    won = false;
+    tileId = 0;
+    moving = false;
+    scoreEl.textContent = '0';
+    loadBest();
+    // Wait for layout to settle, then place tiles
     afterLayout(() => {
       calcSizes();
-      grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
-      score = 0;
-      won = false;
-      tileId = 0;
-      moving = false;
-      scoreEl.textContent = '0';
-      loadBest();
       addRandomTile();
       addRandomTile();
       recalcScore();
