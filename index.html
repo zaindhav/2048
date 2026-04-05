@@ -2053,6 +2053,7 @@
   <div class="chat-panel" id="chat-panel">
     <div class="chat-tabs">
       <button class="chat-tab active" id="chat-tab-global">Global</button>
+      <button class="chat-tab" id="chat-tab-dm" style="display:none;">DM</button>
       <button class="chat-tab" id="chat-tab-players">Players</button>
     </div>
     <div class="chat-messages" id="chat-messages">
@@ -3811,6 +3812,8 @@
     dmTarget = null;
     chatTabGlobal.classList.add('active');
     chatTabPlayers.classList.remove('active');
+    chatTabDM.classList.remove('active');
+    chatTabDM.style.display = 'none';
     chatMessages.classList.remove('hidden');
     onlineListEl.classList.add('hidden');
     chatInput.placeholder = 'Type a message...';
@@ -3821,6 +3824,7 @@
     chatMode = 'players';
     chatTabPlayers.classList.add('active');
     chatTabGlobal.classList.remove('active');
+    chatTabDM.classList.remove('active');
     chatMessages.classList.add('hidden');
     onlineListEl.classList.remove('hidden');
     loadOnlinePlayers();
@@ -3959,19 +3963,30 @@
   }
 
   // Click player to DM
-  onlineListEl.addEventListener('click', e => {
-    const player = e.target.closest('.online-player');
-    if (!player) return;
-    const name = player.dataset.name;
+  const chatTabDM = document.getElementById('chat-tab-dm');
+
+  function openDM(name) {
     dmTarget = name;
     chatMode = 'dm';
     chatTabGlobal.classList.remove('active');
     chatTabPlayers.classList.remove('active');
+    chatTabDM.style.display = '';
+    chatTabDM.textContent = name;
+    chatTabDM.classList.add('active');
     chatMessages.classList.remove('hidden');
     onlineListEl.classList.add('hidden');
     chatInput.placeholder = 'Message ' + name + '...';
-    document.querySelector('.chat-header h3').textContent = 'Chat — ' + name;
     loadDMMessages(name);
+  }
+
+  onlineListEl.addEventListener('click', e => {
+    const player = e.target.closest('.online-player');
+    if (!player) return;
+    openDM(player.dataset.name);
+  });
+
+  chatTabDM.addEventListener('click', () => {
+    if (dmTarget) openDM(dmTarget);
   });
 
   // Click avatar in chat to see player profile
