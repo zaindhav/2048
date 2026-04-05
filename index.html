@@ -1182,14 +1182,20 @@
     display: none;
   }
 
-  /* ===== PORTRAIT MOBILE ===== */
-  @media (max-width: 900px) and (orientation: portrait) {
+  /* ===== MOBILE (portrait + landscape) ===== */
+  @media (max-width: 900px) {
+    html, body {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+
     .container {
       display: flex;
       flex-direction: column;
-      align-items: center;
       height: 100dvh;
-      padding: 1.5dvh 3vw 1dvh;
+      padding: 1dvh 2vw 0.5dvh;
       gap: 0;
       overflow: hidden;
     }
@@ -1200,51 +1206,52 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      gap: 2vw;
+      gap: 1.5vw;
       padding: 0;
       height: auto;
       width: 100%;
-      margin-bottom: 1dvh;
+      margin-bottom: 0.5dvh;
+      flex-shrink: 0;
     }
 
     .scores {
       flex-direction: row;
-      gap: 2vw;
+      gap: 1.5vw;
       flex: 1;
     }
 
     .score-box {
       height: auto;
       flex: 1;
-      padding: 0.8dvh 0;
-      border-radius: 1.5dvh;
+      padding: 0.6dvh 0;
+      border-radius: 1.2dvh;
       border-width: 2px;
       display: block;
     }
 
     .score-box .label {
-      font-size: 1.2dvh;
-      margin-bottom: 0.2dvh;
+      font-size: 1.1dvh;
+      margin-bottom: 0.1dvh;
     }
 
     .score-box .value {
-      font-size: 2.5dvh;
+      font-size: 2.2dvh;
     }
 
     .right-sidebar .bottom-btn {
       margin-top: 0;
-      gap: 1.5vw;
+      gap: 1vw;
       flex-shrink: 0;
     }
 
     .right-sidebar .bottom-btn .settings-btn {
-      font-size: 2.5dvh;
-      padding: 0.8dvh 2vw;
-      border-radius: 1.5dvh;
+      font-size: 2.2dvh;
+      padding: 0.6dvh 1.5vw;
+      border-radius: 1.2dvh;
       border-width: 2px;
     }
 
-    /* Row 2: Timer */
+    /* Row 2: Timer + Board */
     .board-wrapper {
       order: 2;
       width: 100%;
@@ -1253,195 +1260,139 @@
       align-items: center;
       flex: 1;
       min-height: 0;
+      overflow: hidden;
     }
 
     .timer-area {
-      height: 4dvh;
+      height: 3.5dvh;
       flex-shrink: 0;
     }
 
     .timer-text {
-      font-size: 3dvh;
+      font-size: 2.8dvh;
     }
 
-    /* Board: square, fits available space */
+    /* Board: always square, fits available space */
     .game-board {
-      width: min(92vw, calc(100dvh - 28dvh));
-      height: min(92vw, calc(100dvh - 28dvh));
-      max-width: min(92vw, calc(100dvh - 28dvh));
-      max-height: min(92vw, calc(100dvh - 28dvh));
-      border-radius: 3vw;
+      --board-size: min(94vw, calc(100dvh - 20dvh));
+      width: var(--board-size);
+      height: var(--board-size);
+      max-width: var(--board-size);
+      max-height: var(--board-size);
+      border-radius: 2.5vw;
       flex-shrink: 0;
+      aspect-ratio: 1;
     }
 
-    /* Row 3: Size buttons below board */
+    /* Chat button under board */
+    .chat-btn-under {
+      padding: 0.3dvh 10vw;
+      font-size: 2dvh;
+      margin-top: 0.3dvh;
+      border-width: 2px;
+      border-radius: 1.2dvh;
+    }
+
+    .chat-icon {
+      font-size: 4dvh;
+      margin: -1.5dvh 0 -1dvh 0;
+    }
+
+    /* Row 3: Size buttons */
     .left-sidebar {
       order: 3;
       flex-direction: row;
       justify-content: center;
-      gap: 2vw;
+      gap: 1.5vw;
       padding: 0;
       height: auto;
       width: 100%;
-      margin: 1dvh 0;
+      margin: 0.5dvh 0;
+      flex-shrink: 0;
     }
 
     .left-sidebar .size-btn {
       height: auto;
       width: auto;
       flex: 1;
-      padding: 1dvh 0;
-      font-size: 2dvh;
-      border-radius: 1.5dvh;
+      padding: 0.8dvh 0;
+      font-size: 1.8dvh;
+      border-radius: 1.2dvh;
       border-width: 2px;
     }
 
-    /* Row 4: Pause button */
+    /* Hide desktop pause bar, use double-tap instead */
     .mobile-bar {
-      order: 4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
-      width: 100%;
-      margin-bottom: 0.5dvh;
-    }
-
-    .mobile-pause-btn {
-      background: var(--btn-bg);
-      border: 2px solid var(--border);
-      border-radius: 1.5dvh;
-      padding: 0.6dvh 15vw;
-      font-size: 2.5dvh;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #e03030;
-    }
-
-    .mobile-pause-btn.playing {
-      color: #30b030;
+      display: none;
     }
 
     /* Panels */
-    .tutorial { width: 90vw; padding: 20px 18px; max-height: 80dvh; overflow-y: auto; }
-    .tutorial h1 { font-size: 26px; }
-    .tutorial h2.tut-heading { font-size: 20px; }
-    .tut-tile { width: 32px; height: 32px; font-size: 13px; }
-    .tut-tile.tut-big { width: 52px; height: 52px; font-size: 20px; }
-    .tut-arrow-key { width: 36px; height: 36px; font-size: 15px; }
-    .tut-nav-btn { padding: 8px 16px; font-size: 13px; }
+    .tutorial { width: 90vw; padding: 18px 16px; max-height: 80dvh; overflow-y: auto; }
+    .tutorial h1 { font-size: 24px; }
+    .tutorial h2.tut-heading { font-size: 18px; }
+    .tut-tile { width: 30px; height: 30px; font-size: 12px; }
+    .tut-tile.tut-big { width: 48px; height: 48px; font-size: 18px; }
+    .tut-arrow-key { width: 34px; height: 34px; font-size: 14px; }
+    .tut-nav-btn { padding: 8px 14px; font-size: 12px; }
     .lb-name-input { font-size: 16px !important; padding: 10px !important; }
     .settings-panel { width: 85vw; max-height: 85dvh; overflow-y: auto; }
-    .lb-panel, .profile-panel, .player-panel { width: 90vw; max-height: 80dvh; overflow-y: auto; }
+    .lb-panel, .profile-panel, .player-panel, .chat-panel { width: 92vw; max-height: 80dvh; overflow-y: auto; }
   }
 
   /* ===== LANDSCAPE MOBILE ===== */
   @media (max-width: 900px) and (orientation: landscape) {
     .container {
-      display: flex;
       flex-direction: row;
-      align-items: stretch;
-      height: 100dvh;
-      padding: 1dvh 2vw;
+      padding: 1dvh 1.5vw;
       gap: 1vw;
-      overflow: hidden;
     }
 
-    /* Left column: size buttons */
     .left-sidebar {
       flex-direction: column;
-      justify-content: center;
-      gap: 1dvh;
-      padding: 0;
-      height: auto;
       width: auto;
+      gap: 0.6dvh;
+      margin: 0;
       order: 1;
     }
 
     .left-sidebar .size-btn {
-      height: auto;
-      width: auto;
-      padding: 1.5dvh 2vw;
-      font-size: 2.2dvh;
-      border-radius: 1dvh;
-      border-width: 2px;
+      padding: 1dvh 1.5vw;
+      font-size: 2dvh;
     }
 
-    /* Center: timer + board */
-    .board-wrapper {
-      order: 2;
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .timer-area {
-      height: 4dvh;
-      flex-shrink: 0;
-    }
-
-    .timer-text {
-      font-size: 3dvh;
-    }
+    .board-wrapper { order: 2; flex: 1; min-width: 0; }
 
     .game-board {
-      width: calc(100dvh - 12dvh);
-      height: calc(100dvh - 12dvh);
-      max-width: calc(100dvh - 12dvh);
-      max-height: calc(100dvh - 12dvh);
-      border-radius: 1.5dvh;
-      flex-shrink: 0;
+      --board-size: min(50vw, calc(100dvh - 10dvh));
+      width: var(--board-size);
+      height: var(--board-size);
+      max-width: var(--board-size);
+      max-height: var(--board-size);
     }
 
-    /* Right column: scores + buttons */
+    .chat-btn-under { display: none; }
+
     .right-sidebar {
       order: 3;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 1dvh;
-      padding: 0;
-      height: auto;
       width: auto;
+      gap: 0.6dvh;
+      margin: 0;
     }
 
-    .scores {
-      flex-direction: column;
-      gap: 1dvh;
-    }
-
-    .score-box {
-      height: auto;
-      padding: 0.8dvh 2vw;
-      border-radius: 1dvh;
-      border-width: 2px;
-      display: block;
-    }
-
-    .score-box .label { font-size: 1.2dvh; }
-    .score-box .value { font-size: 2.5dvh; }
+    .scores { flex-direction: column; gap: 0.6dvh; }
+    .score-box { padding: 0.5dvh 1.5vw; }
+    .score-box .label { font-size: 1dvh; }
+    .score-box .value { font-size: 2dvh; }
 
     .right-sidebar .bottom-btn {
-      margin-top: 0;
       flex-direction: column;
-      gap: 0.8dvh;
+      gap: 0.5dvh;
     }
 
     .right-sidebar .bottom-btn .settings-btn {
-      font-size: 2.5dvh;
-      padding: 0.6dvh 1.5vw;
-      border-radius: 1dvh;
-      border-width: 2px;
-    }
-
-    /* Hide pause bar in landscape */
-    .mobile-bar { display: none; }
-
-    /* Panels */
-    .tutorial, .settings-panel, .lb-panel, .profile-panel, .player-panel {
-      max-height: 90dvh; overflow-y: auto;
+      font-size: 2dvh;
+      padding: 0.5dvh 1vw;
     }
   }
 
@@ -3289,6 +3240,21 @@
   });
 
   let touchStartX, touchStartY;
+  // Double-tap anywhere to toggle pause on mobile
+  let lastTapTime = 0;
+  document.addEventListener('touchend', e => {
+    if (window.innerWidth > 900) return;
+    if (e.target.closest('button, input, .settings-panel, .lb-panel, .profile-panel, .player-panel, .chat-panel, .tutorial')) return;
+    const now = Date.now();
+    if (now - lastTapTime < 300) {
+      e.preventDefault();
+      togglePause();
+      lastTapTime = 0;
+    } else {
+      lastTapTime = now;
+    }
+  }, { passive: false });
+
   gameBoard.addEventListener('touchstart', e => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
