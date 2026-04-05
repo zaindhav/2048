@@ -110,7 +110,10 @@
   }
 
   #lb-btn { color: #f0d878; }
-  :root.light #lb-btn { color: #90c8a0; }
+  :root.light #lb-btn { color: #b888e0; }
+
+  #profile-btn { color: #80e0a8; }
+  :root.light #profile-btn { color: #f59563; }
 
   .scores {
     display: flex;
@@ -169,7 +172,7 @@
   }
 
   .left-sidebar .size-btn[data-size="3"] { color: #edcf72; }
-  :root.light .left-sidebar .size-btn[data-size="3"] { color: #90c8a0; }
+  :root.light .left-sidebar .size-btn[data-size="3"] { color: #40c878; }
   .left-sidebar .size-btn[data-size="4"] { color: #f59563; }
   .left-sidebar .size-btn[data-size="5"] { color: #f67c5f; }
 
@@ -1478,7 +1481,7 @@
       </div>
     </div>
     <div class="bottom-btn">
-      <button class="settings-btn" id="profile-btn" style="color:#80e0a8;">&#9786;</button>
+      <button class="settings-btn" id="profile-btn">&#9786;</button>
       <button class="settings-btn" id="lb-btn">&#9818;</button>
       <button class="settings-btn" id="settings-btn">&#9881;</button>
     </div>
@@ -2675,6 +2678,9 @@
   }
 
   document.addEventListener('keydown', e => {
+    // Don't trigger shortcuts when typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
     if (e.key === ' ') {
       e.preventDefault();
       togglePause();
