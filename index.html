@@ -3742,11 +3742,21 @@
     }
   }
 
+  let playerOpenedFrom = 'lb'; // 'lb' or 'chat'
+
+  // Prevent clicks inside player panel from closing backdrop
+  playerPanel.addEventListener('click', e => { e.stopPropagation(); });
+
   playerClose.addEventListener('click', () => {
     playerPanel.classList.remove('open');
-    // Reopen leaderboard
-    lbPanel.classList.add('open');
-    lbBackdrop.classList.add('open');
+    if (playerOpenedFrom === 'chat') {
+      // Keep blur, reopen chat
+      chatPanel.classList.add('open');
+    } else {
+      lbPanel.classList.add('open');
+      lbBackdrop.classList.add('open');
+    }
+    playerOpenedFrom = 'lb';
   });
 
   // Make leaderboard entries clickable
@@ -3831,7 +3841,10 @@
   }
 
   chatBtn.addEventListener('click', () => { sfx.click(); openChat(); });
-  chatBackdrop.addEventListener('click', closeChat);
+  chatBackdrop.addEventListener('click', () => {
+    if (playerPanel.classList.contains('open')) return;
+    closeChat();
+  });
 
   // Chat tabs
   chatTabGlobal.addEventListener('click', () => {
@@ -3881,8 +3894,9 @@
     }
     chatMessages.innerHTML = msgs.map(m => {
       const mine = m.sender === myName;
-      return '<div class="chat-msg ' + (mine ? 'mine' : '') + '">' +
-        makeChatAvatar(m.sender, m.avatar) +
+      const av = m.avatar || '';
+      return '<div class="chat-msg ' + (mine ? 'mine' : '') + '" data-sender="' + (m.sender || '') + '" data-avatar="' + (av.startsWith('data:') ? '' : av) + '">' +
+        '<div class="chat-avatar-click" style="cursor:pointer;">' + makeChatAvatar(m.sender, m.avatar) + '</div>' +
         '<div class="chat-bubble">' +
           '<div class="chat-bubble-name">' + (m.sender || 'Player') + '</div>' +
           m.message +
@@ -3913,9 +3927,28 @@
     if (data) renderMessages(data);
   }
 
+  const badWords = ['fuck','shit','bitch','ass','damn','dick','cock','pussy','bastard','crap','cunt','slut','whore','nigger','nigga','fag','faggot','retard','stfu','wtf','lmao','piss','bollocks','wanker','twat'];
+
+  function containsProfanity(text) {
+    const lower = text.toLowerCase().replace(/[^a-z]/g, ' ');
+    return badWords.some(w => {
+      const re = new RegExp('\\b' + w + '\\b');
+      return re.test(lower);
+    });
+  }
+
   async function sendMessage() {
     const msg = chatInput.value.trim();
     if (!msg) return;
+    if (containsProfanity(msg)) {
+      chatInput.style.borderColor = '#e03030';
+      chatInput.setAttribute('placeholder', 'Keep it clean!');
+      setTimeout(() => {
+        chatInput.style.borderColor = '';
+        chatInput.setAttribute('placeholder', 'Type a message...');
+      }, 2000);
+      return;
+    }
     const myName = getMyChatName();
     const avatar = getMyChatAvatar();
     const receiver = dmTarget || 'global';
@@ -3980,6 +4013,28 @@
     chatInput.placeholder = 'Message ' + name + '...';
     document.querySelector('.chat-header h3').textContent = 'Chat — ' + name;
     loadDMMessages(name);
+  });
+
+  // Click avatar in chat to see player profile
+  chatMessages.addEventListener('click', e => {
+    const avatarClick = e.target.closest('.chat-avatar-click');
+    if (!avatarClick) return;
+    const msg = avatarClick.closest('.chat-msg');
+    if (!msg) return;
+    const senderName = msg.dataset.sender;
+    if (!senderName || senderName === getMyChatName()) return;
+    // Find player in leaderboard caches
+    let entry = null;
+    for (const sz of [3, 4, 5]) {
+      const found = (lbCache[sz] || []).find(e => e.name === senderName);
+      if (found) { entry = found; break; }
+    }
+    if (!entry) {
+      entry = { name: senderName, avatar: msg.dataset.avatar, stats: {} };
+    }
+    chatPanel.classList.remove('open');
+    playerOpenedFrom = 'chat';
+    showPlayerProfile(entry);
   });
 
   // Real-time subscription
