@@ -1342,6 +1342,11 @@
   }
 
 
+  /* Mobile icon buttons — hidden on desktop */
+  .mobile-icon-btn {
+    display: none;
+  }
+
   /* Chat button under board */
   .chat-btn-under {
     background: var(--btn-bg);
@@ -1650,72 +1655,69 @@
       flex-direction: column !important;
       grid-template-columns: none !important;
       height: 100dvh !important;
-      padding: 1dvh 3vw 1dvh !important;
-      gap: 0.5dvh !important;
+      padding: 1dvh 3vw 0.5dvh !important;
+      gap: 0 !important;
       overflow: hidden !important;
     }
 
+    /* Row 1: Score + Best only */
     .right-sidebar {
       order: 1 !important;
       flex-direction: row !important;
-      justify-content: space-between !important;
+      justify-content: center !important;
       align-items: center !important;
-      gap: 2vw !important;
+      gap: 3vw !important;
       padding: 0 !important;
       height: auto !important;
       width: 100% !important;
       flex-shrink: 0 !important;
+      flex-wrap: wrap !important;
     }
 
     .scores {
       flex-direction: row !important;
-      gap: 2vw !important;
+      gap: 3vw !important;
       flex: 1 !important;
+      width: 100% !important;
     }
 
     .score-box {
       height: auto !important;
       flex: 1 !important;
-      padding: 1.5dvh 0 !important;
+      padding: 1.2dvh 0 !important;
       border-radius: 2vw !important;
       border-width: 2px !important;
       display: block !important;
     }
 
-    .score-box .label { font-size: 2dvh !important; margin-bottom: 0.3dvh !important; }
-    .score-box .value { font-size: 4.5dvh !important; }
+    .score-box .label { font-size: 1.8dvh !important; margin-bottom: 0.2dvh !important; }
+    .score-box .value { font-size: 4dvh !important; }
 
+    /* Hide icon buttons from sidebar — moved below board */
     .right-sidebar .bottom-btn {
-      margin-top: 0 !important;
-      gap: 2vw !important;
-      flex-shrink: 0 !important;
+      display: none !important;
     }
 
-    .right-sidebar .bottom-btn .settings-btn {
-      font-size: 3dvh !important;
-      padding: 1dvh 2.5vw !important;
-      border-radius: 2vw !important;
-      border-width: 2px !important;
-    }
-
+    /* Row 2: Timer + Board */
     .board-wrapper {
       order: 2 !important;
       width: 100% !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
-      flex: 1 !important;
+      flex: 0 0 auto !important;
       min-height: 0 !important;
       overflow: visible !important;
       height: auto !important;
       padding: 0 !important;
+      margin-top: 0.5dvh !important;
     }
 
-    .timer-area { height: 4dvh !important; flex-shrink: 0 !important; }
-    .timer-text { font-size: 3.5dvh !important; }
+    .timer-area { height: 5dvh !important; flex-shrink: 0 !important; }
+    .timer-text { font-size: 5dvh !important; }
 
     .game-board {
-      --bs: min(94vw, calc(100dvh - 26dvh));
+      --bs: min(92vw, calc(100dvh - 38dvh));
       width: var(--bs) !important;
       height: var(--bs) !important;
       max-width: var(--bs) !important;
@@ -1724,19 +1726,57 @@
       aspect-ratio: 1 / 1 !important;
     }
 
+    /* Row 3: Chat + Profile + Leaderboard + Settings buttons */
     .chat-btn-under {
-      padding: 0 20vw !important;
+      padding: 0.5dvh 25vw !important;
       font-size: 2dvh !important;
-      margin-top: 1dvh !important;
+      margin-top: 0.8dvh !important;
       border-width: 2px !important;
       border-radius: 2vw !important;
       flex-shrink: 0 !important;
     }
 
-    .chat-icon { font-size: 12dvh !important; margin: -4dvh 0 -3dvh 0 !important; }
+    .chat-icon { font-size: 8dvh !important; margin: -2.5dvh 0 -2dvh 0 !important; }
 
-    .left-sidebar {
+    /* Mobile icon row below chat button */
+    .mobile-bar {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 3vw !important;
+      padding: 0.5dvh 0 !important;
+      width: 100% !important;
       order: 3 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .mobile-pause-btn {
+      display: none !important;
+    }
+
+    .mobile-icon-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 4dvh !important;
+      padding: 1dvh 4vw !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+      flex: 1 !important;
+    }
+
+    .mobile-icon-btn .face-svg {
+      width: 4dvh !important;
+      height: 4dvh !important;
+    }
+
+    #mobile-profile-btn { color: #80e0a8 !important; }
+    #mobile-lb-btn { color: #f0d878 !important; }
+    #mobile-settings-btn { color: #e07070 !important; }
+
+    /* Row 4: Size buttons */
+    .left-sidebar {
+      order: 4 !important;
       flex-direction: row !important;
       justify-content: center !important;
       gap: 2vw !important;
@@ -1751,13 +1791,11 @@
       height: auto !important;
       width: auto !important;
       flex: 1 !important;
-      padding: 2dvh 0 !important;
-      font-size: 3dvh !important;
+      padding: 1.5dvh 0 !important;
+      font-size: 2.5dvh !important;
       border-radius: 2vw !important;
       border-width: 2px !important;
     }
-
-    .mobile-bar { display: none !important; }
 
     .tutorial { width: 90vw !important; padding: 18px 16px !important; max-height: 80dvh !important; overflow-y: auto !important; }
     .tutorial h1 { font-size: 24px !important; }
@@ -1974,6 +2012,16 @@
   <!-- Mobile bottom bar -->
   <div class="mobile-bar">
     <button class="mobile-pause-btn" id="mobile-pause-btn">&#9208;</button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-profile-btn">
+      <svg class="face-svg" viewBox="0 0 40 40" width="1em" height="1em">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="13" cy="15" r="2.5" fill="currentColor"/>
+        <circle cx="27" cy="15" r="2.5" fill="currentColor"/>
+        <path d="M13 27 Q20 32 27 27" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-lb-btn"><span class="icon-glow">&#9812;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-settings-btn"><span class="icon-glow">&#9881;</span></button>
   </div>
 
   <!-- Profile Panel -->
@@ -3740,6 +3788,9 @@
   });
 
   profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
+  document.getElementById('mobile-profile-btn').addEventListener('click', () => { sfx.click(); openProfile(); });
+  document.getElementById('mobile-lb-btn').addEventListener('click', () => { sfx.click(); hideLBSubmit(); openLB(); fetchLB(lbViewSize); });
+  document.getElementById('mobile-settings-btn').addEventListener('click', (e) => { e.stopPropagation(); sfx.click(); openSettings(); });
 
   // Animate smiley face — smoothly morph mouth curve
   const faceMouth = profileBtn.querySelector('.face-mouth');
