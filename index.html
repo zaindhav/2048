@@ -47,7 +47,7 @@
     --setting-text: #555;
     --board-shadow: none;
     --title-card-bg: #ffffff;
-    --accent: #90c8a0;
+    --accent: #f59563;
     --size-btn-text: #1a1a1a;
     --action-btn-bg: #f59563;
     --action-btn-text: #000;
@@ -225,6 +225,10 @@
     width: 100%;
     text-align: center;
     box-shadow: var(--btn-shadow);
+  }
+
+  .icon-btn {
+    font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
   }
 
   .settings-btn:hover {
@@ -784,23 +788,23 @@
     margin-bottom: 6px;
     background: var(--btn-bg);
     border-radius: 12px;
-    border: 2px solid var(--border);
+    border: 3px solid var(--border);
   }
 
-  .lb-entry.gold { border-color: #f0d878; }
-  .lb-entry.silver { border-color: #c0c0c0; }
-  .lb-entry.bronze { border-color: #cd7f32; }
+  .lb-entry.gold { border-color: #d4a020; }
+  .lb-entry.silver { border-color: #a0a0a0; }
+  .lb-entry.bronze { border-color: #b06820; }
 
   .lb-rank {
     font-weight: 800;
-    font-size: 20px;
-    width: 36px;
+    font-size: 28px;
+    width: 40px;
     text-align: center;
   }
 
-  .lb-entry.gold .lb-rank { color: #f0d878; }
-  .lb-entry.silver .lb-rank { color: #c0c0c0; }
-  .lb-entry.bronze .lb-rank { color: #cd7f32; }
+  .lb-entry.gold .lb-rank { color: #d4a020; }
+  .lb-entry.silver .lb-rank { color: #a0a0a0; }
+  .lb-entry.bronze .lb-rank { color: #b06820; }
   .lb-entry:not(.gold):not(.silver):not(.bronze) .lb-rank { color: var(--label-color); }
 
   .lb-name {
@@ -1570,9 +1574,9 @@
       </div>
     </div>
     <div class="bottom-btn">
-      <button class="settings-btn" id="profile-btn">&#9786;</button>
-      <button class="settings-btn" id="lb-btn">&#9818;</button>
-      <button class="settings-btn" id="settings-btn">&#9881;</button>
+      <button class="settings-btn icon-btn" id="profile-btn">&#9786;</button>
+      <button class="settings-btn icon-btn" id="lb-btn">&#9818;</button>
+      <button class="settings-btn icon-btn" id="settings-btn">&#9881;</button>
     </div>
   </div>
 
@@ -2820,7 +2824,11 @@
   gameBoard.addEventListener('touchstart', e => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-  }, { passive: true });
+  }, { passive: false });
+
+  gameBoard.addEventListener('touchmove', e => {
+    e.preventDefault(); // Prevent page scroll during swipe
+  }, { passive: false });
 
   gameBoard.addEventListener('touchend', e => {
     if (touchStartX === null) return;
@@ -2874,7 +2882,9 @@
   let lbCache = { 3: [], 4: [], 5: [] };
 
   async function fetchLB(size) {
-    if (lbViewSize === size) lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
+    if (lbViewSize === size && (!lbCache[size] || lbCache[size].length === 0)) {
+      lbEntries.innerHTML = '<div class="lb-empty">Loading...</div>';
+    }
     try {
       const res = await fetch(workerUrl(size) + '&t=' + Date.now());
       if (res.ok) {
@@ -2983,16 +2993,20 @@
     lbPanel.querySelectorAll('.lb-tab').forEach(t =>
       t.classList.toggle('active', parseInt(t.dataset.lb) === size)
     );
-    // Auto-submit and show
-    addLBEntry(size, sc, elapsed, name).then(() => {
-      renderLB();
-    });
-    // Show cached instantly while submitting
-    lbCache[size].push({ name, score: sc, time: elapsed });
+    // Update local cache — don't duplicate, just update if exists
+    const existing = lbCache[size].find(e => e.name === name);
+    if (existing) {
+      if (sc > existing.score) { existing.score = sc; existing.time = elapsed; }
+    } else {
+      lbCache[size].push({ name, score: sc, time: elapsed });
+    }
     lbCache[size].sort((a, b) => b.score - a.score);
     if (lbCache[size].length > 10) lbCache[size].length = 10;
+    localStorage.setItem('lb2048_backup_' + size, JSON.stringify(lbCache[size]));
     renderLB();
     openLB();
+    // Submit to server in background
+    addLBEntry(size, sc, elapsed, name);
   }
 
   function hideLBSubmit() {
@@ -3035,19 +3049,18 @@
     }
   };
 
-  // Clear stale local caches on load
-  // One-time reset for new version — remove after first release
+  // One-time reset for new version
   if (!localStorage.getItem('2048_v2_reset')) {
     localStorage.removeItem('2048_tutorial_done');
     localStorage.removeItem('lb2048_name');
     localStorage.removeItem('lb2048_avatar');
     localStorage.setItem('2048_v2_reset', '1');
   }
-  localStorage.removeItem('lb2048_backup_3');
-  localStorage.removeItem('lb2048_backup_4');
-  localStorage.removeItem('lb2048_backup_5');
-  lbCache = { 3: [], 4: [], 5: [] };
-  fetchLB(lbViewSize);
+  // Load local backups instantly, then fetch fresh from server for all sizes
+  for (const sz of [3, 4, 5]) {
+    try { lbCache[sz] = JSON.parse(localStorage.getItem('lb2048_backup_' + sz) || '[]'); } catch(e) { lbCache[sz] = []; }
+  }
+  fetchLB(3); fetchLB(4); fetchLB(5);
 
   // Profile / Account
   const profilePanel = document.getElementById('profile-panel');
@@ -3240,6 +3253,9 @@
     document.getElementById('player-highest').textContent = st.highestTile || 0;
     pStreakBadge.textContent = (st.streak || 0) > 0 ? st.streak + ' day streak!' : '';
 
+    // Close leaderboard first, then show player profile
+    lbPanel.classList.remove('open');
+    lbBackdrop.classList.remove('open');
     playerPanel.classList.add('open');
     sfx.click();
 
@@ -3258,6 +3274,9 @@
 
   playerClose.addEventListener('click', () => {
     playerPanel.classList.remove('open');
+    // Reopen leaderboard
+    lbPanel.classList.add('open');
+    lbBackdrop.classList.add('open');
   });
 
   // Make leaderboard entries clickable
@@ -3434,6 +3453,7 @@
     tutEl.style.display = '';
     tutBackdrop.style.display = '';
     showTutStep();
+    init(); // Start game behind tutorial so board is ready
   } else {
     tutEl.style.display = 'none';
     tutBackdrop.style.display = 'none';
