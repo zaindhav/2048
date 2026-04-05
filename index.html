@@ -1575,7 +1575,7 @@
     </div>
     <div class="bottom-btn">
       <button class="settings-btn icon-btn" id="profile-btn">&#9786;</button>
-      <button class="settings-btn icon-btn" id="lb-btn">&#9818;</button>
+      <button class="settings-btn icon-btn" id="lb-btn">&#9812;</button>
       <button class="settings-btn icon-btn" id="settings-btn">&#9881;</button>
     </div>
   </div>
@@ -2949,7 +2949,7 @@
     const medals = ['gold', 'silver', 'bronze'];
     lbEntries.innerHTML = entries.map((e, i) =>
       '<div class="lb-entry ' + (medals[i] || '') + '">' +
-        '<span class="lb-rank">' + (i < 3 ? '&#9818;' : (i + 1)) + '</span>' +
+        '<span class="lb-rank">' + (i < 3 ? '&#9812;' : (i + 1)) + '</span>' +
         makeAvatar(e) +
         '<span class="lb-name">' + (e.name || 'Player') + '</span>' +
         '<span class="lb-score">' + e.score + '</span>' +
