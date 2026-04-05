@@ -1193,10 +1193,10 @@
 
     .container {
       display: grid;
-      grid-template-rows: auto auto 1fr auto;
+      grid-template-rows: auto 1fr auto;
       height: 100dvh;
-      padding: 1dvh 3vw 1.5dvh;
-      gap: 0.8dvh;
+      padding: 1dvh 3vw 1dvh;
+      gap: 0.5dvh;
       overflow: hidden;
     }
 
@@ -1271,7 +1271,7 @@
 
     /* Board: always square */
     .game-board {
-      --board-size: min(94vw, calc(100dvh - 25dvh));
+      --board-size: min(94vw, calc(100dvh - 26dvh));
       width: var(--board-size) !important;
       height: var(--board-size) !important;
       max-width: var(--board-size) !important;
@@ -1279,18 +1279,19 @@
       border-radius: 3vw;
     }
 
-    /* Chat button under board */
+    /* Chat button under board — thin, wide */
     .chat-btn-under {
-      padding: 0 8vw;
+      padding: 0 20vw;
       font-size: 2dvh;
-      margin-top: 0.5dvh;
+      margin-top: 0.3dvh;
       border-width: 2px;
       border-radius: 2vw;
+      flex-shrink: 0;
     }
 
     .chat-icon {
-      font-size: 5dvh;
-      margin: -2dvh 0 -1.5dvh 0;
+      font-size: 3.5dvh;
+      margin: -0.5dvh 0;
     }
 
     /* Row 3: Size buttons */
@@ -1302,14 +1303,16 @@
       padding: 0;
       height: auto;
       width: 100%;
+      flex-shrink: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0);
     }
 
     .left-sidebar .size-btn {
       height: auto;
       width: auto;
       flex: 1;
-      padding: 1.2dvh 0;
-      font-size: 2.2dvh;
+      padding: 1dvh 0;
+      font-size: 2dvh;
       border-radius: 2vw;
       border-width: 2px;
     }
