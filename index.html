@@ -2400,10 +2400,22 @@
     return audioCtx;
   }
 
-  // Unlock audio on first user interaction (required by mobile browsers)
+  // Unlock audio on first user interaction (required by Safari)
+  let audioUnlocked = false;
   function unlockAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioUnlocked) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioCtx.resume().then(() => {
+        // Play a silent buffer to fully unlock audio on Safari
+        const buf = audioCtx.createBuffer(1, 1, 22050);
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        src.connect(audioCtx.destination);
+        src.start(0);
+        audioUnlocked = true;
+      });
+    } catch(e) {}
   }
   document.addEventListener('touchstart', unlockAudio, { passive: true });
   document.addEventListener('touchend', unlockAudio, { passive: true });
