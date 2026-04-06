@@ -2499,14 +2499,25 @@ window.onerror = function(msg, url, line) {
     return audioCtx;
   }
 
-  // On mobile, create AudioContext on first touch BEFORE any game interaction
-  document.addEventListener('touchstart', function initAudio() {
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    } catch(e) {}
-    document.removeEventListener('touchstart', initAudio);
-  }, { once: true });
+  // iOS Safari audio unlock — attach to ALL buttons and the document
+  function iosUnlock() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+  // Try every possible event type
+  ['touchstart', 'touchend', 'mousedown', 'click', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, iosUnlock, { passive: true });
+  });
+  // Also attach directly to all buttons after DOM is ready
+  setTimeout(() => {
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('touchend', iosUnlock, { passive: true });
+    });
+  }, 500);
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
