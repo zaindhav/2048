@@ -4504,13 +4504,23 @@ window._pickAvatar = function(btn) {
     setTimeout(showUpdate, 1000);
   }
 
-  // Show tutorial overlay only for first-time users (doesn't block game start)
+  // Show tutorial for first-time users
   if (!localStorage.getItem('2048_tutorial_done')) {
-    setTimeout(() => {
-      tutEl.style.display = '';
-      tutBackdrop.style.display = '';
-      showTutStep();
-    }, 100);
+    if (window.innerWidth <= 900) {
+      // Mobile: skip tutorial, just ask for name
+      setTimeout(() => {
+        const name = prompt('Welcome to 2048! Enter your name:') || 'Player';
+        localStorage.setItem('lb2048_name', name);
+        localStorage.setItem('2048_tutorial_done', '1');
+      }, 300);
+    } else {
+      // Desktop: show full tutorial
+      setTimeout(() => {
+        tutEl.style.display = '';
+        tutBackdrop.style.display = '';
+        showTutStep();
+      }, 100);
+    }
   }
 })();
 </script>
