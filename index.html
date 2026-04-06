@@ -2393,8 +2393,10 @@
   let sfxEnabled = true;
 
   function getCtx() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
     return audioCtx;
   }
 
@@ -4384,20 +4386,28 @@
   // One-time update notification for existing players
   if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v4')) {
     localStorage.setItem('2048_update_v4', '1');
-    setTimeout(() => {
-      alert("🆕 What's New!\n\n" +
-        "📱 Improved mobile layout\n" +
-        "⚡ Zero move latency on mobile\n" +
-        "👆 Double-tap to pause, two-finger swipe up for tutorial\n" +
-        "📖 Player Book — browse all players (B)\n" +
-        "🔔 Leaderboard notifications when your rank changes\n" +
-        "📤 Share your scores with a screenshot\n" +
-        "🎨 Change your avatar from your profile\n" +
-        "📚 Reopen tutorial anytime (T)\n" +
-        "🌈 3 themes: Dark, Neon, Light (X)\n" +
-        "🔍 Search players in Player Book\n" +
-        "💬 Hover buttons to see what they do");
-    }, 500);
+    const showUpdate = () => {
+      showNotif("🆕 New update! Tap here for details");
+      notifToast.style.cursor = 'pointer';
+      notifToast.onclick = () => {
+        notifToast.onclick = null;
+        notifToast.style.cursor = '';
+        notifToast.classList.remove('visible');
+        alert("🆕 What's New!\n\n" +
+          "📱 Improved mobile layout\n" +
+          "⚡ Zero move latency on mobile\n" +
+          "👆 Double-tap to pause, two-finger swipe up for tutorial\n" +
+          "📖 Player Book — browse all players (B)\n" +
+          "🔔 Leaderboard notifications when your rank changes\n" +
+          "📤 Share your scores with a screenshot\n" +
+          "🎨 Change your avatar from your profile\n" +
+          "📚 Reopen tutorial anytime (T)\n" +
+          "🌈 3 themes: Dark, Neon, Light (X)\n" +
+          "🔍 Search players in Player Book\n" +
+          "💬 Hover buttons to see what they do");
+      };
+    };
+    setTimeout(showUpdate, 1000);
   }
 
   // Show tutorial overlay only for first-time users (doesn't block game start)
