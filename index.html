@@ -1715,11 +1715,12 @@
 
     .mobile-icon-btn .face-svg { width: 4dvh !important; height: 4dvh !important; }
 
-    #mobile-lb-btn { -webkit-text-stroke: 1.5px !important; }
+    #mobile-lb-btn { font-size: 5dvh !important; }
+    :root.light #mobile-lb-btn { color: #a070d8 !important; }
     #mobile-profile-btn { color: #80e0a8 !important; }
     #mobile-lb-btn { color: #f0d878 !important; }
     #mobile-pbook-btn { color: #80c8f0 !important; display: flex !important; }
-    #mobile-settings-btn { color: #e07070 !important; display: flex !important; }
+    #mobile-settings-btn { color: #e07070 !important; display: flex !important; font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif !important; }
 
     /* Row 3: Timer + Board */
     .board-wrapper {
@@ -1741,7 +1742,7 @@
     .board-wrapper { margin-top: 2dvh !important; }
 
     .game-board {
-      --bs: min(92vw, calc(100dvh - 36dvh));
+      --bs: min(92vw, calc(100dvh - 40dvh));
       width: var(--bs) !important; height: var(--bs) !important;
       max-width: var(--bs) !important; max-height: var(--bs) !important;
       border-radius: 3vw !important; aspect-ratio: 1 / 1 !important;
@@ -1765,7 +1766,7 @@
 
     .left-sidebar .size-btn {
       height: auto !important; width: auto !important; flex: 1 !important;
-      padding: 2.5dvh 0 !important; font-size: 3dvh !important;
+      padding: 3.5dvh 0 !important; font-size: 3.5dvh !important;
       border-radius: 2vw !important; border-width: 2px !important;
     }
 
