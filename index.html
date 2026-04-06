@@ -1724,7 +1724,6 @@
     :root.light #mobile-lb-btn { color: #a070d8 !important; }
     #mobile-profile-btn { color: #f59563 !important; }
     #mobile-lb-btn { color: #f0d878 !important; }
-    #mobile-lb-btn .icon-glow { font-size: 5dvh !important; }
     :root.light #mobile-lb-btn { color: #a070d8 !important; }
     #mobile-pbook-btn { display: flex !important; }
     #mobile-settings-btn { color: #e07070 !important; display: flex !important; }
@@ -1768,6 +1767,7 @@
       height: auto !important;
       width: 100% !important;
       flex-shrink: 0 !important;
+      margin-top: 1dvh !important;
       padding-bottom: env(safe-area-inset-bottom, 0) !important;
     }
 
@@ -2307,7 +2307,6 @@
     <div class="tut-section">
       <div class="tut-row"><span>&#128070; <b>Swipe</b> to move tiles</span></div>
       <div class="tut-row"><span>&#128400; <b>Two-finger tap</b> to pause / resume</span></div>
-      <div class="tut-row"><span>&#9995; <b>Two-finger swipe up</b> to open tutorial</span></div>
       <div class="tut-row"><span>&#128260; <b>Tap grid buttons</b> to switch size or restart</span></div>
     </div>
     <p class="tut-desc">Use the buttons above the board for Profile, Leaderboard, Player Book, and Settings.</p>
@@ -3371,30 +3370,6 @@
   });
 
   let touchStartX, touchStartY;
-  // Two-finger swipe up to open tutorial on mobile
-  let twoFingerStartY = null;
-  document.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) {
-      twoFingerStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    }
-  }, { passive: true });
-
-  document.addEventListener('touchend', e => {
-    if (twoFingerStartY !== null && e.changedTouches.length > 0) {
-      const endY = e.changedTouches[0].clientY;
-      if (twoFingerStartY - endY > 60) {
-        // Swipe up with two fingers
-        if (tutEl.style.display === 'none') {
-          tutStep = localStorage.getItem('2048_tutorial_done') ? 1 : 0;
-          tutEl.style.display = '';
-          tutBackdrop.style.display = '';
-          showTutStep();
-        }
-      }
-      twoFingerStartY = null;
-    }
-  }, { passive: true });
-
   // Two-finger tap to toggle pause on mobile
   document.addEventListener('touchstart', e => {
     if (window.innerWidth > 900) return;
