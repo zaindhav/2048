@@ -4475,38 +4475,50 @@ window.onerror = function(msg, url, line) {
   init();
 
   // One-time update notification for existing players
-  if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v5')) {
-    localStorage.setItem('2048_update_v5', '1');
+  if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v6')) {
+    localStorage.setItem('2048_update_v6', '1');
     const isMobile = window.innerWidth <= 900;
     const showUpdate = () => {
-      showNotif("🆕 New update! Tap here for details");
+      showNotif("📢 Important message! Tap here");
       notifToast.style.cursor = 'pointer';
       notifToast.onclick = () => {
         notifToast.onclick = null;
         notifToast.style.cursor = '';
         notifToast.classList.remove('visible');
         if (isMobile) {
-          alert("🆕 What's New on Mobile!\n\n" +
-            "📱 New mobile layout — everything fits on screen\n" +
-            "⚡ Zero move latency — instant response\n" +
-            "✌️ Two-finger tap to pause/resume\n" +
-            "⚙️ Settings opens as a panel (not sidebar)\n" +
-            "😊 Animated smiley face + spinning gear\n" +
+          alert("Hey! Welcome back 👋\n\n" +
+            "We owe you an apology. Due to a server issue, the leaderboard scores were accidentally wiped. We're really sorry about that — we know you worked hard for those scores.\n\n" +
+            "The good news:\n" +
+            "✅ The issue has been permanently fixed\n" +
+            "✅ Leaderboard will NEVER reset again\n" +
+            "✅ Your scores are now stored permanently\n" +
+            "✅ Daily backups prevent any future data loss\n\n" +
+            "What's new:\n" +
+            "📱 Improved mobile layout\n" +
+            "⚡ Zero move latency on mobile\n" +
+            "✌️ Two-finger tap to pause\n" +
             "📖 Player Book — browse all players\n" +
+            "📤 Share your scores with a screenshot\n" +
+            "🎨 Change your avatar from your profile\n" +
+            "🌈 3 themes: Dark, Neon, Light\n\n" +
+            "Thanks for playing! Go set a new high score 🏆");
+        } else {
+          alert("Hey! Welcome back 👋\n\n" +
+            "We owe you an apology. Due to a server issue, the leaderboard scores were accidentally wiped. We're really sorry about that — we know you worked hard for those scores.\n\n" +
+            "The good news:\n" +
+            "✅ The issue has been permanently fixed\n" +
+            "✅ Leaderboard will NEVER reset again\n" +
+            "✅ Your scores are now stored permanently\n" +
+            "✅ Daily backups prevent any future data loss\n\n" +
+            "What's new:\n" +
+            "📖 Player Book — browse all players (B)\n" +
             "🔔 Leaderboard notifications\n" +
             "📤 Share your scores with a screenshot\n" +
-            "🎨 Change your avatar from your profile\n" +
-            "🌈 3 themes: Dark, Neon, Light");
-        } else {
-          alert("🆕 What's New!\n\n" +
-            "📖 Player Book — browse all players (B)\n" +
-            "🔔 Leaderboard notifications when your rank changes\n" +
-            "📤 Share your scores with a screenshot\n" +
-            "🎨 Change your avatar from your profile\n" +
+            "🎨 Change your avatar from your profile (P)\n" +
             "📚 Reopen tutorial anytime (T)\n" +
             "🌈 3 themes: Dark, Neon, Light (X)\n" +
-            "🔍 Search players in Player Book\n" +
-            "😊 Animated smiley face + spinning gear");
+            "😊 Animated icons + spinning gear\n\n" +
+            "Thanks for playing! Go set a new high score 🏆");
         }
       };
     };
