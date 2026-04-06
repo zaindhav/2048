@@ -3624,10 +3624,16 @@
   // Prevent clicks inside player panel from closing backdrop
   playerPanel.addEventListener('click', e => { e.stopPropagation(); });
 
+  let playerOpenedFrom = 'lb';
+
   playerClose.addEventListener('click', () => {
     playerPanel.classList.remove('open');
-    lbPanel.classList.add('open');
-    lbBackdrop.classList.add('open');
+    if (playerOpenedFrom === 'pbook') {
+      pbookPanel.classList.add('open');
+    } else {
+      lbPanel.classList.add('open');
+      lbBackdrop.classList.add('open');
+    }
   });
 
   // Make leaderboard entries clickable
@@ -3636,7 +3642,7 @@
     if (!entry) return;
     const idx = [...lbEntries.children].indexOf(entry);
     const data = (lbCache[lbViewSize] || [])[idx];
-    if (data) showPlayerProfile(data);
+    if (data) { playerOpenedFrom = 'lb'; showPlayerProfile(data); }
   });
 
   profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
@@ -3754,7 +3760,10 @@
 
   pbookBtn.addEventListener('click', () => { sfx.click(); openPbook(); });
   pbookClose.addEventListener('click', closePbook);
-  pbookBackdrop.addEventListener('click', closePbook);
+  pbookBackdrop.addEventListener('click', () => {
+    if (playerPanel.classList.contains('open')) return;
+    closePbook();
+  });
 
   // Click player to view profile
   pbookList.addEventListener('click', e => {
@@ -3763,7 +3772,8 @@
     const name = entry.dataset.name;
     const found = allPlayers.find(p => p.name === name);
     if (found) {
-      closePbook();
+      pbookPanel.classList.remove('open');
+      playerOpenedFrom = 'pbook';
       showPlayerProfile(found);
     }
   });
