@@ -257,9 +257,11 @@
     text-shadow: 0 0 8px currentColor;
   }
 
-  :root.neon #profile-btn .face-svg,
+  :root.neon #profile-btn .face-svg {
+    filter: drop-shadow(0 0 6px #80e0a8);
+  }
   :root.neon #mobile-profile-btn .face-svg {
-    filter: drop-shadow(0 0 6px currentColor);
+    filter: drop-shadow(0 0 6px #f59563);
   }
 
   :root.neon #mobile-settings-btn svg,
@@ -2500,24 +2502,28 @@ window.onerror = function(msg, url, line) {
   }
 
   // iOS Safari audio unlock — attach to ALL buttons and the document
+  // iOS audio debug + unlock
+  let audioDebugShown = false;
   function iosUnlock() {
     if (!audioCtx) {
-      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {
+        if (!audioDebugShown) { document.title = 'AUDIO CREATE FAIL: ' + e.message; audioDebugShown = true; }
+      }
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    if (audioCtx) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+          if (!audioDebugShown) { document.title = 'AUDIO OK: ' + audioCtx.state; audioDebugShown = true; }
+        });
+      } else if (!audioDebugShown) {
+        document.title = 'AUDIO: ' + audioCtx.state;
+        audioDebugShown = true;
+      }
     }
   }
-  // Try every possible event type
   ['touchstart', 'touchend', 'mousedown', 'click', 'keydown'].forEach(evt => {
     document.addEventListener(evt, iosUnlock, { passive: true });
   });
-  // Also attach directly to all buttons after DOM is ready
-  setTimeout(() => {
-    document.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('touchend', iosUnlock, { passive: true });
-    });
-  }, 500);
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
