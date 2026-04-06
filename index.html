@@ -1365,6 +1365,14 @@
     display: none;
   }
 
+  .mobile-bottom-bar {
+    display: none;
+  }
+
+  .mobile-bottom-btn {
+    display: none;
+  }
+
 
   /* Player Book button */
   .pbook-btn {
@@ -1692,7 +1700,7 @@
       display: none !important;
     }
 
-    /* Row 2: Icon buttons row */
+    /* Row 2: Profile + Leaderboard buttons (above board) */
     .mobile-bar {
       display: flex !important;
       justify-content: center !important;
@@ -1724,7 +1732,10 @@
 
     #mobile-profile-btn { color: #80e0a8 !important; }
     #mobile-lb-btn { color: #f0d878 !important; }
-    #mobile-settings-btn { color: #e07070 !important; }
+
+    /* Hide settings + pbook from top row — moved below board */
+    #mobile-settings-btn { display: none !important; }
+    #mobile-pbook-btn { display: none !important; }
 
     /* Row 3: Timer + Board */
     .board-wrapper {
@@ -1756,6 +1767,32 @@
 
     /* Hide pbook button under board on mobile */
     .pbook-btn { display: none !important; }
+
+    /* Settings + Player Book below board */
+    .mobile-bottom-bar {
+      display: flex !important;
+      justify-content: center !important;
+      gap: 2vw !important;
+      width: 100% !important;
+      padding: 0.5dvh 0 !important;
+      order: 3 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .board-wrapper { order: 3 !important; }
+    .mobile-bottom-bar { order: 4 !important; }
+    .left-sidebar { order: 5 !important; }
+
+    .mobile-bottom-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: 1 !important;
+      font-size: 4dvh !important;
+      padding: 1.5dvh 0 !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+    }
 
     /* Row 4: Size buttons */
     .left-sidebar {
@@ -1976,6 +2013,12 @@
       <div class="tile-layer" id="tile-layer"></div>
     </div>
     <button class="pbook-btn" id="pbook-btn" title="Player Book (B)"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
+  </div>
+
+  <!-- Mobile bottom bar: Settings + Player Book (below board) -->
+  <div class="mobile-bottom-bar">
+    <button class="settings-btn icon-btn mobile-bottom-btn" id="mobile-bottom-pbook" title="Player Book" style="color:#80c8f0;"><span class="icon-glow">&#9776;</span></button>
+    <button class="settings-btn icon-btn mobile-bottom-btn" id="mobile-bottom-settings" title="Settings" style="color:#e07070;"><span class="icon-glow">&#9881;</span></button>
   </div>
 
   <!-- Notification Toast -->
@@ -3998,6 +4041,8 @@
   document.getElementById('mobile-lb-btn').addEventListener('click', () => { sfx.click(); hideLBSubmit(); openLB(); fetchLB(lbViewSize); });
   document.getElementById('mobile-pbook-btn').addEventListener('click', () => { sfx.click(); openPbook(); });
   document.getElementById('mobile-settings-btn').addEventListener('click', (e) => { e.stopPropagation(); sfx.click(); openSettings(); });
+  document.getElementById('mobile-bottom-pbook').addEventListener('click', () => { sfx.click(); openPbook(); });
+  document.getElementById('mobile-bottom-settings').addEventListener('click', (e) => { e.stopPropagation(); sfx.click(); openSettings(); });
 
   // Animate smiley face — smoothly morph mouth curve
   const faceMouth = profileBtn.querySelector('.face-mouth');
