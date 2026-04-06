@@ -600,6 +600,7 @@
   }
 
   .tut-step { animation: tutFade 0.3s ease; }
+  .tut-mobile-only { display: none; }
   @keyframes tutFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
   .tutorial h2.tut-heading {
@@ -811,6 +812,17 @@
     background: #f0d878;
     color: #000;
     border-color: #f0d878;
+  }
+
+  #lb-entries {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #lb-entries::-webkit-scrollbar {
+    display: none;
   }
 
   .lb-entry {
@@ -1440,6 +1452,13 @@
   .pbook-list {
     overflow-y: auto;
     flex: 1;
+    max-height: 300px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .pbook-list::-webkit-scrollbar {
+    display: none;
   }
 
   .pbook-rank {
@@ -1577,6 +1596,38 @@
   :root.neon .share-popup * { text-shadow: 0 0 8px rgba(255,255,255,0.3); }
   :root.neon .share-popup { box-shadow: 0 0 14px rgba(128,200,240,0.3); }
 
+  /* Notification toast */
+  .notif-toast {
+    position: fixed;
+    top: 2vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--settings-bg);
+    border: 3px solid #f0d878;
+    border-radius: 14px;
+    padding: 12px 24px;
+    z-index: 120;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    max-width: 90vw;
+  }
+
+  .notif-toast.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  :root.neon .notif-toast {
+    box-shadow: 0 0 14px rgba(240, 216, 120, 0.3);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
   /* Card hover shadow */
   .score-box:hover,
   .size-btn:hover,
@@ -1604,7 +1655,7 @@
       overflow: hidden !important;
     }
 
-    /* Row 1: Score + Best only */
+    /* Row 1: Score + Best */
     .right-sidebar {
       order: 1 !important;
       flex-direction: row !important;
@@ -1615,36 +1666,69 @@
       height: auto !important;
       width: 100% !important;
       flex-shrink: 0 !important;
-      flex-wrap: wrap !important;
+      flex-wrap: nowrap !important;
     }
 
     .scores {
       flex-direction: row !important;
       gap: 3vw !important;
       flex: 1 !important;
-      width: 100% !important;
     }
 
     .score-box {
       height: auto !important;
       flex: 1 !important;
-      padding: 1.2dvh 0 !important;
+      padding: 1dvh 0 !important;
       border-radius: 2vw !important;
       border-width: 2px !important;
       display: block !important;
     }
 
-    .score-box .label { font-size: 1.8dvh !important; margin-bottom: 0.2dvh !important; }
-    .score-box .value { font-size: 4dvh !important; }
+    .score-box .label { font-size: 1.6dvh !important; margin-bottom: 0.2dvh !important; }
+    .score-box .value { font-size: 3.5dvh !important; }
 
-    /* Hide icon buttons from sidebar — moved below board */
+    /* Hide desktop icon buttons */
     .right-sidebar .bottom-btn {
       display: none !important;
     }
 
-    /* Row 2: Timer + Board */
-    .board-wrapper {
+    /* Row 2: Icon buttons row */
+    .mobile-bar {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 2vw !important;
+      padding: 0.5dvh 0 !important;
+      width: 100% !important;
       order: 2 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .mobile-pause-btn { display: none !important; }
+
+    .mobile-icon-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 3.5dvh !important;
+      padding: 0.8dvh 0 !important;
+      border-radius: 2vw !important;
+      border-width: 2px !important;
+      flex: 1 !important;
+    }
+
+    .mobile-icon-btn .face-svg {
+      width: 3.5dvh !important;
+      height: 3.5dvh !important;
+    }
+
+    #mobile-profile-btn { color: #80e0a8 !important; }
+    #mobile-lb-btn { color: #f0d878 !important; }
+    #mobile-settings-btn { color: #e07070 !important; }
+
+    /* Row 3: Timer + Board */
+    .board-wrapper {
+      order: 3 !important;
       width: 100% !important;
       display: flex !important;
       flex-direction: column !important;
@@ -1657,11 +1741,11 @@
       margin-top: 0.5dvh !important;
     }
 
-    .timer-area { height: 5dvh !important; flex-shrink: 0 !important; }
-    .timer-text { font-size: 5dvh !important; }
+    .timer-area { height: 4dvh !important; flex-shrink: 0 !important; }
+    .timer-text { font-size: 4dvh !important; }
 
     .game-board {
-      --bs: min(92vw, calc(100dvh - 38dvh));
+      --bs: min(92vw, calc(100dvh - 32dvh));
       width: var(--bs) !important;
       height: var(--bs) !important;
       max-width: var(--bs) !important;
@@ -1670,43 +1754,8 @@
       aspect-ratio: 1 / 1 !important;
     }
 
-    /* Row 3: Profile + Leaderboard + Settings buttons */
-
-    /* Mobile icon row */
-    .mobile-bar {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      gap: 3vw !important;
-      padding: 0.5dvh 0 !important;
-      width: 100% !important;
-      order: 3 !important;
-      flex-shrink: 0 !important;
-    }
-
-    .mobile-pause-btn {
-      display: none !important;
-    }
-
-    .mobile-icon-btn {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 4dvh !important;
-      padding: 1dvh 4vw !important;
-      border-radius: 2vw !important;
-      border-width: 2px !important;
-      flex: 1 !important;
-    }
-
-    .mobile-icon-btn .face-svg {
-      width: 4dvh !important;
-      height: 4dvh !important;
-    }
-
-    #mobile-profile-btn { color: #80e0a8 !important; }
-    #mobile-lb-btn { color: #f0d878 !important; }
-    #mobile-settings-btn { color: #e07070 !important; }
+    /* Hide pbook button under board on mobile */
+    .pbook-btn { display: none !important; }
 
     /* Row 4: Size buttons */
     .left-sidebar {
@@ -1733,6 +1782,9 @@
 
     .tutorial { width: 90vw !important; padding: 18px 16px !important; max-height: 80dvh !important; overflow-y: auto !important; }
     .tutorial h1 { font-size: 24px !important; }
+    .tut-desktop-only { display: none !important; }
+    .tut-mobile-only.hidden { display: none !important; }
+    .tut-mobile-only:not(.hidden) { display: block !important; }
     .tutorial h2.tut-heading { font-size: 18px !important; }
     .settings-panel { width: 85vw !important; max-height: 85dvh !important; overflow-y: auto !important; }
     .lb-panel, .profile-panel, .player-panel, .pbook-panel { width: 92vw !important; max-height: 80dvh !important; overflow-y: auto !important; }
@@ -1922,8 +1974,11 @@
       <div class="grid-bg" id="grid-bg"></div>
       <div class="tile-layer" id="tile-layer"></div>
     </div>
-    <button class="pbook-btn" id="pbook-btn"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
+    <button class="pbook-btn" id="pbook-btn" title="Player Book (B)"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
   </div>
+
+  <!-- Notification Toast -->
+  <div class="notif-toast" id="notif-toast"></div>
 
   <!-- Share Popup -->
   <div class="share-popup" id="share-popup">
@@ -1958,7 +2013,7 @@
       </div>
     </div>
     <div class="bottom-btn">
-      <button class="settings-btn icon-btn" id="profile-btn">
+      <button class="settings-btn icon-btn" id="profile-btn" title="Profile (P)">
         <svg class="face-svg" viewBox="0 0 40 40" width="1em" height="1em">
           <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/>
           <circle cx="13" cy="15" r="2.5" fill="currentColor" class="face-eye-l"/>
@@ -1966,15 +2021,15 @@
           <path class="face-mouth" d="M13 27 Q20 32 27 27" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
-      <button class="settings-btn icon-btn" id="lb-btn"><span class="icon-glow">&#9812;</span></button>
-      <button class="settings-btn icon-btn" id="settings-btn"><span class="icon-glow">&#9881;</span></button>
+      <button class="settings-btn icon-btn" id="lb-btn" title="Leaderboard (L)"><span class="icon-glow">&#9812;</span></button>
+      <button class="settings-btn icon-btn" id="settings-btn" title="Settings (S)"><span class="icon-glow">&#9881;</span></button>
     </div>
   </div>
 
   <!-- Mobile bottom bar -->
   <div class="mobile-bar">
     <button class="mobile-pause-btn" id="mobile-pause-btn">&#9208;</button>
-    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-profile-btn">
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-profile-btn" title="Profile">
       <svg class="face-svg" viewBox="0 0 40 40" width="1em" height="1em">
         <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/>
         <circle cx="13" cy="15" r="2.5" fill="currentColor"/>
@@ -1982,9 +2037,9 @@
         <path d="M13 27 Q20 32 27 27" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
     </button>
-    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-lb-btn"><span class="icon-glow">&#9812;</span></button>
-    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-pbook-btn" style="color:#80c8f0;"><span class="icon-glow">&#9776;</span></button>
-    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-settings-btn"><span class="icon-glow">&#9881;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-lb-btn" title="Leaderboard"><span class="icon-glow">&#9812;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-pbook-btn" title="Player Book" style="color:#80c8f0;"><span class="icon-glow">&#9776;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-settings-btn" title="Settings"><span class="icon-glow">&#9881;</span></button>
   </div>
 
   <!-- Profile Panel -->
@@ -2144,13 +2199,13 @@
       </label>
       <div class="avatar-option avatar-preview hidden" id="avatar-preview-opt" data-avatar=""></div>
     </div>
-    <p class="tut-desc">Your name and avatar appear on the global leaderboard. Leaderboard resets weekly!</p>
+    <p class="tut-desc">You can change your name and avatar anytime from your profile.</p>
   </div>
 
   <!-- Step 2: How it works -->
   <div class="tut-step hidden" data-step="1">
     <h2 class="tut-heading">How It Works</h2>
-    <div class="tut-sub">Combine matching tiles to make bigger numbers</div>
+    <div class="tut-sub">Slide tiles and combine matching numbers</div>
     <div class="tut-demo">
       <div class="tut-tile t2">2</div>
       <div class="tut-plus">+</div>
@@ -2158,28 +2213,13 @@
       <div class="tut-equals">=</div>
       <div class="tut-tile t4">4</div>
     </div>
-    <p class="tut-desc">When two tiles with the same number touch, they merge into one!</p>
+    <p class="tut-desc">Use arrow keys or swipe to move all tiles. When two matching tiles collide, they merge! A new tile appears after every move.</p>
   </div>
 
-  <!-- Step 3: Movement -->
+  <!-- Step 3: Merging chain -->
   <div class="tut-step hidden" data-step="2">
-    <h2 class="tut-heading">Movement</h2>
-    <div class="tut-sub">Use arrow keys or swipe to slide all tiles</div>
-    <div class="tut-arrows">
-      <div></div>
-      <div class="tut-key tut-arrow-key">&uarr;</div>
-      <div></div>
-      <div class="tut-key tut-arrow-key">&larr;</div>
-      <div class="tut-key tut-arrow-key">&darr;</div>
-      <div class="tut-key tut-arrow-key">&rarr;</div>
-    </div>
-    <p class="tut-desc">All tiles slide in the same direction. A new tile appears after every move.</p>
-  </div>
-
-  <!-- Step 4: Merging chain -->
-  <div class="tut-step hidden" data-step="3">
-    <h2 class="tut-heading">Merging</h2>
-    <div class="tut-sub">Keep merging to reach higher tiles</div>
+    <h2 class="tut-heading">Reach 2048</h2>
+    <div class="tut-sub">Keep merging to create higher tiles</div>
     <div class="tut-chain">
       <div class="tut-tile t2">2</div>
       <div class="tut-chain-arrow">&rarr;</div>
@@ -2193,13 +2233,13 @@
       <div class="tut-chain-arrow">&rarr;</div>
       <span class="tut-dots">...</span>
     </div>
-    <p class="tut-desc">Each merge doubles the value. Plan ahead!</p>
+    <p class="tut-desc">Each merge doubles the value. The game ends when no moves are left. Choose between 3x3, 4x4, and 5x5 grids!</p>
   </div>
 
-  <!-- Step 5: Score -->
-  <div class="tut-step hidden" data-step="4">
-    <h2 class="tut-heading">Score</h2>
-    <div class="tut-sub">Your score is the total of all tiles on the board</div>
+  <!-- Step 4: Score & Timer -->
+  <div class="tut-step hidden" data-step="3">
+    <h2 class="tut-heading">Score & Timer</h2>
+    <div class="tut-sub">Your score = total of all tiles on the board</div>
     <div class="tut-score-demo">
       <div class="tut-tile t4">4</div>
       <div class="tut-plus">+</div>
@@ -2209,24 +2249,74 @@
       <div class="tut-equals">=</div>
       <span class="tut-score-num">14</span>
     </div>
-    <p class="tut-desc">The score ticker changes colour as your score grows. Beat your best and compete on the leaderboard!</p>
+    <p class="tut-desc">The score changes colour as it grows. A timer tracks how long each game takes. The timer starts on your first move.</p>
   </div>
 
-  <!-- Step 6: Controls -->
+  <!-- Step 5: Leaderboard -->
+  <div class="tut-step hidden" data-step="4">
+    <h2 class="tut-heading">Leaderboard</h2>
+    <div class="tut-sub">Compete with players worldwide</div>
+    <div class="tut-section">
+      <div class="tut-row"><span>&#9812; Top 10 scores per grid size</span></div>
+      <div class="tut-row"><span>&#127942; Resets weekly — fresh competition</span></div>
+      <div class="tut-row"><span>&#128200; Click any player to see their stats</span></div>
+      <div class="tut-row"><span>&#128276; Get notified when your rank changes</span></div>
+    </div>
+    <p class="tut-desc">After each game, your score is automatically submitted. Share your results with friends!</p>
+  </div>
+
+  <!-- Step 6: Profile & Player Book -->
   <div class="tut-step hidden" data-step="5">
-    <h2 class="tut-heading">Controls</h2>
+    <h2 class="tut-heading">Profile & Players</h2>
+    <div class="tut-sub">Track your stats and find other players</div>
+    <div class="tut-section">
+      <div class="tut-row"><span>&#9786; <b>Profile</b> — games played, streaks, best scores, podium finishes</span></div>
+      <div class="tut-row"><span>&#9776; <b>Player Book</b> — browse all players, search by name, view stats</span></div>
+      <div class="tut-row"><span>&#127912; <b>Avatar</b> — pick an emoji, upload a photo, or use your letter</span></div>
+      <div class="tut-row"><span>&#128293; <b>Streak</b> — play daily to build your streak!</span></div>
+    </div>
+    <p class="tut-desc">Click your avatar in your profile to change it anytime. Hover over buttons to see what they do.</p>
+  </div>
+
+  <!-- Step 7: Settings & Themes -->
+  <div class="tut-step hidden" data-step="6">
+    <h2 class="tut-heading">Settings & Themes</h2>
+    <div class="tut-sub">Customize your experience</div>
+    <div class="tut-section">
+      <div class="tut-row"><span>&#9881; <b>Settings</b> — animation speeds, sound on/off, 4 sound packs</span></div>
+      <div class="tut-row"><span>&#127769; <b>Dark</b> — clean dark mode</span></div>
+      <div class="tut-row"><span>&#10024; <b>Neon</b> — dark mode with glowing tiles and text</span></div>
+      <div class="tut-row"><span>&#9728; <b>Light</b> — classic light theme</span></div>
+    </div>
+    <p class="tut-desc">Press X to quickly cycle between themes.</p>
+  </div>
+
+  <!-- Step 8: Desktop Shortcuts (hidden on mobile) -->
+  <div class="tut-step hidden tut-desktop-only" data-step="7">
+    <h2 class="tut-heading">Shortcuts</h2>
     <div class="tut-controls-grid">
-      <div class="tut-ctrl"><span class="tut-key">Space</span><span>Pause</span></div>
-      <div class="tut-ctrl"><span class="tut-key">Enter</span><span>Restart</span></div>
+      <div class="tut-ctrl"><span class="tut-key">Space</span><span>Pause / Resume</span></div>
+      <div class="tut-ctrl"><span class="tut-key">Enter</span><span>Restart Game</span></div>
       <div class="tut-ctrl"><span class="tut-key">S</span><span>Settings</span></div>
       <div class="tut-ctrl"><span class="tut-key">L</span><span>Leaderboard</span></div>
       <div class="tut-ctrl"><span class="tut-key">P</span><span>Profile</span></div>
-      <div class="tut-ctrl"><span class="tut-key">X</span><span>Switch Theme</span></div>
       <div class="tut-ctrl"><span class="tut-key">B</span><span>Player Book</span></div>
-      <div class="tut-ctrl"><span class="tut-key">A</span><span>Change Avatar</span></div>
+      <div class="tut-ctrl"><span class="tut-key">X</span><span>Switch Theme</span></div>
       <div class="tut-ctrl"><span class="tut-key">T</span><span>Tutorial</span></div>
     </div>
-    <p class="tut-desc">Change your avatar anytime! View all players in the Player Book. Share your scores!</p>
+    <p class="tut-desc">Press T anytime to reopen this tutorial.</p>
+  </div>
+
+  <!-- Step 8 (mobile): Mobile Controls (hidden on desktop) -->
+  <div class="tut-step hidden tut-mobile-only" data-step="7">
+    <h2 class="tut-heading">Mobile Controls</h2>
+    <div class="tut-section">
+      <div class="tut-row"><span>&#128070; <b>Swipe</b> to move tiles</span></div>
+      <div class="tut-row"><span>&#128400; <b>Double-tap</b> to pause / resume</span></div>
+      <div class="tut-row"><span>&#9995; <b>Two-finger swipe up</b> to open tutorial</span></div>
+      <div class="tut-row"><span>&#128260; <b>Tap grid buttons</b> to switch size or restart</span></div>
+    </div>
+    <p class="tut-desc">Use the buttons above the board for Profile, Leaderboard, Player Book, and Settings.</p>
   </div>
 
   <div class="tut-nav">
@@ -3105,7 +3195,7 @@
         sfx.gameOver();
         showOverlay('Game Over!', 'Try Again');
       }
-    }, moveDelay);
+    }, window.innerWidth <= 900 ? 0 : moveDelay);
   }
 
   // Timer
@@ -3253,6 +3343,7 @@
     if (e.key === 't' || e.key === 'T') {
       e.preventDefault();
       if (tutEl.style.display === 'none') {
+        tutStep = localStorage.getItem('2048_tutorial_done') ? 1 : 0;
         tutEl.style.display = '';
         tutBackdrop.style.display = '';
         showTutStep();
@@ -3260,20 +3351,6 @@
         tutEl.style.display = 'none';
         tutBackdrop.style.display = 'none';
       }
-      return;
-    }
-
-    if (e.key === 'a' || e.key === 'A') {
-      e.preventDefault();
-      profileAvatarPicker.classList.remove('hidden');
-      const n = localStorage.getItem('lb2048_name') || 'Player';
-      profileLetterAvatar.textContent = n[0].toUpperCase();
-      profileLetterAvatar.style.background = nameColor(n);
-      const cur = localStorage.getItem('lb2048_avatar') || '';
-      profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => {
-        o.classList.toggle('selected', o.dataset.avatar === cur || (!cur && o === profileLetterAvatar));
-      });
-      if (!profilePanel.classList.contains('open')) openProfile();
       return;
     }
 
@@ -3290,6 +3367,30 @@
   });
 
   let touchStartX, touchStartY;
+  // Two-finger swipe up to open tutorial on mobile
+  let twoFingerStartY = null;
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      twoFingerStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    if (twoFingerStartY !== null && e.changedTouches.length > 0) {
+      const endY = e.changedTouches[0].clientY;
+      if (twoFingerStartY - endY > 60) {
+        // Swipe up with two fingers
+        if (tutEl.style.display === 'none') {
+          tutStep = localStorage.getItem('2048_tutorial_done') ? 1 : 0;
+          tutEl.style.display = '';
+          tutBackdrop.style.display = '';
+          showTutStep();
+        }
+      }
+      twoFingerStartY = null;
+    }
+  }, { passive: true });
+
   // Double-tap anywhere to toggle pause on mobile
   let lastTapTime = 0;
   document.addEventListener('touchend', e => {
@@ -4072,6 +4173,49 @@
     }
   });
 
+  // Notifications
+  const notifToast = document.getElementById('notif-toast');
+  let notifTimer = null;
+
+  function showNotif(msg) {
+    notifToast.textContent = msg;
+    notifToast.classList.add('visible');
+    if (notifTimer) clearTimeout(notifTimer);
+    notifTimer = setTimeout(() => { notifToast.classList.remove('visible'); }, 4000);
+  }
+
+  // Track leaderboard position changes
+  let prevRanks = {};
+  function getMyRanks() {
+    const name = localStorage.getItem('lb2048_name') || '';
+    const ranks = {};
+    for (const sz of [3, 4, 5]) {
+      const idx = (lbCache[sz] || []).findIndex(e => e.name === name);
+      ranks[sz] = idx >= 0 ? idx + 1 : -1;
+    }
+    return ranks;
+  }
+
+  // Check for rank changes periodically
+  setInterval(async () => {
+    const oldRanks = getMyRanks();
+    await Promise.all([fetchLB(3), fetchLB(4), fetchLB(5)]);
+    const newRanks = getMyRanks();
+    for (const sz of [3, 4, 5]) {
+      if (oldRanks[sz] !== newRanks[sz]) {
+        if (newRanks[sz] > 0 && oldRanks[sz] < 0) {
+          showNotif('🏆 You joined the ' + sz + 'x' + sz + ' leaderboard at #' + newRanks[sz] + '!');
+        } else if (newRanks[sz] > 0 && newRanks[sz] < oldRanks[sz]) {
+          showNotif('⬆️ You moved up to #' + newRanks[sz] + ' on ' + sz + 'x' + sz + '!');
+        } else if (newRanks[sz] > 0 && newRanks[sz] > oldRanks[sz]) {
+          showNotif('⬇️ You dropped to #' + newRanks[sz] + ' on ' + sz + 'x' + sz);
+        } else if (newRanks[sz] < 0 && oldRanks[sz] > 0) {
+          showNotif('You fell off the ' + sz + 'x' + sz + ' leaderboard');
+        }
+      }
+    }
+  }, 30000);
+
   // Secret admin stats — Ctrl+Shift+A
   document.addEventListener('keydown', async (e) => {
     if (e.ctrlKey && e.shiftKey && e.key === 'A') {
@@ -4242,16 +4386,21 @@
   init();
 
   // One-time update notification for existing players
-  if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v3')) {
-    localStorage.setItem('2048_update_v3', '1');
+  if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v4')) {
+    localStorage.setItem('2048_update_v4', '1');
     setTimeout(() => {
-      alert("What's new!\n\n" +
-        "📖 Player Book — see all players (press B)\n" +
-        "🎨 Change Avatar anytime (press A)\n" +
-        "📤 Share your scores after each game\n" +
-        "📚 Tutorial — press T anytime\n" +
-        "🌈 3 themes: Dark, Neon, Light (press X)\n" +
-        "👆 Double-tap to pause on mobile");
+      alert("🆕 What's New!\n\n" +
+        "📱 Improved mobile layout\n" +
+        "⚡ Zero move latency on mobile\n" +
+        "👆 Double-tap to pause, two-finger swipe up for tutorial\n" +
+        "📖 Player Book — browse all players (B)\n" +
+        "🔔 Leaderboard notifications when your rank changes\n" +
+        "📤 Share your scores with a screenshot\n" +
+        "🎨 Change your avatar from your profile\n" +
+        "📚 Reopen tutorial anytime (T)\n" +
+        "🌈 3 themes: Dark, Neon, Light (X)\n" +
+        "🔍 Search players in Player Book\n" +
+        "💬 Hover buttons to see what they do");
     }, 500);
   }
 
