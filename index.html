@@ -2495,33 +2495,34 @@ window.onerror = function(msg, url, line) {
 
   function getCtx() {
     try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'interrupted') {
+        audioCtx.close().catch(() => {});
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     } catch(e) {}
     return audioCtx;
   }
 
   // iOS Safari audio unlock — attach to ALL buttons and the document
-  // iOS audio debug + unlock
-  let audioDebugShown = false;
+  // iOS audio fix — handle interrupted state by recreating context
   function iosUnlock() {
-    if (!audioCtx) {
-      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {
-        if (!audioDebugShown) { document.title = 'AUDIO CREATE FAIL: ' + e.message; audioDebugShown = true; }
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-    }
-    if (audioCtx) {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume().then(() => {
-          if (!audioDebugShown) { document.title = 'AUDIO OK: ' + audioCtx.state; audioDebugShown = true; }
-        });
-      } else if (!audioDebugShown) {
-        document.title = 'AUDIO: ' + audioCtx.state;
-        audioDebugShown = true;
+      if (audioCtx.state === 'interrupted' || audioCtx.state === 'suspended') {
+        audioCtx.close().catch(() => {});
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-    }
+    } catch(e) {}
   }
-  ['touchstart', 'touchend', 'mousedown', 'click', 'keydown'].forEach(evt => {
+  ['touchstart', 'touchend', 'click', 'keydown'].forEach(evt => {
     document.addEventListener(evt, iosUnlock, { passive: true });
   });
 
