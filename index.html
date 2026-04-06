@@ -2781,7 +2781,7 @@ window._pickAvatar = function(btn) {
 
   // Delegating sfx object
   const sfx = {
-    slide()    { if (sfxEnabled) { try { soundSets[currentSoundSet].slide(); document.title = '2048 [played:' + audioCtx.state + ' set:' + currentSoundSet + ']'; } catch(e) { document.title = '2048 [sfx err:' + e.message + ']'; } } },
+    slide()    { if (sfxEnabled) { try { soundSets[currentSoundSet].slide(); showNotif('SFX: ' + audioCtx.state + ' vol:' + currentSoundSet); } catch(e) { showNotif('SFX ERR: ' + e.message); } } },
     merge()    { if (sfxEnabled) soundSets[currentSoundSet].merge(); },
     appear()   { if (sfxEnabled) soundSets[currentSoundSet].appear(); },
     click()    { if (sfxEnabled) soundSets[currentSoundSet].click(); },
