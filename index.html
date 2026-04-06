@@ -1777,6 +1777,10 @@
     }
 
     .pbook-btn { display: none !important; }
+
+    .board-paused .tile {
+      color: #e03030 !important;
+    }
     .mobile-bottom-bar { display: none !important; }
 
     /* Row 4: Size buttons */
@@ -2496,27 +2500,73 @@ window._pickAvatar = function(btn) {
   }
 
   // iOS Safari audio unlock — attach to ALL buttons and the document
-  // iOS audio unlock — create once, resume on every interaction
-  function iosUnlock() {
+  // On mobile, use HTML Audio instead of Web Audio API
+  const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  function generateTone(freq, duration, volume) {
+    const sampleRate = 22050;
+    const samples = Math.floor(sampleRate * duration);
+    const buffer = new Int16Array(samples);
+    for (let i = 0; i < samples; i++) {
+      const t = i / sampleRate;
+      const envelope = Math.min(1, (samples - i) / (sampleRate * 0.05));
+      buffer[i] = Math.floor(Math.sin(2 * Math.PI * freq * t) * 32767 * volume * envelope);
+    }
+    // Create WAV
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+    const writeStr = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+    writeStr(0, 'RIFF');
+    view.setUint32(4, 36 + buffer.length * 2, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeStr(36, 'data');
+    view.setUint32(40, buffer.length * 2, true);
+    const wav = new Uint8Array(header.byteLength + buffer.length * 2);
+    wav.set(new Uint8Array(header));
+    wav.set(new Uint8Array(buffer.buffer), header.byteLength);
+    const blob = new Blob([wav], { type: 'audio/wav' });
+    return URL.createObjectURL(blob);
+  }
+
+  // Pre-generate mobile sounds
+  let mobileSounds = null;
+  if (isMobileDevice) {
+    mobileSounds = {
+      slide: generateTone(250, 0.08, 0.15),
+      merge: generateTone(400, 0.12, 0.25),
+      appear: generateTone(350, 0.06, 0.1),
+      click: generateTone(600, 0.04, 0.12),
+      gameOver1: generateTone(200, 0.2, 0.3),
+      gameOver2: generateTone(150, 0.2, 0.3),
+      gameOver3: generateTone(100, 0.3, 0.3),
+    };
+  }
+
+  function playMobileSound(url) {
     try {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state !== 'running') {
-        audioCtx.resume();
-        // Also play a tiny oscillator to force output
-        var o = audioCtx.createOscillator();
-        var g = audioCtx.createGain();
-        g.gain.value = 0.001;
-        o.connect(g).connect(audioCtx.destination);
-        o.start();
-        o.stop(audioCtx.currentTime + 0.01);
-      }
+      const a = new Audio(url);
+      a.volume = 1.0;
+      a.play().catch(() => {});
     } catch(e) {}
   }
-  document.addEventListener('touchend', iosUnlock, { passive: true });
-  document.addEventListener('click', iosUnlock, { passive: true });
-  document.addEventListener('keydown', iosUnlock, { passive: true });
+
+  // Unlock mobile audio on first touch
+  document.addEventListener('touchend', function unlockMobile() {
+    if (mobileSounds) {
+      const a = new Audio(mobileSounds.click);
+      a.volume = 0;
+      a.play().catch(() => {});
+    }
+    document.removeEventListener('touchend', unlockMobile);
+  }, { once: true });
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
@@ -2777,11 +2827,36 @@ window._pickAvatar = function(btn) {
 
   // Delegating sfx object
   const sfx = {
-    slide()    { if (sfxEnabled) { try { soundSets[currentSoundSet].slide(); } catch(e) {} } },
-    merge()    { if (sfxEnabled) { try { soundSets[currentSoundSet].merge(); } catch(e) {} } },
-    appear()   { if (sfxEnabled) { try { soundSets[currentSoundSet].appear(); } catch(e) {} } },
-    click()    { if (sfxEnabled) { try { soundSets[currentSoundSet].click(); } catch(e) {} } },
-    gameOver() { if (sfxEnabled) { try { soundSets[currentSoundSet].gameOver(); } catch(e) {} } }
+    slide() {
+      if (!sfxEnabled) return;
+      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.slide); return; }
+      try { soundSets[currentSoundSet].slide(); } catch(e) {}
+    },
+    merge() {
+      if (!sfxEnabled) return;
+      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.merge); return; }
+      try { soundSets[currentSoundSet].merge(); } catch(e) {}
+    },
+    appear() {
+      if (!sfxEnabled) return;
+      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.appear); return; }
+      try { soundSets[currentSoundSet].appear(); } catch(e) {}
+    },
+    click() {
+      if (!sfxEnabled) return;
+      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.click); return; }
+      try { soundSets[currentSoundSet].click(); } catch(e) {}
+    },
+    gameOver() {
+      if (!sfxEnabled) return;
+      if (isMobileDevice && mobileSounds) {
+        playMobileSound(mobileSounds.gameOver1);
+        setTimeout(() => playMobileSound(mobileSounds.gameOver2), 200);
+        setTimeout(() => playMobileSound(mobileSounds.gameOver3), 400);
+        return;
+      }
+      try { soundSets[currentSoundSet].gameOver(); } catch(e) {}
+    }
   };
 
   function applySlideSpeed() {
@@ -3157,6 +3232,7 @@ window._pickAvatar = function(btn) {
     if (paused) {
       paused = false;
       timerText.classList.remove('paused');
+      gameBoard.classList.remove('board-paused');
       mobilePauseBtn.innerHTML = '&#9208;';
       mobilePauseBtn.classList.remove('playing');
       if (pausedElapsed) {
@@ -3168,6 +3244,7 @@ window._pickAvatar = function(btn) {
     } else {
       paused = true;
       timerText.classList.add('paused');
+      gameBoard.classList.add('board-paused');
       mobilePauseBtn.innerHTML = '&#9654;';
       mobilePauseBtn.classList.add('playing');
       if (timerStart) {
@@ -3362,6 +3439,7 @@ window._pickAvatar = function(btn) {
     pausedElapsed = 0;
     timerStarted = false;
     gameOver = false;
+    gameBoard.classList.remove('board-paused');
     beatBest = false;
     bestEl.style.color = '';
     bestBox.style.background = '';
