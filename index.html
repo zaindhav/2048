@@ -2486,37 +2486,33 @@ window._pickAvatar = function(btn) {
   let sfxEnabled = true;
 
   function getCtx() {
-    if (!audioCtx || audioCtx.state !== 'running') {
-      try {
-        if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var b = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
-        var s = audioCtx.createBufferSource();
-        s.buffer = b;
-        s.connect(audioCtx.destination);
-        s.start(0);
-      } catch(e) {}
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      try { audioCtx.resume(); } catch(e) {}
     }
     return audioCtx;
   }
 
   // iOS Safari audio unlock — attach to ALL buttons and the document
-  // iOS audio fix — force unlock by playing empty buffer
+  // iOS audio unlock — create once, resume on every interaction
   function iosUnlock() {
     try {
-      // Always create fresh context if not running
-      if (!audioCtx || audioCtx.state !== 'running') {
-        if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
+      if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // Immediately play silent sound to force iOS to allow audio
-        var b = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
-        var s = audioCtx.createBufferSource();
-        s.buffer = b;
-        s.connect(audioCtx.destination);
-        s.start(0);
       }
-    } catch(e) {
-    }
+      if (audioCtx.state !== 'running') {
+        audioCtx.resume();
+        // Also play a tiny oscillator to force output
+        var o = audioCtx.createOscillator();
+        var g = audioCtx.createGain();
+        g.gain.value = 0.001;
+        o.connect(g).connect(audioCtx.destination);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.01);
+      }
+    } catch(e) {}
   }
   document.addEventListener('touchend', iosUnlock, { passive: true });
   document.addEventListener('click', iosUnlock, { passive: true });
@@ -2781,11 +2777,11 @@ window._pickAvatar = function(btn) {
 
   // Delegating sfx object
   const sfx = {
-    slide()    { if (sfxEnabled) { try { soundSets[currentSoundSet].slide(); showNotif('SFX: ' + audioCtx.state + ' vol:' + currentSoundSet); } catch(e) { showNotif('SFX ERR: ' + e.message); } } },
-    merge()    { if (sfxEnabled) soundSets[currentSoundSet].merge(); },
-    appear()   { if (sfxEnabled) soundSets[currentSoundSet].appear(); },
-    click()    { if (sfxEnabled) soundSets[currentSoundSet].click(); },
-    gameOver() { if (sfxEnabled) soundSets[currentSoundSet].gameOver(); }
+    slide()    { if (sfxEnabled) { try { soundSets[currentSoundSet].slide(); } catch(e) {} } },
+    merge()    { if (sfxEnabled) { try { soundSets[currentSoundSet].merge(); } catch(e) {} } },
+    appear()   { if (sfxEnabled) { try { soundSets[currentSoundSet].appear(); } catch(e) {} } },
+    click()    { if (sfxEnabled) { try { soundSets[currentSoundSet].click(); } catch(e) {} } },
+    gameOver() { if (sfxEnabled) { try { soundSets[currentSoundSet].gameOver(); } catch(e) {} } }
   };
 
   function applySlideSpeed() {
