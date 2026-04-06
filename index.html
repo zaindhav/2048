@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>2048</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   .hidden { display: none !important; }
@@ -1501,6 +1502,69 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   }
 
+  /* Share popup */
+  .share-popup {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--settings-bg);
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 24px;
+    z-index: 110;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .share-popup.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .share-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .share-lb-badge {
+    font-size: 13px;
+    color: #f0d878;
+    font-weight: 700;
+  }
+
+  .share-btn {
+    background: #80c8f0;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .share-btn:hover { background: #60b8e0; }
+
+  .share-close {
+    background: none;
+    border: none;
+    color: var(--label-color);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  :root.neon .share-popup * { text-shadow: 0 0 8px rgba(255,255,255,0.3); }
+  :root.neon .share-popup { box-shadow: 0 0 14px rgba(128,200,240,0.3); }
+
   /* Card hover shadow */
   .score-box:hover,
   .size-btn:hover,
@@ -1847,6 +1911,16 @@
       <div class="tile-layer" id="tile-layer"></div>
     </div>
     <button class="pbook-btn" id="pbook-btn"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
+  </div>
+
+  <!-- Share Popup -->
+  <div class="share-popup" id="share-popup">
+    <div>
+      <div class="share-text" id="share-text">Score: 0</div>
+      <div class="share-lb-badge hidden" id="share-lb-badge"></div>
+    </div>
+    <button class="share-btn" id="share-btn">Share</button>
+    <button class="share-close" id="share-close">&times;</button>
   </div>
 
   <!-- Player Book Panel -->
@@ -3392,7 +3466,15 @@
     if (text === 'Game Over!') {
       recordGame(SIZE, score);
       const elapsed = timerStart ? formatTime(Date.now() - timerStart) : '0:00';
-      setTimeout(() => showLBSubmit(score, elapsed, SIZE), 600);
+      const name = localStorage.getItem('lb2048_name') || 'Player';
+      // Wait for tile animations to finish, then capture + show
+      setTimeout(() => {
+        captureBoard().then(blob => {
+          shareScreenshotBlob = blob;
+          showLBSubmit(score, elapsed, SIZE);
+          showSharePopup(score, elapsed, SIZE, name);
+        });
+      }, slideSpeed + 200);
     }
   };
 
@@ -3775,6 +3857,64 @@
       pbookPanel.classList.remove('open');
       playerOpenedFrom = 'pbook';
       showPlayerProfile(found);
+    }
+  });
+
+  // Share popup
+  const sharePopup = document.getElementById('share-popup');
+  const shareText = document.getElementById('share-text');
+  const shareLbBadge = document.getElementById('share-lb-badge');
+  const shareBtn = document.getElementById('share-btn');
+  const shareCloseBtn = document.getElementById('share-close');
+  let shareScreenshotBlob = null;
+
+  async function captureBoard() {
+    try {
+      const canvas = await html2canvas(gameBoard, { backgroundColor: null, scale: 2 });
+      return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    } catch(e) { return null; }
+  }
+
+  async function showSharePopup(sc, elapsed, size, name) {
+    shareText.textContent = 'I scored ' + sc + ' in ' + elapsed + ' (' + size + 'x' + size + ')';
+
+    const onLB = (lbCache[size] || []).some(e => e.name === name);
+    if (onLB) {
+      const rank = (lbCache[size] || []).findIndex(e => e.name === name) + 1;
+      shareLbBadge.textContent = '🏆 #' + rank + ' on the leaderboard!';
+      shareLbBadge.classList.remove('hidden');
+    } else {
+      shareLbBadge.classList.add('hidden');
+    }
+
+    // Capture screenshot before leaderboard opens
+    shareScreenshotBlob = await captureBoard();
+
+    sharePopup.classList.add('visible');
+    setTimeout(() => { sharePopup.classList.remove('visible'); }, 15000);
+  }
+
+  shareCloseBtn.addEventListener('click', () => { sharePopup.classList.remove('visible'); });
+
+  shareBtn.addEventListener('click', async () => {
+    const text = shareText.textContent + (shareLbBadge.classList.contains('hidden') ? '' : '\n' + shareLbBadge.textContent) + '\n\nPlay 2048: https://zaindhav.github.io/2048';
+
+    if (navigator.share && shareScreenshotBlob) {
+      try {
+        const file = new File([shareScreenshotBlob], '2048-score.png', { type: 'image/png' });
+        await navigator.share({ title: '2048', text: text, files: [file] });
+      } catch(e) {
+        // Fallback: share without image
+        try { await navigator.share({ title: '2048', text: text }); } catch(e2) {}
+      }
+    } else if (navigator.share) {
+      try { await navigator.share({ title: '2048', text: text }); } catch(e) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(text);
+        shareBtn.textContent = 'Copied!';
+        setTimeout(() => { shareBtn.textContent = 'Share'; }, 1500);
+      } catch(e) {}
     }
   });
 
