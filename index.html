@@ -556,6 +556,9 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.15s ease;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .avatar-option:hover {
@@ -1792,7 +1795,7 @@
       border-radius: 2vw !important; border-width: 2px !important;
     }
 
-    .tutorial { width: 90vw !important; padding: 18px 16px !important; max-height: 80dvh !important; overflow-y: auto !important; touch-action: auto !important; }
+    .tutorial { width: 90vw !important; padding: 18px 16px !important; max-height: 80dvh !important; overflow-y: auto !important; touch-action: auto !important; -webkit-overflow-scrolling: touch !important; }
     .tutorial h1 { font-size: 24px !important; }
     .tut-desktop-only { display: none !important; }
     .tut-mobile-only.hidden { display: none !important; }
@@ -4011,9 +4014,11 @@
   });
 
   // Select avatar
-  profileAvatarGrid.addEventListener('click', e => {
+  function handleProfileAvatarPick(e) {
     const opt = e.target.closest('.avatar-option');
     if (!opt || opt.classList.contains('avatar-upload-btn')) return;
+    e.preventDefault();
+    e.stopPropagation();
     profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     const av = opt === profileLetterAvatar ? '' : opt.dataset.avatar;
@@ -4021,7 +4026,9 @@
     updateProfilePanel();
     sfx.click();
     pushAvatarUpdate();
-  });
+  }
+  profileAvatarGrid.addEventListener('click', handleProfileAvatarPick);
+  profileAvatarGrid.addEventListener('touchend', handleProfileAvatarPick);
 
   // Upload photo in profile
   profileAvatarUpload.addEventListener('change', (e) => {
@@ -4415,13 +4422,17 @@
   }
 
   // Avatar selection
-  avatarPicker.addEventListener('click', e => {
+  function handleAvatarPick(e) {
     const opt = e.target.closest('.avatar-option');
     if (!opt || opt.id === 'avatar-upload-label') return;
+    e.preventDefault();
+    e.stopPropagation();
     avatarPicker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     sfx.click();
-  });
+  }
+  avatarPicker.addEventListener('click', handleAvatarPick);
+  avatarPicker.addEventListener('touchend', handleAvatarPick);
 
   tutNext.addEventListener('click', () => {
     // Save name and avatar when leaving step 0
