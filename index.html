@@ -2419,14 +2419,6 @@ window._pickAvatar = function(btn) {
   btn.classList.add('selected');
 };
 
-// Show any JS errors on screen for debugging
-window.onerror = function(msg, url, line) {
-  document.title = 'ERR:' + line + ':' + msg;
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:10px;z-index:99999;font-size:14px;';
-  d.textContent = 'JS Error line ' + line + ': ' + msg;
-  document.body.appendChild(d);
-};
 
 (function() {
   let SIZE = 4;
@@ -2494,18 +2486,17 @@ window.onerror = function(msg, url, line) {
   let sfxEnabled = true;
 
   function getCtx() {
-    try {
-      if (!audioCtx) {
+    if (!audioCtx || audioCtx.state !== 'running') {
+      try {
+        if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'interrupted') {
-        audioCtx.close().catch(() => {});
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    } catch(e) {}
+        var b = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+        var s = audioCtx.createBufferSource();
+        s.buffer = b;
+        s.connect(audioCtx.destination);
+        s.start(0);
+      } catch(e) {}
+    }
     return audioCtx;
   }
 
@@ -2523,12 +2514,8 @@ window.onerror = function(msg, url, line) {
         s.buffer = b;
         s.connect(audioCtx.destination);
         s.start(0);
-        s.onended = function() {
-          document.title = '2048 [audio:' + audioCtx.state + ']';
-        };
       }
     } catch(e) {
-      document.title = '2048 [err:' + e.message + ']';
     }
   }
   document.addEventListener('touchend', iosUnlock, { passive: true });
