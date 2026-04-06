@@ -2400,15 +2400,11 @@
 
   // Unlock audio on first user interaction (required by mobile browsers)
   function unlockAudio() {
-    const ctx = getCtx();
-    if (ctx.state === 'suspended') ctx.resume();
-    document.removeEventListener('touchstart', unlockAudio);
-    document.removeEventListener('touchend', unlockAudio);
-    document.removeEventListener('click', unlockAudio);
-    document.removeEventListener('keydown', unlockAudio);
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
   }
-  document.addEventListener('touchstart', unlockAudio);
-  document.addEventListener('touchend', unlockAudio);
+  document.addEventListener('touchstart', unlockAudio, { passive: true });
+  document.addEventListener('touchend', unlockAudio, { passive: true });
   document.addEventListener('click', unlockAudio);
   document.addEventListener('keydown', unlockAudio);
 
