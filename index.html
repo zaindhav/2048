@@ -561,8 +561,10 @@
     -webkit-user-select: none;
   }
 
-  .avatar-option:hover {
-    transform: scale(1.15);
+  @media (hover: hover) {
+    .avatar-option:hover {
+      transform: scale(1.15);
+    }
   }
 
   .avatar-option.selected {
@@ -2138,19 +2140,19 @@
     <div class="profile-avatar-picker hidden" id="profile-avatar-picker">
       <div class="avatar-label">Choose your avatar</div>
       <div class="avatar-picker" id="profile-avatar-grid">
-        <button type="button" class="avatar-option" data-avatar="😎">😎</button>
-        <button type="button" class="avatar-option" data-avatar="🔥">🔥</button>
-        <button type="button" class="avatar-option" data-avatar="⭐">⭐</button>
-        <button type="button" class="avatar-option" data-avatar="🎮">🎮</button>
-        <button type="button" class="avatar-option" data-avatar="🏆">🏆</button>
-        <button type="button" class="avatar-option" data-avatar="🐱">🐱</button>
-        <button type="button" class="avatar-option" data-avatar="🐶">🐶</button>
-        <button type="button" class="avatar-option" data-avatar="🦊">🦊</button>
-        <button type="button" class="avatar-option" data-avatar="🐸">🐸</button>
-        <button type="button" class="avatar-option" data-avatar="🤖">🤖</button>
-        <button type="button" class="avatar-option" data-avatar="👾">👾</button>
-        <button type="button" class="avatar-option" data-avatar="💎">💎</button>
-        <button type="button" class="avatar-option letter-avatar" data-avatar="" id="profile-letter-avatar" style="background:#f59563;">?</button>
+        <button type="button" class="avatar-option" data-avatar="😎" onclick="window._pickAvatar(this)">😎</button>
+        <button type="button" class="avatar-option" data-avatar="🔥" onclick="window._pickAvatar(this)">🔥</button>
+        <button type="button" class="avatar-option" data-avatar="⭐" onclick="window._pickAvatar(this)">⭐</button>
+        <button type="button" class="avatar-option" data-avatar="🎮" onclick="window._pickAvatar(this)">🎮</button>
+        <button type="button" class="avatar-option" data-avatar="🏆" onclick="window._pickAvatar(this)">🏆</button>
+        <button type="button" class="avatar-option" data-avatar="🐱" onclick="window._pickAvatar(this)">🐱</button>
+        <button type="button" class="avatar-option" data-avatar="🐶" onclick="window._pickAvatar(this)">🐶</button>
+        <button type="button" class="avatar-option" data-avatar="🦊" onclick="window._pickAvatar(this)">🦊</button>
+        <button type="button" class="avatar-option" data-avatar="🐸" onclick="window._pickAvatar(this)">🐸</button>
+        <button type="button" class="avatar-option" data-avatar="🤖" onclick="window._pickAvatar(this)">🤖</button>
+        <button type="button" class="avatar-option" data-avatar="👾" onclick="window._pickAvatar(this)">👾</button>
+        <button type="button" class="avatar-option" data-avatar="💎" onclick="window._pickAvatar(this)">💎</button>
+        <button type="button" class="avatar-option letter-avatar" data-avatar="" id="profile-letter-avatar" style="background:#f59563;" onclick="window._pickAvatar(this)">?</button>
         <label class="avatar-option avatar-upload-btn" title="Upload photo">
           <span>+</span>
           <input type="file" accept="image/*" id="profile-avatar-upload" style="display:none;">
@@ -2262,19 +2264,19 @@
     <input class="lb-name-input" id="tut-name" type="text" placeholder="Enter your name..." maxlength="16" style="margin-top:24px; font-size:20px; padding:16px;">
     <div class="avatar-label">Choose your avatar</div>
     <div class="avatar-picker" id="avatar-picker">
-      <button type="button" class="avatar-option" data-avatar="😎">😎</button>
-      <button type="button" class="avatar-option" data-avatar="🔥">🔥</button>
-      <button type="button" class="avatar-option" data-avatar="⭐">⭐</button>
-      <button type="button" class="avatar-option" data-avatar="🎮">🎮</button>
-      <button type="button" class="avatar-option" data-avatar="🏆">🏆</button>
-      <button type="button" class="avatar-option" data-avatar="🐱">🐱</button>
-      <button type="button" class="avatar-option" data-avatar="🐶">🐶</button>
-      <button type="button" class="avatar-option" data-avatar="🦊">🦊</button>
-      <button type="button" class="avatar-option" data-avatar="🐸">🐸</button>
-      <button type="button" class="avatar-option" data-avatar="🤖">🤖</button>
-      <button type="button" class="avatar-option" data-avatar="👾">👾</button>
-      <button type="button" class="avatar-option" data-avatar="💎">💎</button>
-      <button type="button" class="avatar-option letter-avatar selected" data-avatar="" id="letter-avatar" style="background:#f59563;">?</button>
+      <button type="button" class="avatar-option" data-avatar="😎" onclick="window._pickAvatar(this)">😎</button>
+      <button type="button" class="avatar-option" data-avatar="🔥" onclick="window._pickAvatar(this)">🔥</button>
+      <button type="button" class="avatar-option" data-avatar="⭐" onclick="window._pickAvatar(this)">⭐</button>
+      <button type="button" class="avatar-option" data-avatar="🎮" onclick="window._pickAvatar(this)">🎮</button>
+      <button type="button" class="avatar-option" data-avatar="🏆" onclick="window._pickAvatar(this)">🏆</button>
+      <button type="button" class="avatar-option" data-avatar="🐱" onclick="window._pickAvatar(this)">🐱</button>
+      <button type="button" class="avatar-option" data-avatar="🐶" onclick="window._pickAvatar(this)">🐶</button>
+      <button type="button" class="avatar-option" data-avatar="🦊" onclick="window._pickAvatar(this)">🦊</button>
+      <button type="button" class="avatar-option" data-avatar="🐸" onclick="window._pickAvatar(this)">🐸</button>
+      <button type="button" class="avatar-option" data-avatar="🤖" onclick="window._pickAvatar(this)">🤖</button>
+      <button type="button" class="avatar-option" data-avatar="👾" onclick="window._pickAvatar(this)">👾</button>
+      <button type="button" class="avatar-option" data-avatar="💎" onclick="window._pickAvatar(this)">💎</button>
+      <button type="button" class="avatar-option letter-avatar selected" data-avatar="" id="letter-avatar" style="background:#f59563;" onclick="window._pickAvatar(this)">?</button>
       <label class="avatar-option avatar-upload-btn" id="avatar-upload-label" title="Upload photo">
         <span>+</span>
         <input type="file" accept="image/*" id="avatar-upload" style="display:none;">
@@ -2408,6 +2410,13 @@
 </div>
 
 <script>
+// Global avatar pick function for inline onclick (iOS fix)
+window._pickAvatar = function(btn) {
+  const picker = btn.closest('.avatar-picker');
+  picker.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+};
+
 (function() {
   let SIZE = 4;
   let grid, score, best, tileId, won;
