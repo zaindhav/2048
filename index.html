@@ -254,11 +254,17 @@
 
 
   :root.neon .icon-glow {
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  :root.neon #profile-btn .face-svg,
+  :root.neon #mobile-profile-btn .face-svg {
     filter: drop-shadow(0 0 6px currentColor);
   }
 
-  :root.neon #profile-btn .face-svg {
-    filter: drop-shadow(0 0 6px currentColor);
+  :root.neon #mobile-settings-btn svg,
+  :root.neon #settings-btn .gear-spin {
+    filter: drop-shadow(0 0 6px #e07070);
   }
 
   /* Neon mode glow — scores */
