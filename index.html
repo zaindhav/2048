@@ -2886,37 +2886,6 @@ window.onerror = function(msg, url, line) {
     updateBestStyle();
   }
 
-  const scoreThresholds = {
-    3: [
-      { min: 1000, color: '#80c8f0', pastel: '#80c8f0' },
-      { min: 500,  color: '#f088a0', pastel: '#f088a0' },
-      { min: 200,  color: '#ffaa95', pastel: '#f67c5f' },
-      { min: 100,  color: '#ffbb90', pastel: '#f59563' },
-      { min: 50,   color: '#fff0a0', pastel: '#edcf72' },
-    ],
-    4: [
-      { min: 3000, color: '#80c8f0', pastel: '#80c8f0' },
-      { min: 1000, color: '#f088a0', pastel: '#f088a0' },
-      { min: 500,  color: '#ffaa95', pastel: '#f67c5f' },
-      { min: 200,  color: '#ffbb90', pastel: '#f59563' },
-      { min: 100,  color: '#fff0a0', pastel: '#edcf72' },
-    ],
-    5: [
-      { min: 5000, color: '#80c8f0', pastel: '#80c8f0' },
-      { min: 3000, color: '#f088a0', pastel: '#f088a0' },
-      { min: 1500, color: '#ffaa95', pastel: '#f67c5f' },
-      { min: 500,  color: '#ffbb90', pastel: '#f59563' },
-      { min: 300,  color: '#fff0a0', pastel: '#edcf72' },
-    ],
-  };
-
-  // Load saved theme or default to neon on mobile, dark on desktop
-  const savedTheme = localStorage.getItem('2048_theme');
-  if (savedTheme) {
-    setTheme(savedTheme);
-  } else if (window.innerWidth <= 900) {
-    setTheme('neon');
-  }
 
   themeDarkBtn.addEventListener('click', () => setTheme('dark'));
   themeNeonBtn.addEventListener('click', () => setTheme('neon'));
@@ -3072,6 +3041,37 @@ window.onerror = function(msg, url, line) {
   const bestBox = bestEl.closest('.score-box');
   let beatBest = false;
 
+  const scoreThresholds = {
+    3: [
+      { min: 1000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 500,  color: '#f088a0', pastel: '#f088a0' },
+      { min: 200,  color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 100,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 50,   color: '#fff0a0', pastel: '#edcf72' },
+    ],
+    4: [
+      { min: 3000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 1000, color: '#f088a0', pastel: '#f088a0' },
+      { min: 500,  color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 200,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 100,  color: '#fff0a0', pastel: '#edcf72' },
+    ],
+    5: [
+      { min: 5000, color: '#80c8f0', pastel: '#80c8f0' },
+      { min: 3000, color: '#f088a0', pastel: '#f088a0' },
+      { min: 1500, color: '#ffaa95', pastel: '#f67c5f' },
+      { min: 500,  color: '#ffbb90', pastel: '#f59563' },
+      { min: 300,  color: '#fff0a0', pastel: '#edcf72' },
+    ],
+  };
+
+  // Load saved theme or default to neon on mobile, dark on desktop
+  const savedTheme = localStorage.getItem('2048_theme');
+  if (savedTheme) {
+    setTheme(savedTheme);
+  } else if (window.innerWidth <= 900) {
+    setTheme('neon');
+  }
 
   function updateScoreColor() {
     const isLight = document.documentElement.classList.contains('light');
