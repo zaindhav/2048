@@ -2493,19 +2493,20 @@ window.onerror = function(msg, url, line) {
 
   function getCtx() {
     try {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // Play silent buffer to unlock on Safari
-        const buf = audioCtx.createBuffer(1, 1, 22050);
-        const src = audioCtx.createBufferSource();
-        src.buffer = buf;
-        src.connect(audioCtx.destination);
-        src.start(0);
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     } catch(e) {}
     return audioCtx;
   }
+
+  // On mobile, create AudioContext on first touch BEFORE any game interaction
+  document.addEventListener('touchstart', function initAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+    document.removeEventListener('touchstart', initAudio);
+  }, { once: true });
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
