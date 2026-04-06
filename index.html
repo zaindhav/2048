@@ -2403,9 +2403,9 @@
   </div>
 
   <div class="tut-nav">
-    <button class="tut-nav-btn" id="tut-prev">Back</button>
+    <button type="button" class="tut-nav-btn" id="tut-prev">Back</button>
     <div class="tut-dots-nav" id="tut-dots"></div>
-    <button class="tut-nav-btn tut-next-btn" id="tut-next">Next</button>
+    <button type="button" class="tut-nav-btn tut-next-btn" id="tut-next">Next</button>
   </div>
 </div>
 
@@ -4438,9 +4438,7 @@ window._pickAvatar = function(btn) {
   tutNext.addEventListener('click', () => {
     // Save name and avatar when leaving step 0
     if (tutStep === 0) {
-      const name = tutNameInput.value.trim();
-      if (!name) { tutNameInput.focus(); tutNameInput.style.borderColor = '#e03030'; return; }
-      tutNameInput.style.borderColor = '';
+      const name = tutNameInput.value.trim() || 'Player';
       localStorage.setItem('lb2048_name', name);
       const selectedAvatar = avatarPicker.querySelector('.selected');
       let av = '';
