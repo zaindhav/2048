@@ -2493,31 +2493,19 @@ window.onerror = function(msg, url, line) {
 
   function getCtx() {
     try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    } catch(e) {}
-    return audioCtx;
-  }
-
-  // Unlock audio — create context + play silent buffer on EVERY touch/click
-  // iOS Safari requires this to happen synchronously inside a user gesture
-  function unlockAudio() {
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Play silent buffer to unlock on Safari
         const buf = audioCtx.createBuffer(1, 1, 22050);
         const src = audioCtx.createBufferSource();
         src.buffer = buf;
         src.connect(audioCtx.destination);
         src.start(0);
       }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     } catch(e) {}
+    return audioCtx;
   }
-  document.addEventListener('touchstart', unlockAudio, { passive: true });
-  document.addEventListener('touchend', unlockAudio, { passive: true });
-  document.addEventListener('click', unlockAudio);
-  document.addEventListener('keydown', unlockAudio);
 
   // Noise buffer for woody/thud textures
   function noiseBuffer(ctx, duration) {
