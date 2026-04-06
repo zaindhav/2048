@@ -2510,17 +2510,24 @@ window.onerror = function(msg, url, line) {
   }
 
   // iOS Safari audio unlock — attach to ALL buttons and the document
-  // iOS audio fix — handle interrupted state by recreating context
+  // iOS audio fix
   function iosUnlock() {
     try {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-      if (audioCtx.state === 'interrupted' || audioCtx.state === 'suspended') {
+      if (audioCtx.state === 'interrupted') {
         audioCtx.close().catch(() => {});
+        audioCtx = null;
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-    } catch(e) {}
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      document.title = '2048 [audio:' + audioCtx.state + ']';
+    } catch(e) {
+      document.title = '2048 [audio err:' + e.message + ']';
+    }
   }
   ['touchstart', 'touchend', 'click', 'keydown'].forEach(evt => {
     document.addEventListener(evt, iosUnlock, { passive: true });
