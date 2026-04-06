@@ -2223,8 +2223,10 @@
       <div class="tut-ctrl"><span class="tut-key">P</span><span>Profile</span></div>
       <div class="tut-ctrl"><span class="tut-key">X</span><span>Switch Theme</span></div>
       <div class="tut-ctrl"><span class="tut-key">B</span><span>Player Book</span></div>
+      <div class="tut-ctrl"><span class="tut-key">A</span><span>Change Avatar</span></div>
+      <div class="tut-ctrl"><span class="tut-key">T</span><span>Tutorial</span></div>
     </div>
-    <p class="tut-desc">Cycle themes and track your stats and streak in your profile!</p>
+    <p class="tut-desc">Change your avatar anytime! View all players in the Player Book. Share your scores!</p>
   </div>
 
   <div class="tut-nav">
@@ -3248,6 +3250,33 @@
       return;
     }
 
+    if (e.key === 't' || e.key === 'T') {
+      e.preventDefault();
+      if (tutEl.style.display === 'none') {
+        tutEl.style.display = '';
+        tutBackdrop.style.display = '';
+        showTutStep();
+      } else {
+        tutEl.style.display = 'none';
+        tutBackdrop.style.display = 'none';
+      }
+      return;
+    }
+
+    if (e.key === 'a' || e.key === 'A') {
+      e.preventDefault();
+      profileAvatarPicker.classList.remove('hidden');
+      const n = localStorage.getItem('lb2048_name') || 'Player';
+      profileLetterAvatar.textContent = n[0].toUpperCase();
+      profileLetterAvatar.style.background = nameColor(n);
+      const cur = localStorage.getItem('lb2048_avatar') || '';
+      profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => {
+        o.classList.toggle('selected', o.dataset.avatar === cur || (!cur && o === profileLetterAvatar));
+      });
+      if (!profilePanel.classList.contains('open')) openProfile();
+      return;
+    }
+
     const map = { ArrowUp: 0, ArrowRight: 1, ArrowDown: 2, ArrowLeft: 3 };
     if (map[e.key] !== undefined) {
       e.preventDefault();
@@ -3355,6 +3384,37 @@
   }
 
   let lastWeekPodiums = { 3: [], 4: [], 5: [] };
+
+  async function pushAvatarUpdate() {
+    const name = localStorage.getItem('lb2048_name') || 'Player';
+    const avatar = localStorage.getItem('lb2048_avatar') || '';
+    const s = loadStats();
+    const stats = {
+      gamesPlayed: s.gamesPlayed || 0,
+      streak: s.streak || 0,
+      best3: s.best3 || 0,
+      best4: s.best4 || 0,
+      best5: s.best5 || 0,
+      highestTile: s.highestTile || 0
+    };
+    // Update all leaderboards where this player exists
+    for (const sz of [3, 4, 5]) {
+      const entries = lbCache[sz] || [];
+      if (entries.some(e => e.name === name)) {
+        try {
+          await fetch(workerUrl(sz), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, score: 0, time: '0:00', avatar, stats })
+          });
+        } catch(e) {}
+      }
+    }
+    // Update player registry
+    try {
+      await fetch(workerUrl(3).replace('size=3', 'action=players'));
+    } catch(e) {}
+  }
 
   async function addLBEntry(size, sc, time, name) {
     const avatar = localStorage.getItem('lb2048_avatar') || '';
@@ -3794,6 +3854,7 @@
     localStorage.setItem('lb2048_avatar', av);
     updateProfilePanel();
     sfx.click();
+    pushAvatarUpdate();
   });
 
   // Upload photo in profile
@@ -3815,6 +3876,7 @@
         profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
         updateProfilePanel();
         sfx.click();
+        pushAvatarUpdate();
       };
       img.src = reader.result;
     };
@@ -4178,6 +4240,20 @@
   tutEl.style.display = 'none';
   tutBackdrop.style.display = 'none';
   init();
+
+  // One-time update notification for existing players
+  if (localStorage.getItem('2048_tutorial_done') && !localStorage.getItem('2048_update_v3')) {
+    localStorage.setItem('2048_update_v3', '1');
+    setTimeout(() => {
+      alert("What's new!\n\n" +
+        "📖 Player Book — see all players (press B)\n" +
+        "🎨 Change Avatar anytime (press A)\n" +
+        "📤 Share your scores after each game\n" +
+        "📚 Tutorial — press T anytime\n" +
+        "🌈 3 themes: Dark, Neon, Light (press X)\n" +
+        "👆 Double-tap to pause on mobile");
+    }, 500);
+  }
 
   // Show tutorial overlay only for first-time users (doesn't block game start)
   if (!localStorage.getItem('2048_tutorial_done')) {
