@@ -114,6 +114,7 @@
 
   #lb-btn { color: #f0d878; -webkit-text-stroke: 1px; }
   :root.light #lb-btn { color: #a070d8; }
+  :root.light { --pbook-accent: #3090c0; }
 
   #profile-btn { color: #80e0a8; display: flex; align-items: center; justify-content: center; }
   .face-svg { display: block; width: 0.8em; height: 0.8em; }
@@ -1331,6 +1332,7 @@
   /* Timer color */
   .timer-text { color: #fff; }
   :root.light .timer-text { color: var(--label-color); }
+  :root.light .timer-text.paused { color: #e03030; }
   .timer-text.paused { color: #e03030; }
   /* Neon mode — timer glow */
   :root.neon .timer-text { text-shadow: 0 0 8px currentColor; }
@@ -1398,6 +1400,9 @@
     font-size: 12vh;
     margin: -5vh 0 -3vh 0;
   }
+
+  .pbook-color { color: #80c8f0; }
+  :root.light .pbook-color { color: #3090c0; }
 
   :root.neon .pbook-icon {
     filter: drop-shadow(0 0 8px #80c8f0);
@@ -1472,14 +1477,14 @@
   .pbook-rank {
     font-size: 14px;
     font-weight: 800;
-    color: #80c8f0;
+    color: var(--pbook-accent, #80c8f0);
     min-width: 28px;
     text-align: center;
   }
 
   .pbook-games {
     font-size: 13px;
-    color: #80c8f0;
+    color: var(--pbook-accent, #80c8f0);
     font-weight: 600;
   }
 
@@ -1717,10 +1722,12 @@
 
     #mobile-lb-btn { font-size: 5dvh !important; }
     :root.light #mobile-lb-btn { color: #a070d8 !important; }
-    #mobile-profile-btn { color: #80e0a8 !important; }
+    #mobile-profile-btn { color: #f59563 !important; }
     #mobile-lb-btn { color: #f0d878 !important; }
-    #mobile-pbook-btn { color: #80c8f0 !important; display: flex !important; }
-    #mobile-settings-btn { color: #e07070 !important; display: flex !important; font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif !important; }
+    #mobile-lb-btn .icon-glow { font-size: 5dvh !important; }
+    :root.light #mobile-lb-btn { color: #a070d8 !important; }
+    #mobile-pbook-btn { display: flex !important; }
+    #mobile-settings-btn { color: #e07070 !important; display: flex !important; }
 
     /* Row 3: Timer + Board */
     .board-wrapper {
@@ -1955,7 +1962,7 @@
       <div class="grid-bg" id="grid-bg"></div>
       <div class="tile-layer" id="tile-layer"></div>
     </div>
-    <button class="pbook-btn" id="pbook-btn" title="Player Book (B)"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
+    <button class="pbook-btn" id="pbook-btn" title="Player Book (B)"><span class="icon-glow pbook-icon pbook-color">&#9776;</span></button>
   </div>
 
   <!-- Mobile bottom bar: Settings + Player Book (below board) -->
@@ -2025,7 +2032,7 @@
       </svg>
     </button>
     <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-lb-btn" title="Leaderboard"><span class="icon-glow">&#9812;</span></button>
-    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-pbook-btn" title="Player Book" style="color:#80c8f0;"><span class="icon-glow">&#9776;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-pbook-btn" title="Player Book"><span class="icon-glow pbook-color">&#9776;</span></button>
     <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-settings-btn" title="Settings"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="#e07070"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1.01c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64z"/></svg></button>
   </div>
 
