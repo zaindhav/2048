@@ -239,6 +239,15 @@
     font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
   }
 
+  .gear-spin {
+    animation: gearSpin 6s linear infinite;
+  }
+
+  @keyframes gearSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .icon-glow {
     display: inline-block;
   }
