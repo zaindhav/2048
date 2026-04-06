@@ -1122,6 +1122,18 @@
     margin-top: 4px;
   }
 
+  .profile-avatar-picker {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--btn-bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .profile-avatar-picker .avatar-picker {
+    margin-top: 8px;
+  }
+
   .profile-podiums {
     display: flex;
     gap: 10px;
@@ -1980,10 +1992,32 @@
   <div class="profile-panel" id="profile-panel">
     <button class="settings-close" id="profile-close">&times;</button>
     <div class="profile-header">
-      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-avatar" id="profile-avatar" style="cursor:pointer;" title="Change avatar">?</div>
       <div>
         <div class="profile-name" id="profile-name">Player</div>
         <div class="profile-streak-badge" id="profile-streak-badge">No streak yet</div>
+      </div>
+    </div>
+    <div class="profile-avatar-picker hidden" id="profile-avatar-picker">
+      <div class="avatar-label">Choose your avatar</div>
+      <div class="avatar-picker" id="profile-avatar-grid">
+        <div class="avatar-option" data-avatar="😎">😎</div>
+        <div class="avatar-option" data-avatar="🔥">🔥</div>
+        <div class="avatar-option" data-avatar="⭐">⭐</div>
+        <div class="avatar-option" data-avatar="🎮">🎮</div>
+        <div class="avatar-option" data-avatar="🏆">🏆</div>
+        <div class="avatar-option" data-avatar="🐱">🐱</div>
+        <div class="avatar-option" data-avatar="🐶">🐶</div>
+        <div class="avatar-option" data-avatar="🦊">🦊</div>
+        <div class="avatar-option" data-avatar="🐸">🐸</div>
+        <div class="avatar-option" data-avatar="🤖">🤖</div>
+        <div class="avatar-option" data-avatar="👾">👾</div>
+        <div class="avatar-option" data-avatar="💎">💎</div>
+        <div class="avatar-option letter-avatar" data-avatar="" id="profile-letter-avatar" style="background:#f59563;">?</div>
+        <label class="avatar-option avatar-upload-btn" title="Upload photo">
+          <span>+</span>
+          <input type="file" accept="image/*" id="profile-avatar-upload" style="display:none;">
+        </label>
       </div>
     </div>
     <div class="profile-streak" id="profile-streak-card">
@@ -3621,6 +3655,7 @@
 
   function openProfile() {
     updateProfilePanel();
+    profileAvatarPicker.classList.add('hidden');
     profilePanel.classList.add('open');
     profileBackdrop.classList.add('open');
     pauseForMenu();
@@ -3728,6 +3763,63 @@
   });
 
   profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
+
+  // Profile avatar editing
+  const profileAvatarPicker = document.getElementById('profile-avatar-picker');
+  const profileAvatarGrid = document.getElementById('profile-avatar-grid');
+  const profileLetterAvatar = document.getElementById('profile-letter-avatar');
+  const profileAvatarUpload = document.getElementById('profile-avatar-upload');
+
+  // Click avatar to toggle picker
+  profileAvatarEl.addEventListener('click', () => {
+    profileAvatarPicker.classList.toggle('hidden');
+    // Update letter avatar
+    const n = localStorage.getItem('lb2048_name') || 'Player';
+    profileLetterAvatar.textContent = n[0].toUpperCase();
+    profileLetterAvatar.style.background = nameColor(n);
+    // Highlight current
+    const cur = localStorage.getItem('lb2048_avatar') || '';
+    profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => {
+      o.classList.toggle('selected', o.dataset.avatar === cur || (!cur && o === profileLetterAvatar));
+    });
+  });
+
+  // Select avatar
+  profileAvatarGrid.addEventListener('click', e => {
+    const opt = e.target.closest('.avatar-option');
+    if (!opt || opt.classList.contains('avatar-upload-btn')) return;
+    profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    const av = opt === profileLetterAvatar ? '' : opt.dataset.avatar;
+    localStorage.setItem('lb2048_avatar', av);
+    updateProfilePanel();
+    sfx.click();
+  });
+
+  // Upload photo in profile
+  profileAvatarUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 64;
+        const ctx2 = canvas.getContext('2d');
+        const s = Math.min(img.width, img.height);
+        const sx = (img.width - s) / 2, sy = (img.height - s) / 2;
+        ctx2.drawImage(img, sx, sy, s, s, 0, 0, 64, 64);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+        localStorage.setItem('lb2048_avatar', dataUrl);
+        profileAvatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+        updateProfilePanel();
+        sfx.click();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
   document.getElementById('mobile-profile-btn').addEventListener('click', () => { sfx.click(); openProfile(); });
   document.getElementById('mobile-lb-btn').addEventListener('click', () => { sfx.click(); hideLBSubmit(); openLB(); fetchLB(lbViewSize); });
   document.getElementById('mobile-pbook-btn').addEventListener('click', () => { sfx.click(); openPbook(); });
