@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>2048</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   .hidden { display: none !important; }
@@ -1316,8 +1315,7 @@
   :root.neon .settings-panel *,
   :root.neon .lb-panel *,
   :root.neon .profile-panel *,
-  :root.neon .player-panel *,
-  :root.neon .chat-panel * {
+  :root.neon .player-panel * {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   }
 
@@ -1332,12 +1330,7 @@
   :root.neon .profile-panel .profile-stat,
   :root.neon .profile-panel .profile-streak,
   :root.neon .profile-panel .podium-badge,
-  :root.neon .player-panel .profile-stat,
-  :root.neon .chat-panel .chat-tab,
-  :root.neon .chat-panel .chat-bubble,
-  :root.neon .chat-panel .chat-input,
-  :root.neon .chat-panel .chat-send-btn,
-  :root.neon .chat-panel .online-player {
+  :root.neon .player-panel .profile-stat {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   }
 
@@ -1347,8 +1340,9 @@
     display: none;
   }
 
-  /* Chat button under board */
-  .chat-btn-under {
+
+  /* Player Book button */
+  .pbook-btn {
     background: var(--btn-bg);
     color: var(--text);
     border: 4px solid var(--border);
@@ -1359,56 +1353,51 @@
     cursor: pointer;
     transition: all 0.2s ease;
     margin-top: 2vh;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5vw;
+    flex-shrink: 0;
   }
 
-  .chat-icon {
+  .pbook-btn:hover { background: var(--btn-hover); }
+
+  .pbook-icon {
     font-size: 12vh;
     margin: -5vh 0 -3vh 0;
   }
 
-  :root.neon .chat-icon {
+  :root.neon .pbook-icon {
     filter: drop-shadow(0 0 8px #80c8f0);
   }
 
-  .chat-btn-under:hover {
-    background: var(--btn-hover);
-  }
-
-  /* Chat Panel */
-  .chat-panel {
+  /* Player Book Panel */
+  .pbook-panel {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
-    width: 480px;
+    width: 460px;
     max-width: 92vw;
-    height: 70vh;
-    max-height: 600px;
+    max-height: 75vh;
     background: var(--settings-bg);
     border: 4px solid var(--border);
     border-radius: 24px;
-    padding: 0;
+    padding: 36px 32px 28px;
     z-index: 100;
     opacity: 0;
     pointer-events: none;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
-  .chat-panel.open {
+  .pbook-panel.open {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     pointer-events: all;
   }
 
-  .chat-backdrop {
+  .pbook-backdrop {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.6);
@@ -1417,220 +1406,99 @@
     backdrop-filter: blur(4px);
   }
 
-  .chat-backdrop.open { display: block; }
+  .pbook-backdrop.open { display: block; }
 
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 2px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .chat-close-btn {
-    background: none;
-    border: none;
-    color: var(--label-color);
-    font-size: 28px;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    margin-top: -4px;
-  }
-
-  .chat-close-btn:hover {
-    color: var(--text);
-  }
-
-  .chat-header h3 {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text);
-  }
-
-  .chat-tabs {
-    display: flex;
-    gap: 6px;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .chat-tab {
-    flex: 1;
-    background: var(--btn-bg);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 0;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--label-color);
-    cursor: pointer;
-    text-align: center;
-  }
-
-  .chat-tab.active {
-    background: #80c8f0;
-    color: #000;
-    border-color: #80c8f0;
-  }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .chat-msg {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-  }
-
-  .chat-msg.mine {
-    flex-direction: row-reverse;
-  }
-
-  .chat-msg-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-    border: 2px solid #fff;
-  }
-
-  :root.light .chat-msg-avatar {
-    border-color: var(--border);
-  }
-
-  .chat-msg-avatar.photo {
-    background-size: cover;
-    background-position: center;
-  }
-
-  .chat-msg-avatar.letter {
-    font-weight: 800;
-    font-size: 12px;
-    color: #fff;
-  }
-
-  .chat-bubble {
-    max-width: 70%;
-    padding: 8px 12px;
-    border-radius: 14px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--text);
-    background: var(--btn-bg);
-    border: 1px solid var(--border);
-  }
-
-  .chat-msg.mine .chat-bubble {
-    background: #80c8f0;
-    color: #000;
-    border-color: #80c8f0;
-  }
-
-  .chat-bubble-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--label-color);
-    margin-bottom: 2px;
-  }
-
-  .chat-msg.mine .chat-bubble-name {
-    display: none;
-  }
-
-  .chat-input-bar {
-    display: flex;
-    gap: 8px;
-    padding: 12px 16px;
-    border-top: 2px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .chat-input {
-    flex: 1;
+  .pbook-search {
+    width: 100%;
     padding: 10px 14px;
     border: 2px solid var(--border);
     border-radius: 12px;
     background: var(--btn-bg);
     color: var(--text);
-    font-size: 14px;
+    font-size: 15px;
     outline: none;
+    margin-bottom: 12px;
   }
 
-  .chat-input:focus {
+  .pbook-search:focus {
     border-color: #80c8f0;
   }
 
-  .chat-send-btn {
-    background: #80c8f0;
-    color: #000;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .chat-send-btn:hover {
-    background: #60b8e0;
-  }
-
-  /* Online players list */
-  .online-list {
-    flex: 1;
+  .pbook-list {
     overflow-y: auto;
-    padding: 12px 16px;
+    flex: 1;
   }
 
-  .online-player {
+  .pbook-rank {
+    font-size: 14px;
+    font-weight: 800;
+    color: #80c8f0;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .pbook-games {
+    font-size: 13px;
+    color: #80c8f0;
+    font-weight: 600;
+  }
+
+  .pbook-entry {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: 12px;
+    padding: 12px;
     margin-bottom: 6px;
     background: var(--btn-bg);
     border: 2px solid var(--border);
     border-radius: 12px;
     cursor: pointer;
+    transition: opacity 0.15s;
   }
 
-  .online-player:hover {
-    opacity: 0.85;
-  }
+  .pbook-entry:hover { opacity: 0.85; }
 
-  .online-dot {
-    width: 8px;
-    height: 8px;
+  .pbook-avatar {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: #30b030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
     flex-shrink: 0;
+    border: 2px solid var(--border);
   }
 
-  .online-name {
-    font-size: 15px;
-    font-weight: 600;
+  .pbook-avatar.photo {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .pbook-avatar.letter {
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .pbook-name {
+    font-size: 16px;
+    font-weight: 700;
     color: var(--text);
     flex: 1;
   }
 
-  .chat-empty {
-    text-align: center;
-    color: var(--label-color);
-    padding: 30px 0;
+  .pbook-best {
     font-size: 14px;
+    color: var(--label-color);
+  }
+
+  :root.neon .pbook-panel * {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
+  :root.neon .pbook-entry {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   }
 
   /* Card hover shadow */
@@ -1726,19 +1594,9 @@
       aspect-ratio: 1 / 1 !important;
     }
 
-    /* Row 3: Chat + Profile + Leaderboard + Settings buttons */
-    .chat-btn-under {
-      padding: 0.5dvh 25vw !important;
-      font-size: 2dvh !important;
-      margin-top: 0.8dvh !important;
-      border-width: 2px !important;
-      border-radius: 2vw !important;
-      flex-shrink: 0 !important;
-    }
+    /* Row 3: Profile + Leaderboard + Settings buttons */
 
-    .chat-icon { font-size: 8dvh !important; margin: -2.5dvh 0 -2dvh 0 !important; }
-
-    /* Mobile icon row below chat button */
+    /* Mobile icon row */
     .mobile-bar {
       display: flex !important;
       justify-content: center !important;
@@ -1801,7 +1659,16 @@
     .tutorial h1 { font-size: 24px !important; }
     .tutorial h2.tut-heading { font-size: 18px !important; }
     .settings-panel { width: 85vw !important; max-height: 85dvh !important; overflow-y: auto !important; }
-    .lb-panel, .profile-panel, .player-panel, .chat-panel { width: 92vw !important; max-height: 80dvh !important; overflow-y: auto !important; }
+    .lb-panel, .profile-panel, .player-panel, .pbook-panel { width: 92vw !important; max-height: 80dvh !important; overflow-y: auto !important; }
+
+    .pbook-btn {
+      padding: 0.5dvh 25vw !important;
+      margin-top: 0.8dvh !important;
+      border-width: 2px !important;
+      border-radius: 2vw !important;
+    }
+
+    .pbook-icon { font-size: 8dvh !important; margin: -2.5dvh 0 -2dvh 0 !important; }
   }
 
   /* ===== LANDSCAPE MOBILE — MUST BE LAST ===== */
@@ -1857,8 +1724,6 @@
       max-width: var(--bs) !important;
       max-height: var(--bs) !important;
     }
-
-    .chat-btn-under { display: none !important; }
 
     .right-sidebar {
       order: 3 !important;
@@ -1981,7 +1846,18 @@
       <div class="grid-bg" id="grid-bg"></div>
       <div class="tile-layer" id="tile-layer"></div>
     </div>
-    <button class="chat-btn-under" id="chat-btn"><span class="icon-glow chat-icon" style="color:#80c8f0;">&#9993;</span></button>
+    <button class="pbook-btn" id="pbook-btn"><span class="icon-glow pbook-icon" style="color:#80c8f0;">&#9776;</span></button>
+  </div>
+
+  <!-- Player Book Panel -->
+  <div class="pbook-backdrop" id="pbook-backdrop"></div>
+  <div class="pbook-panel" id="pbook-panel">
+    <button class="settings-close" id="pbook-close">&times;</button>
+    <div class="settings-title">Player Book</div>
+    <input class="pbook-search" id="pbook-search" type="text" placeholder="Search players..." maxlength="30">
+    <div class="pbook-list" id="pbook-list">
+      <div class="lb-empty">Loading players...</div>
+    </div>
   </div>
 
   <div class="right-sidebar">
@@ -2021,6 +1897,7 @@
       </svg>
     </button>
     <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-lb-btn"><span class="icon-glow">&#9812;</span></button>
+    <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-pbook-btn" style="color:#80c8f0;"><span class="icon-glow">&#9776;</span></button>
     <button class="settings-btn icon-btn mobile-icon-btn" id="mobile-settings-btn"><span class="icon-glow">&#9881;</span></button>
   </div>
 
@@ -2107,23 +1984,6 @@
     </div>
   </div>
 
-  <!-- Chat Panel -->
-  <div class="chat-backdrop" id="chat-backdrop"></div>
-  <div class="chat-panel" id="chat-panel">
-    <div class="chat-tabs">
-      <button class="chat-tab active" id="chat-tab-global">Global</button>
-      <button class="chat-tab" id="chat-tab-dm" style="display:none;">DM</button>
-      <button class="chat-tab" id="chat-tab-players">Players</button>
-    </div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-empty">No messages yet. Say hi!</div>
-    </div>
-    <div class="online-list hidden" id="online-list"></div>
-    <div class="chat-input-bar">
-      <input class="chat-input" id="chat-input" type="text" placeholder="Type a message..." maxlength="200">
-      <button class="chat-send-btn" id="chat-send">Send</button>
-    </div>
-  </div>
 
   <!-- Leaderboard Panel -->
   <div class="lb-backdrop" id="lb-backdrop"></div>
@@ -2254,9 +2114,9 @@
       <div class="tut-ctrl"><span class="tut-key">L</span><span>Leaderboard</span></div>
       <div class="tut-ctrl"><span class="tut-key">P</span><span>Profile</span></div>
       <div class="tut-ctrl"><span class="tut-key">X</span><span>Switch Theme</span></div>
-      <div class="tut-ctrl"><span class="tut-key">C</span><span>Chat</span></div>
+      <div class="tut-ctrl"><span class="tut-key">B</span><span>Player Book</span></div>
     </div>
-    <p class="tut-desc">Chat with other players, cycle themes, and track your stats and streak in your profile!</p>
+    <p class="tut-desc">Cycle themes and track your stats and streak in your profile!</p>
   </div>
 
   <div class="tut-nav">
@@ -3273,10 +3133,10 @@
       return;
     }
 
-    if (e.key === 'c' || e.key === 'C') {
+    if (e.key === 'b' || e.key === 'B') {
       e.preventDefault();
-      if (chatPanel.classList.contains('open')) closeChat();
-      else openChat();
+      if (pbookPanel.classList.contains('open')) closePbook();
+      else openPbook();
       return;
     }
 
@@ -3297,7 +3157,7 @@
   let lastTapTime = 0;
   document.addEventListener('touchend', e => {
     if (window.innerWidth > 900) return;
-    if (e.target.closest('button, input, .settings-panel, .lb-panel, .profile-panel, .player-panel, .chat-panel, .tutorial')) return;
+    if (e.target.closest('button, input, .settings-panel, .lb-panel, .profile-panel, .player-panel, .pbook-panel, .tutorial')) return;
     const now = Date.now();
     if (now - lastTapTime < 300) {
       e.preventDefault();
@@ -3761,21 +3621,13 @@
     }
   }
 
-  let playerOpenedFrom = 'lb'; // 'lb' or 'chat'
-
   // Prevent clicks inside player panel from closing backdrop
   playerPanel.addEventListener('click', e => { e.stopPropagation(); });
 
   playerClose.addEventListener('click', () => {
     playerPanel.classList.remove('open');
-    if (playerOpenedFrom === 'chat') {
-      // Keep blur, reopen chat
-      chatPanel.classList.add('open');
-    } else {
-      lbPanel.classList.add('open');
-      lbBackdrop.classList.add('open');
-    }
-    playerOpenedFrom = 'lb';
+    lbPanel.classList.add('open');
+    lbBackdrop.classList.add('open');
   });
 
   // Make leaderboard entries clickable
@@ -3790,6 +3642,7 @@
   profileBtn.addEventListener('click', () => { sfx.click(); openProfile(); });
   document.getElementById('mobile-profile-btn').addEventListener('click', () => { sfx.click(); openProfile(); });
   document.getElementById('mobile-lb-btn').addEventListener('click', () => { sfx.click(); hideLBSubmit(); openLB(); fetchLB(lbViewSize); });
+  document.getElementById('mobile-pbook-btn').addEventListener('click', () => { sfx.click(); openPbook(); });
   document.getElementById('mobile-settings-btn').addEventListener('click', (e) => { e.stopPropagation(); sfx.click(); openSettings(); });
 
   // Animate smiley face — smoothly morph mouth curve
@@ -3830,285 +3683,90 @@
   profileClose.addEventListener('click', closeProfile);
   profileBackdrop.addEventListener('click', closeProfile);
 
-  // ===== CHAT =====
-  const SUPABASE_URL = 'https://wmahqqubptictszwcdzi.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtYWhxcXVicHRpY3RzendjZHppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MTk1MzgsImV4cCI6MjA5MDk5NTUzOH0.JGrR8RRCQA5vJV76Wrl-E7gMaBAlfKvTm6PKQx3O3C0';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Player Book
+  const pbookPanel = document.getElementById('pbook-panel');
+  const pbookBackdrop = document.getElementById('pbook-backdrop');
+  const pbookBtn = document.getElementById('pbook-btn');
+  const pbookClose = document.getElementById('pbook-close');
+  const pbookList = document.getElementById('pbook-list');
+  const pbookSearch = document.getElementById('pbook-search');
+  let allPlayers = [];
 
-  const chatPanel = document.getElementById('chat-panel');
-  const chatBackdrop = document.getElementById('chat-backdrop');
-  const chatBtn = document.getElementById('chat-btn');
-  const chatMessages = document.getElementById('chat-messages');
-  const chatInput = document.getElementById('chat-input');
-  const chatSend = document.getElementById('chat-send');
-  const chatTabGlobal = document.getElementById('chat-tab-global');
-  const chatTabPlayers = document.getElementById('chat-tab-players');
-  const onlineListEl = document.getElementById('online-list');
-
-  let chatMode = 'global';
-  let dmTarget = null;
-
-  function openChat() {
-    chatPanel.classList.add('open');
-    chatBackdrop.classList.add('open');
-    pauseForMenu();
-    updateOnlineStatus();
-    if (chatMode === 'global') loadGlobalMessages();
+  function makePbookAvatar(entry) {
+    const name = entry.name || 'Player';
+    if (entry.avatar && entry.avatar.startsWith('data:')) {
+      return '<div class="pbook-avatar photo" style="background-image:url(' + entry.avatar + ')"></div>';
+    }
+    if (entry.avatar) {
+      return '<div class="pbook-avatar">' + entry.avatar + '</div>';
+    }
+    const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
+    return '<div class="pbook-avatar letter" style="background:' + col + '">' + name[0].toUpperCase() + '</div>';
   }
 
-  function closeChat() {
-    chatPanel.classList.remove('open');
-    chatBackdrop.classList.remove('open');
+  function openPbook() {
+    pbookPanel.classList.add('open');
+    pbookBackdrop.classList.add('open');
+    pbookSearch.value = '';
+    pauseForMenu();
+    loadPbook();
+  }
+
+  function closePbook() {
+    pbookPanel.classList.remove('open');
+    pbookBackdrop.classList.remove('open');
     resumeFromMenu();
   }
 
-  chatBtn.addEventListener('click', () => { sfx.click(); openChat(); });
-  chatBackdrop.addEventListener('click', () => {
-    if (playerPanel.classList.contains('open')) return;
-    closeChat();
-  });
-
-  // Chat tabs
-  chatTabGlobal.addEventListener('click', () => {
-    chatMode = 'global';
-    dmTarget = null;
-    chatTabGlobal.classList.add('active');
-    chatTabPlayers.classList.remove('active');
-    chatTabDM.classList.remove('active');
-    chatTabDM.style.display = 'none';
-    chatMessages.classList.remove('hidden');
-    onlineListEl.classList.add('hidden');
-    chatInput.placeholder = 'Type a message...';
-    chatMessages.innerHTML = '<div class="chat-empty">Loading...</div>';
-    loadGlobalMessages();
-  });
-
-  chatTabPlayers.addEventListener('click', () => {
-    chatMode = 'players';
-    chatTabPlayers.classList.add('active');
-    chatTabGlobal.classList.remove('active');
-    chatTabDM.classList.remove('active');
-    chatMessages.classList.add('hidden');
-    onlineListEl.classList.remove('hidden');
-    loadOnlinePlayers();
-  });
-
-  function getMyChatName() {
-    return localStorage.getItem('lb2048_name') || 'Player';
-  }
-
-  function getMyChatAvatar() {
-    return localStorage.getItem('lb2048_avatar') || '';
-  }
-
-  function makeChatAvatar(name, avatar) {
-    if (avatar && avatar.startsWith('data:')) {
-      return '<div class="chat-msg-avatar photo" style="background-image:url(' + avatar + ')"></div>';
+  function renderPbook(filter) {
+    let list = allPlayers;
+    if (filter) {
+      const q = filter.toLowerCase();
+      list = list.filter(p => p.name.toLowerCase().includes(q));
     }
-    if (avatar) {
-      return '<div class="chat-msg-avatar">' + avatar + '</div>';
-    }
-    const col = avatarColors[Math.abs([...name].reduce((h, c) => c.charCodeAt(0) + ((h << 5) - h), 0)) % avatarColors.length];
-    return '<div class="chat-msg-avatar letter" style="background:' + col + '">' + name[0].toUpperCase() + '</div>';
-  }
-
-  function renderMessages(msgs) {
-    const myName = getMyChatName();
-    if (msgs.length === 0) {
-      chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Say hi!</div>';
+    if (list.length === 0) {
+      pbookList.innerHTML = '<div class="lb-empty">' + (filter ? 'No players found' : 'No players yet') + '</div>';
       return;
     }
-    chatMessages.innerHTML = msgs.map(m => {
-      const mine = m.sender === myName;
-      const av = m.avatar || '';
-      return '<div class="chat-msg ' + (mine ? 'mine' : '') + '" data-sender="' + (m.sender || '') + '" data-avatar="' + (av.startsWith('data:') ? '' : av) + '">' +
-        '<div class="chat-avatar-click" style="cursor:pointer;">' + makeChatAvatar(m.sender, m.avatar) + '</div>' +
-        '<div class="chat-bubble">' +
-          '<div class="chat-bubble-name">' + (m.sender || 'Player') + '</div>' +
-          m.message +
-        '</div>' +
+    pbookList.innerHTML = list.map((p, i) => {
+      const games = (p.stats && p.stats.gamesPlayed) || 0;
+      return '<div class="pbook-entry" data-name="' + p.name + '">' +
+        '<span class="pbook-rank">#' + (i + 1) + '</span>' +
+        makePbookAvatar(p) +
+        '<span class="pbook-name">' + p.name + '</span>' +
+        '<span class="pbook-games">' + games + ' games</span>' +
       '</div>';
     }).join('');
-    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  async function loadGlobalMessages() {
-    const { data } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('receiver', 'global')
-      .order('created_at', { ascending: true })
-      .limit(50);
-    if (data) renderMessages(data);
+  async function loadPbook() {
+    pbookList.innerHTML = '<div class="lb-empty">Loading players...</div>';
+    try {
+      const res = await fetch(workerUrl(3).replace('size=3', 'action=players') + '&t=' + Date.now());
+      if (res.ok) allPlayers = await res.json();
+    } catch(e) {}
+    // Sort by games played
+    allPlayers.sort((a, b) => ((b.stats && b.stats.gamesPlayed) || 0) - ((a.stats && a.stats.gamesPlayed) || 0));
+    renderPbook('');
   }
 
-  async function loadDMMessages(otherName) {
-    const myName = getMyChatName();
-    // Fetch messages sent by me to them
-    const { data: sent } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('sender', myName)
-      .eq('receiver', otherName)
-      .order('created_at', { ascending: true })
-      .limit(50);
-    // Fetch messages sent by them to me
-    const { data: received } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('sender', otherName)
-      .eq('receiver', myName)
-      .order('created_at', { ascending: true })
-      .limit(50);
-    // Merge and sort
-    const all = [...(sent || []), ...(received || [])];
-    all.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    renderMessages(all.slice(-50));
-  }
+  pbookSearch.addEventListener('input', () => { renderPbook(pbookSearch.value.trim()); });
 
-  const badWords = ['fuck','shit','bitch','ass','damn','dick','cock','pussy','bastard','crap','cunt','slut','whore','nigger','nigga','fag','faggot','retard','stfu','wtf','lmao','piss','bollocks','wanker','twat'];
+  pbookBtn.addEventListener('click', () => { sfx.click(); openPbook(); });
+  pbookClose.addEventListener('click', closePbook);
+  pbookBackdrop.addEventListener('click', closePbook);
 
-  function containsProfanity(text) {
-    const lower = text.toLowerCase().replace(/[^a-z]/g, ' ');
-    return badWords.some(w => {
-      const re = new RegExp('\\b' + w + '\\b');
-      return re.test(lower);
-    });
-  }
-
-  async function sendMessage() {
-    const msg = chatInput.value.trim();
-    if (!msg) return;
-    if (containsProfanity(msg)) {
-      chatInput.style.borderColor = '#e03030';
-      chatInput.setAttribute('placeholder', 'Keep it clean!');
-      setTimeout(() => {
-        chatInput.style.borderColor = '';
-        chatInput.setAttribute('placeholder', 'Type a message...');
-      }, 2000);
-      return;
+  // Click player to view profile
+  pbookList.addEventListener('click', e => {
+    const entry = e.target.closest('.pbook-entry');
+    if (!entry) return;
+    const name = entry.dataset.name;
+    const found = allPlayers.find(p => p.name === name);
+    if (found) {
+      closePbook();
+      showPlayerProfile(found);
     }
-    const myName = getMyChatName();
-    const avatar = getMyChatAvatar();
-    const receiver = dmTarget || 'global';
-    chatInput.value = '';
-    await supabase.from('messages').insert({
-      sender: myName,
-      receiver: receiver,
-      message: msg,
-      avatar: avatar.startsWith('data:') ? '' : avatar
-    });
-  }
-
-  chatSend.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
   });
-
-  // Online status
-  async function updateOnlineStatus() {
-    const myName = getMyChatName();
-    const avatar = getMyChatAvatar();
-    await supabase.from('online_players').upsert({
-      name: myName,
-      avatar: avatar.startsWith('data:') ? '' : avatar,
-      last_seen: new Date().toISOString()
-    });
-  }
-
-  async function loadOnlinePlayers() {
-    const fiveMinAgo = new Date(Date.now() - 5 * 60000).toISOString();
-    const { data } = await supabase
-      .from('online_players')
-      .select('*')
-      .gte('last_seen', fiveMinAgo)
-      .order('last_seen', { ascending: false });
-
-    const myName = getMyChatName();
-    if (!data || data.length === 0) {
-      onlineListEl.innerHTML = '<div class="chat-empty">No players online</div>';
-      return;
-    }
-    onlineListEl.innerHTML = data.filter(p => p.name !== myName).map(p =>
-      '<div class="online-player" data-name="' + p.name + '">' +
-        '<div class="online-dot"></div>' +
-        makeChatAvatar(p.name, p.avatar) +
-        '<span class="online-name">' + p.name + '</span>' +
-      '</div>'
-    ).join('') || '<div class="chat-empty">No other players online</div>';
-  }
-
-  // Click player to DM
-  const chatTabDM = document.getElementById('chat-tab-dm');
-
-  function openDM(name) {
-    dmTarget = name;
-    chatMode = 'dm';
-    chatTabGlobal.classList.remove('active');
-    chatTabPlayers.classList.remove('active');
-    chatTabDM.style.display = '';
-    chatTabDM.textContent = name;
-    chatTabDM.classList.add('active');
-    chatMessages.classList.remove('hidden');
-    onlineListEl.classList.add('hidden');
-    chatInput.placeholder = 'Message ' + name + '...';
-    // Clear messages first to avoid showing global chat
-    chatMessages.innerHTML = '<div class="chat-empty">Loading...</div>';
-    loadDMMessages(name);
-  }
-
-  onlineListEl.addEventListener('click', e => {
-    const player = e.target.closest('.online-player');
-    if (!player) return;
-    openDM(player.dataset.name);
-  });
-
-  chatTabDM.addEventListener('click', () => {
-    if (dmTarget) openDM(dmTarget);
-  });
-
-  // Click avatar in chat to see player profile
-  chatMessages.addEventListener('click', e => {
-    const avatarClick = e.target.closest('.chat-avatar-click');
-    if (!avatarClick) return;
-    const msg = avatarClick.closest('.chat-msg');
-    if (!msg) return;
-    const senderName = msg.dataset.sender;
-    if (!senderName || senderName === getMyChatName()) return;
-    // Find player in leaderboard caches
-    let entry = null;
-    for (const sz of [3, 4, 5]) {
-      const found = (lbCache[sz] || []).find(e => e.name === senderName);
-      if (found) { entry = found; break; }
-    }
-    if (!entry) {
-      entry = { name: senderName, avatar: msg.dataset.avatar, stats: {} };
-    }
-    chatPanel.classList.remove('open');
-    playerOpenedFrom = 'chat';
-    showPlayerProfile(entry);
-  });
-
-  // Real-time subscription
-  supabase
-    .channel('public:messages')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-      const msg = payload.new;
-      const myName = getMyChatName();
-      // Update if we're viewing the relevant conversation
-      if (chatMode === 'global' && msg.receiver === 'global') {
-        loadGlobalMessages();
-      } else if (chatMode === 'dm' && dmTarget) {
-        if ((msg.sender === myName && msg.receiver === dmTarget) ||
-            (msg.sender === dmTarget && msg.receiver === myName)) {
-          loadDMMessages(dmTarget);
-        }
-      }
-    })
-    .subscribe();
-
-  // Update online status periodically
-  setInterval(updateOnlineStatus, 60000);
 
   // Secret admin stats — Ctrl+Shift+A
   document.addEventListener('keydown', async (e) => {
