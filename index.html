@@ -3859,6 +3859,14 @@ window._pickAvatar = function(btn) {
     localStorage.removeItem('lb2048_avatar');
     localStorage.setItem('2048_v2_reset', '1');
   }
+  // Ensure player has a name
+  if (!localStorage.getItem('lb2048_name') || localStorage.getItem('lb2048_name') === 'Player') {
+    setTimeout(() => {
+      const name = prompt('Enter your name for the leaderboard:') || 'Player';
+      localStorage.setItem('lb2048_name', name);
+    }, 500);
+  }
+
   // Load local backups instantly, then fetch fresh from server for all sizes
   for (const sz of [3, 4, 5]) {
     try { lbCache[sz] = JSON.parse(localStorage.getItem('lb2048_backup_' + sz) || '[]'); } catch(e) { lbCache[sz] = []; }
