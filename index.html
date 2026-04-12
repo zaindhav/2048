@@ -1781,6 +1781,20 @@
     .board-paused .tile {
       color: #e03030 !important;
     }
+
+    /* Reduce neon effects on mobile for performance */
+    :root.neon .tile {
+      box-shadow: 0 0 8px currentColor !important;
+      text-shadow: 0 0 6px currentColor !important;
+    }
+
+    :root.neon .game-board {
+      box-shadow: none !important;
+    }
+
+    .gear-spin {
+      animation: gearSpin 12s linear infinite !important;
+    }
     .mobile-bottom-bar { display: none !important; }
 
     /* Row 4: Size buttons */
@@ -2536,18 +2550,21 @@ window._pickAvatar = function(btn) {
     return URL.createObjectURL(blob);
   }
 
-  // Pre-generate mobile sounds
+  // Lazy-generate mobile sounds on first use
   let mobileSounds = null;
-  if (isMobileDevice) {
-    mobileSounds = {
-      slide: generateTone(250, 0.08, 0.15),
-      merge: generateTone(400, 0.12, 0.25),
-      appear: generateTone(350, 0.06, 0.1),
-      click: generateTone(600, 0.04, 0.12),
-      gameOver1: generateTone(200, 0.2, 0.3),
-      gameOver2: generateTone(150, 0.2, 0.3),
-      gameOver3: generateTone(100, 0.3, 0.3),
-    };
+  function getMobileSounds() {
+    if (!mobileSounds && isMobileDevice) {
+      mobileSounds = {
+        slide: generateTone(250, 0.08, 0.15),
+        merge: generateTone(400, 0.12, 0.25),
+        appear: generateTone(350, 0.06, 0.1),
+        click: generateTone(600, 0.04, 0.12),
+        gameOver1: generateTone(200, 0.2, 0.3),
+        gameOver2: generateTone(150, 0.2, 0.3),
+        gameOver3: generateTone(100, 0.3, 0.3),
+      };
+    }
+    return mobileSounds;
   }
 
   function playMobileSound(url) {
@@ -2560,10 +2577,9 @@ window._pickAvatar = function(btn) {
 
   // Unlock mobile audio on first touch
   document.addEventListener('touchend', function unlockMobile() {
-    if (mobileSounds) {
-      const a = new Audio(mobileSounds.click);
-      a.volume = 0;
-      a.play().catch(() => {});
+    if (isMobileDevice) {
+      const s = getMobileSounds();
+      if (s) { const a = new Audio(s.click); a.volume = 0; a.play().catch(() => {}); }
     }
     document.removeEventListener('touchend', unlockMobile);
   }, { once: true });
@@ -2829,30 +2845,30 @@ window._pickAvatar = function(btn) {
   const sfx = {
     slide() {
       if (!sfxEnabled) return;
-      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.slide); return; }
+      if (isMobileDevice && getMobileSounds()) { playMobileSound(getMobileSounds().slide); return; }
       try { soundSets[currentSoundSet].slide(); } catch(e) {}
     },
     merge() {
       if (!sfxEnabled) return;
-      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.merge); return; }
+      if (isMobileDevice && getMobileSounds()) { playMobileSound(getMobileSounds().merge); return; }
       try { soundSets[currentSoundSet].merge(); } catch(e) {}
     },
     appear() {
       if (!sfxEnabled) return;
-      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.appear); return; }
+      if (isMobileDevice && getMobileSounds()) { playMobileSound(getMobileSounds().appear); return; }
       try { soundSets[currentSoundSet].appear(); } catch(e) {}
     },
     click() {
       if (!sfxEnabled) return;
-      if (isMobileDevice && mobileSounds) { playMobileSound(mobileSounds.click); return; }
+      if (isMobileDevice && getMobileSounds()) { playMobileSound(getMobileSounds().click); return; }
       try { soundSets[currentSoundSet].click(); } catch(e) {}
     },
     gameOver() {
       if (!sfxEnabled) return;
-      if (isMobileDevice && mobileSounds) {
-        playMobileSound(mobileSounds.gameOver1);
-        setTimeout(() => playMobileSound(mobileSounds.gameOver2), 200);
-        setTimeout(() => playMobileSound(mobileSounds.gameOver3), 400);
+      if (isMobileDevice && getMobileSounds()) {
+        playMobileSound(getMobileSounds().gameOver1);
+        setTimeout(() => playMobileSound(getMobileSounds().gameOver2), 200);
+        setTimeout(() => playMobileSound(getMobileSounds().gameOver3), 400);
         return;
       }
       try { soundSets[currentSoundSet].gameOver(); } catch(e) {}
